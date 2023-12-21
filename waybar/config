@@ -16,23 +16,24 @@
     "position": "top",
 
     // If height property would be not present, it'd be calculated dynamically
-    "height": 24,
+    "height": 28,
 
     "modules-left": [
-        "sway/workspaces",
-        "sway/mode"    ],
+        "clock#time",
+        "clock#date"
+        
+           ],
     "modules-center": [
+        "sway/workspaces",
+        "sway/mode" 
     ],
     "modules-right": [
-        "memory",
-        "cpu",
+        "tray",
         "backlight",
         "pulseaudio",
         "network",
-        "battery",
-        "clock#date",
-        "clock#time",
-        "tray"
+        "battery"
+        
     ],
 
 
@@ -57,7 +58,7 @@
             "", // Icon: battery-quarter
             ""  // Icon: battery-empty
         ],
-        "tooltip": false
+        "tooltip": true
     },
 
     "clock#time": {
@@ -66,9 +67,14 @@
         "tooltip": false
     },
 
+    "bluetooth": {
+        "on-click": "blueman-manager",
+        "format": "   {status}  "
+      },
+
     "clock#date": {
       "interval": 10,
-      "format": "  {:%e %b %Y}", // Icon: calendar-alt
+      "format": "{:%e %b %Y}", // Icon: calendar-alt
       "tooltip-format": "{:%e %B %Y}"
     },
 
@@ -93,25 +99,25 @@
 
     "memory": {
         "interval": 5,
-        "format": "  {}%", // Icon: memory
+        "format": "   {}%", // Icon: memory
         "states": {
             "warning": 70,
             "critical": 90
-        }
+        },
     },
     "backlight": {
         "device": "intel_backlight",
-        "format": "{icon} {percent}%",
+        "format": " {icon} {percent}%",
         "format-icons": ["", ""]
     },
 
     "network": {
         "interval": 5,
-        "format-wifi": "  {essid} ({signalStrength}%)", // Icon: wifi
+        "format-wifi": "   {essid} ({signalStrength}%)", // Icon: wifi
         "format-ethernet": "  {ifname}: {ipaddr}/{cidr}", // Icon: ethernet
         "format-disconnected": "⚠  Disconnected",
-        "tooltip-format": "{ifname}: {ipaddr}"
-    },
+        "tooltip-format": "{ifname}: {ipaddr}",
+        "on-click": "rofi-wifi-menu"   },
 
     "sway/mode": {
         "format": "<span style=\"italic\">  {}</span>", // Icon: expand-arrows-alt
@@ -124,20 +130,37 @@
     },
 
     "sway/workspaces": {
-        "all-outputs": false,
-        "disable-scroll": true,
-        "format": "{icon} {name}",
-        "format-icons": {
-            "1:www": "龜", // Icon: firefox-browser
-            "2:mail": "", // Icon: mail
-            "3:editor": "", // Icon: code
-            "4:terminals": "", // Icon: terminal
-            "5:portal": "", // Icon: terminal
+		"disable-scroll": true,
+		"all-outputs": true,
+		"on-click": "activate",
+		"format": "{icon}",
+		"persistent-workspaces": {
+			"1": [],
+			"2": [],
+			"3": [],
+			"4": [],
+			"5": [],
+			"6": [],
+			"7": [],
+			"8": [],
+			"9": [],
+            "10": []
+		},
+		"format-icons": {
+			"1": "I",
+			"2": "II",
+			"3": "III",
+			"4": "IV",
+			"5": "V",
+			"6": "VI",
+			"7": "VII",
+			"8": "VIII",
+			"9": "IX",
+			"10": "X",
             "urgent": "",
-            "focused": "",
             "default": ""
-        }
-    },
+        }},
+//        "format": "{icon} {name}",  
 
     "pulseaudio": {
     "scroll-step": 1,
@@ -173,6 +196,10 @@
     "tray": {
         "icon-size": 18,
         "spacing": 10
-    }
+    },
+    "sway/mode": {
+        "format": "<span style=\"italic\">{}</span>",
+        "tooltip": false
+    },
 
 }

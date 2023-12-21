@@ -50,8 +50,9 @@
 #waybar {
     background: #000000;
     color: white;
-    font-family: Cantarell, Noto Sans, sans-serif;
-    font-size: 13px;
+    font-family: "Cantarell", "Font Awesome 6 Pro";
+    font-size: 14px;
+    font-weight: 600;
 }
 
 /* Each module */
@@ -170,23 +171,27 @@
 }
 
 #window {
-    font-weight: bold;
+    font-weight: normal;
 }
 
 #workspaces button {
-    border-top: 2px solid transparent;
     /* To compensate for the top border and still have vertical centering */
-    padding-bottom: 2px;
-    padding-left: 10px;
-    padding-right: 10px;
-    color: #888888;
+    padding-left: 7px;
+    padding-right: 7px;
+    color: white;
 }
 
+
+
 #workspaces button.focused {
-    border-color: #4c7899;
     color: white;
-    background-color: #285577;
+    border-top: 2px solid white;
 }
+ 
+#workspaces button.persistent {
+    color: #888888;
+}
+ 
 
 #workspaces button.urgent {
     border-color: #c9545d;
