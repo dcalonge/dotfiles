@@ -6,7 +6,7 @@ bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOU
 
 bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +5%
 bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
-exec --no-startup-id nm-applet
+#exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
 
 ### Variables
@@ -43,10 +43,10 @@ set $menu dmenu_path | wmenu | xargs swaymsg exec --
 #exec swayidle -w \
 #          timeout 300 'swaylock -i Descargas/keys.png -u' \
 #          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-#          before-sleep 'swaylock -i Descargas/keys.png -u'
-exec swayidle \
-	before-sleep 'swaylock -i Descargas/keys.png -u' \
-	lock 'swaylock -i Descargas/keys.png -u'
+#          before-sleep 'swaylock --screenshots --effect-blur 5x3 -u --fade-in 0.5'
+#exec swayidle \
+#	before-sleep 'swaylock -i Descargas/keys.png -u' \
+#	lock 'swaylock -i Descargas/keys.png -u'
 # This will lock your screen after 300 seconds of inactivity, then turn off
 # your displays after another 300 seconds, and turn your screens back on when
 # resumed. It will also lock your screen before your computer goes to sleep.
@@ -61,13 +61,16 @@ input "1739:52780:MSFT0004:00_06CB:CE2C_Touchpad" {
 }
 input "1:1:AT_Translated_Set_2_keyboard" xkb_layout "es"
 
+bindgesture swipe:right workspace prev
+bindgesture swipe:left workspace next
 #
 # You can get the names of your inputs by running: swaymsg -t get_inputs
 # Read `man 5 sway-input` for more information about this section.
 
 #hotkeys
 bindsym Mod4+Return exec alacritty
-bindsym Mod4+ exec firefox
+bindsym Mod4+p exec grim
+#bindsym Mod4+ exec firefox
 bindsym Mod4+n exec firefox
 bindsym Mod4+t exec "alacritty -e btop"
 bindsym Mod4+m exec "alacritty -e ranger"
@@ -154,7 +157,7 @@ bindsym Mod4+d exec "rofi -modi drun,run -show drun"
     # Switch the current container between different layout styles
     bindsym $mod+s layout stacking
     bindsym $mod+w layout tabbed
-    bindsym $mod+e layout toggle split
+    bindsym $mod+o layout toggle split
 
     # Make the current focus fullscreen
     bindsym $mod+f fullscreen
@@ -209,6 +212,13 @@ bindsym $mod+r mode "resize"
 #
 # Read `man 5 sway-bar` for more information about this section.
 default_border pixel
+hide_edge_borders smart_no_gaps
+default_floating_border none
+
+#gaps
+gaps inner 8
+gaps outer 0
+smart_gaps on
 
 
 #barra
@@ -216,7 +226,10 @@ exec --no-startup-id waybar
 
 #lock
 bindsym Mod4+x exec "systemctl suspend"
-bindsym --release Mod4+x exec 'swaylock --screenshots --effect-blur 5x3 -u'
+bindsym --release Mod4+x exec 'swaylock --screenshots --effect-blur 5x3 -u --fade-in 0.5'
 
 #wall
 exec --no-startup-id swaybg -i Descargas/keys.png -m fill
+
+#dbus update
+exec --no-startup-id "dbus-update-activation-environment --all"
