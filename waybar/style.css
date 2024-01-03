@@ -60,6 +60,7 @@
 #clock,
 #cpu,
 #custom-keyboard-layout,
+#custom-notification,
 #memory,
 #mode,
 #network,
@@ -100,7 +101,6 @@
 }
 
 #clock {
-    font-weight: bold;
 }
 
 #cpu {
@@ -132,8 +132,6 @@
 }
 
 #mode {
-    background: #64727D;
-    border-top: 2px solid white;
     /* To compensate for the top border and still have vertical centering */
     padding-bottom: 2px;
 }
@@ -170,8 +168,13 @@
     /* No styles */
 }
 
+#pulseaudio#microphone{
+    
+}
+
+
+
 #window {
-    font-weight: normal;
 }
 
 #workspaces button {
@@ -179,6 +182,7 @@
     padding-left: 7px;
     padding-right: 7px;
     color: white;
+    font-weight: bold;
 }
 
 

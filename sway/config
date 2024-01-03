@@ -6,7 +6,7 @@ bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOU
 
 bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +5%
 bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
-#exec --no-startup-id nm-applet
+exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
 
 ### Variables
@@ -73,7 +73,9 @@ bindsym Mod4+p exec grim
 #bindsym Mod4+ exec firefox
 bindsym Mod4+n exec firefox
 bindsym Mod4+t exec "alacritty -e btop"
-bindsym Mod4+m exec "alacritty -e ranger"
+#bindsym Mod4+m exec "alacritty -e ranger"
+bindsym Mod4+m exec nemo
+
 
 
 # Kill focused window
@@ -222,7 +224,10 @@ smart_gaps on
 
 
 #barra
-exec --no-startup-id waybar
+bar {
+    position top
+    swaybar_command waybar
+}
 
 #lock
 bindsym Mod4+x exec "systemctl suspend"
@@ -233,3 +238,14 @@ exec --no-startup-id swaybg -i Descargas/keys.png -m fill
 
 #dbus update
 exec --no-startup-id "dbus-update-activation-environment --all"
+
+#logout
+bindsym Mod4+Shift+x exec swaymsg exit
+
+# Notification Daemon
+exec swaync
+
+# Toggle control center
+bindsym $mod+Shift+n exec swaync-client -t -sw
+
+bindsym $mod+c exec code
