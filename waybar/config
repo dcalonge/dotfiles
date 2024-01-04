@@ -19,8 +19,7 @@
     "height": 28,
 
     "modules-left": [
-        "clock#time",
-        "clock#date"
+        "clock"
         
            ],
     "modules-center": [
@@ -63,10 +62,10 @@
         "tooltip": true
     },
 
-    "clock#time": {
-        "interval": 1,
-        "format": "{:%H:%M}",
-        "tooltip": false
+    "clock": {
+        "format": "  {:%H:%M   %e %b %Y}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "today-format": "<b>{}</b>",
     },
 
     "bluetooth": {
@@ -74,11 +73,6 @@
         "format": "   {status}  "
       },
 
-    "clock#date": {
-      "interval": 10,
-      "format": "{:%e %b %Y}", // Icon: calendar-alt
-      "tooltip-format": "{:%e %B %Y}"
-    },
 
     "cpu": {
         "interval": 5,

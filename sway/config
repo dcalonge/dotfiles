@@ -234,7 +234,7 @@ bindsym Mod4+x exec "systemctl suspend"
 bindsym --release Mod4+x exec 'swaylock --screenshots --effect-blur 5x3 -u --fade-in 0.5'
 
 #wall
-exec --no-startup-id swaybg -i Descargas/keys.png -m fill
+exec --no-startup-id swaybg -i Documentos/ign-0008.png -m fill
 
 #dbus update
 exec --no-startup-id "dbus-update-activation-environment --all"
@@ -249,3 +249,14 @@ exec swaync
 bindsym $mod+Shift+n exec swaync-client -t -sw
 
 bindsym $mod+c exec code
+
+#nord colors
+
+# class                 border  backgr. text    indicator
+client.focused          #81a1c1 #81a1c1 #ffffff #81a1c1
+client.unfocused        #2e3440 #1f222d #888888 #1f222d
+client.focused_inactive #2e3440 #1f222d #888888 #1f222d
+client.placeholder      #2e3440 #1f222d #888888 #1f222d
+client.urgent           #900000 #900000 #ffffff #900000
+
+client.background       #242424

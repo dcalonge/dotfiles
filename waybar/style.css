@@ -48,11 +48,11 @@
 
 /* The whole bar */
 #waybar {
-    background: #000000;
-    color: white;
-    font-family: "Cantarell", "Font Awesome 6 Pro";
+    background: #1f222d;
+    color: #ffffff;
+    font-family: "JetBrains Mono";
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 /* Each module */
@@ -77,27 +77,26 @@
  * -------------------------------------------------------------------------- */
 
 #battery {
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
+
 }
 
 #battery.warning {
     color: orange;
+    background-color: #1f222d;
 }
 
 #battery.critical {
     color: red;
+    background-color: #1f222d;
+
 }
 
 #battery.warning.discharging {
-    animation-name: blink-warning;
-    animation-duration: 3s;
+    
 }
 
 #battery.critical.discharging {
-    animation-name: blink-critical;
-    animation-duration: 2s;
+
 }
 
 #clock {
@@ -183,13 +182,14 @@
     padding-right: 7px;
     color: white;
     font-weight: bold;
+    font-family: "Cantarell";
 }
 
 
 
 #workspaces button.focused {
     color: white;
-    border-top: 2px solid white;
+    border-top: 2px solid #81a1c1;
 }
  
 #workspaces button.persistent {
