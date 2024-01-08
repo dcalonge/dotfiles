@@ -18,12 +18,8 @@ set $left h
 set $down j
 set $up k
 set $right l
-# Your preferred terminal emulator
-set $term foot
-# Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
-set $menu dmenu_path | wmenu | xargs swaymsg exec --
 
 ### Output configuration
 #
@@ -70,7 +66,6 @@ bindgesture swipe:left workspace next
 #hotkeys
 bindsym Mod4+Return exec alacritty
 bindsym Mod4+p exec grim
-#bindsym Mod4+ exec firefox
 bindsym Mod4+n exec firefox
 bindsym Mod4+t exec "alacritty -e btop"
 #bindsym Mod4+m exec "alacritty -e ranger"
@@ -199,8 +194,8 @@ mode "resize" {
 
     # Ditto, with arrow keys
     bindsym Left resize shrink width 10px
-    bindsym Down resize grow height 10px
-    bindsym Up resize shrink height 10px
+    bindsym Down resize shrink height 10px
+    bindsym Up resize grow height 10px
     bindsym Right resize grow width 10px
 
     # Return to default mode
@@ -209,21 +204,25 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
-#
-# Status Bar:
-#
-# Read `man 5 sway-bar` for more information about this section.
+bindsym $mod+Control+Left resize shrink width 10px
+bindsym $mod+Control+Down resize shrink height 10px
+bindsym $mod+Control+Up resize grow height 10px
+bindsym $mod+Control+Right resize grow width 10px
+
+
+#borders
 default_border pixel
 hide_edge_borders smart_no_gaps
 default_floating_border none
+title_align center
 
 #gaps
 gaps inner 8
 gaps outer 0
-smart_gaps on
+smart_gaps off
 
 
-#barra
+#bar
 bar {
     position top
     swaybar_command waybar
@@ -240,7 +239,8 @@ exec --no-startup-id swaybg -i Documentos/ign-0008.png -m fill
 exec --no-startup-id "dbus-update-activation-environment --all"
 
 #logout
-bindsym Mod4+Shift+x exec swaymsg exit
+#bindsym Mod4+Shift+x exec swaymsg exit
+bindsym Mod4+Shift+x exec rofi -show power-menu -modi power-menu:rofi-power-menu
 
 # Notification Daemon
 exec swaync
@@ -249,6 +249,10 @@ exec swaync
 bindsym $mod+Shift+n exec swaync-client -t -sw
 
 bindsym $mod+c exec code
+
+
+#theme colors and font
+font pango:JetBrains Mono 10
 
 #nord colors
 
