@@ -1,4 +1,4 @@
-My personal dotfiles for swaywm with a nord theme.
+My dotfiles for swaywm with nord color scheme.
 
 GTK Theme: https://github.com/EliverLara/Nordic
 
