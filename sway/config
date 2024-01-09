@@ -238,7 +238,7 @@ bindsym --release Mod4+x exec 'swaylock --screenshots --effect-blur 5x3 -u --fad
 exec --no-startup-id swaybg -i Documentos/ign-0008.png -m fill
 
 #dbus update
-exec --no-startup-id "dbus-update-activation-environment --all"
+exec --no-startup-id "dbus-update-activation-environment --systemd --all"
 
 #logout
 #bindsym Mod4+Shift+x exec swaymsg exit
