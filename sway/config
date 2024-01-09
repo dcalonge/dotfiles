@@ -9,6 +9,8 @@ bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
 exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
 
+include /etc/sway/config.d/*
+
 ### Variables
 #
 # Logo key. Use Mod1 for Alt.
