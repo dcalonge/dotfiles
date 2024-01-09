@@ -70,7 +70,7 @@ bindsym Mod4+Return exec alacritty
 bindsym Mod4+p exec grim
 bindsym Mod4+n exec firefox
 bindsym Mod4+t exec "alacritty -e btop"
-#bindsym Mod4+m exec "alacritty -e ranger"
+bindsym Mod4+Shift+m exec "alacritty -e ranger"
 bindsym Mod4+m exec nemo
 
 
