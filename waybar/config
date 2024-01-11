@@ -20,19 +20,18 @@
 
     "modules-left": [
         "clock"
-        
-           ],
+        ],
     "modules-center": [
         "sway/workspaces",
         "sway/mode" 
     ],
     "modules-right": [
-        "custom/notification",
         "tray",
         "backlight",
         "pulseaudio",
         "pulseaudio#microphone",
-        "battery"
+        "battery",
+	    "custom/notification"
         
         
     ],
@@ -49,9 +48,9 @@
             "critical": 15
         },
         // Connected to AC
-        "format": "  {icon}  {capacity}%", // Icon: bolt
+        "format": " {icon} {capacity}%", // Icon: bolt
         // Not connected to AC
-        "format-discharging": "{icon}  {capacity}%",
+        "format-discharging": "{icon} {capacity}%",
         "format-icons": [
             "", // Icon: battery-full
             "", // Icon: battery-three-quarters
@@ -63,22 +62,22 @@
     },
 
     "clock": {
-        "format": "  {:%H:%M   %e %b %Y}",
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "today-format": "<b>{}</b>",
+        "interval": 60,
+        "format": "  {:%H:%M   %a %e %b}",
+        "tooltip": false
     },
 
     "backlight": {
         "device": "intel_backlight",
-        "format": " {icon} {percent}%",
-        "format-icons": ["", ""]
+        "format": "{icon} {percent}%",
+        "format-icons": ["","","",""],
+	"tooltip": false
     },
 
     "sway/mode": {
         "format": "<span style=\"italic\">  {}</span>", // Icon: expand-arrows-alt
         "tooltip": false
     },
-
 
     "sway/workspaces": {
 		"disable-scroll": true,
@@ -115,7 +114,7 @@
 
     "pulseaudio": {
     "scroll-step": 1,
-        "format": "{icon}  {volume}%",
+        "format": "{icon} {volume}%",
         "format-bluetooth": "{icon}  {volume}%",
         "format-muted": "",
         "format-icons": {
@@ -133,18 +132,15 @@
 
     "pulseaudio#microphone": {
         "format": "{format_source}",
-        "format-source": "",
+        "format-source": " {volume}%",
         "format-source-muted": "",
         "on-click": "pavucontrol -t 4",
-        "on-click-middle": "~/.config/hypr/scripts/volumecontrol.sh -i m",
-        "on-scroll-up": "~/.config/hypr/scripts/volumecontrol.sh -i i",
-        "on-scroll-down": "~/.config/hypr/scripts/volumecontrol.sh -i d",
         "tooltip-format": "{format_source} {source_desc} // {source_volume}%",
         "scroll-step": 5
     },
 
     "tray": {
-        "icon-size": 24,
+        "icon-size": 20,
         "spacing": 10
     },
     "sway/mode": {

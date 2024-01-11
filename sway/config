@@ -9,8 +9,10 @@ bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
 exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
 
-include /etc/sway/config.d/*
 
+
+
+include /etc/sway/config.d/*
 ### Variables
 #
 # Logo key. Use Mod1 for Alt.
@@ -73,13 +75,11 @@ bindsym Mod4+t exec "alacritty -e btop"
 bindsym Mod4+Shift+m exec "alacritty -e ranger"
 bindsym Mod4+m exec nemo
 
-
-
 # Kill focused window
 bindsym $mod+q kill
 
 # Start your launcher
-bindsym Mod4+d exec "rofi -modi drun,run -show drun"
+bindsym Mod4+d exec /home/danie/.config/rofi/launchers/type-1/launcher.sh
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -231,8 +231,7 @@ bar {
 }
 
 #lock
-bindsym Mod4+x exec "systemctl suspend"
-bindsym --release Mod4+x exec 'swaylock --screenshots --effect-blur 5x3 -u --fade-in 0.5'
+bindsym Mod4+x exec /home/danie/scripts/lock.sh
 
 #wall
 exec --no-startup-id swaybg -i Documentos/ign-0008.png -m fill
@@ -242,7 +241,7 @@ exec --no-startup-id "dbus-update-activation-environment --systemd --all"
 
 #logout
 #bindsym Mod4+Shift+x exec swaymsg exit
-bindsym Mod4+Shift+x exec rofi -show power-menu -modi power-menu:rofi-power-menu
+bindsym Mod4+Shift+x exec /home/danie/.config/rofi/powermenu/type-2/powermenu.sh
 
 # Notification Daemon
 exec swaync
