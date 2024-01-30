@@ -1,16 +1,14 @@
 # Read `man 5 sway` for a complete reference.
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
-bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10%
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10%
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
 bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +5%
 bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
+
 exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
-
-
-
 
 include /etc/sway/config.d/*
 ### Variables
@@ -59,7 +57,8 @@ input "1739:52780:MSFT0004:00_06CB:CE2C_Touchpad" {
     natural_scroll enable
     click_method none
 }
-input "1:1:AT_Translated_Set_2_keyboard" xkb_layout "es"
+
+input * xkb_layout "es"
 
 bindgesture swipe:right workspace prev
 bindgesture swipe:left workspace next
@@ -70,16 +69,16 @@ bindgesture swipe:left workspace next
 #hotkeys
 bindsym Mod4+Return exec alacritty
 bindsym Mod4+p exec grim
-bindsym Mod4+n exec firefox
+bindsym Mod4+b exec firefox
 bindsym Mod4+t exec "alacritty -e btop"
 bindsym Mod4+Shift+m exec "alacritty -e ranger"
-bindsym Mod4+m exec nemo
+bindsym Mod4+n exec nemo
 
 # Kill focused window
 bindsym $mod+q kill
 
 # Start your launcher
-bindsym Mod4+d exec /home/danie/.config/rofi/launchers/type-1/launcher.sh
+bindsym Mod4+d exec /home/daniel/.config/rofi/launchers/type-1/launcher.sh
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -150,8 +149,11 @@ bindsym Mod4+d exec /home/danie/.config/rofi/launchers/type-1/launcher.sh
     # You can "split" the current object of your focus with
     # $mod+b or $mod+v, for horizontal and vertical splits
     # respectively.
-    bindsym $mod+b splith
-    bindsym $mod+v splitv
+
+
+#autotiling con script
+    #bindsym $mod+b splith
+    #bindsym $mod+v splitv
 
     # Switch the current container between different layout styles
     bindsym $mod+s layout stacking
@@ -231,17 +233,15 @@ bar {
 }
 
 #lock
-bindsym Mod4+x exec /home/danie/scripts/lock.sh
+bindsym Mod4+x exec /home/daniel/scripts/lock.sh
 
 #wall
-exec --no-startup-id swaybg -i Documentos/ign-0008.png -m fill
+exec --no-startup-id swaybg -i wallpapers/ign-0008.png -m fill
 
-#dbus update
-exec --no-startup-id "dbus-update-activation-environment --systemd --all"
 
 #logout
 #bindsym Mod4+Shift+x exec swaymsg exit
-bindsym Mod4+Shift+x exec /home/danie/.config/rofi/powermenu/type-2/powermenu.sh
+bindsym Mod4+Shift+x exec /home/daniel/.config/rofi/powermenu/type-1/powermenu.sh
 
 # Notification Daemon
 exec swaync
@@ -251,9 +251,10 @@ bindsym $mod+Shift+n exec swaync-client -t -sw
 
 bindsym $mod+c exec code
 
+exec python3 /home/daniel/scripts/autotiling.py
 
 #theme colors and font
-font pango:JetBrains Mono 10
+font pango:JetBrains Mono Nerd Font 10
 
 #nord colors
 
