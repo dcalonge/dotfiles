@@ -18,13 +18,13 @@ uptime="`uptime -p | sed -e 's/up //g'`"
 host=`hostname`
 
 # Options
-shutdown=' Shutdown'
-reboot=' Reboot'
-lock=' Lock'
-suspend=' Suspend'
-logout=' Logout'
-yes=' Yes'
-no=' No'
+shutdown='⏻ Shutdown'
+reboot=' Reboot'
+lock=' Lock'
+suspend='󰒲 Suspend'
+logout='󰍃 Logout'
+yes='󰔓 Yes'
+no='󰔑 No'
 
 # Rofi CMD
 rofi_cmd() {
@@ -66,19 +66,9 @@ run_cmd() {
 		elif [[ $1 == '--reboot' ]]; then
 			systemctl reboot
 		elif [[ $1 == '--suspend' ]]; then
-			mpc -q pause
-			amixer set Master mute
-			systemctl suspend
+			/home/danie/scripts/lock.sh
 		elif [[ $1 == '--logout' ]]; then
-			if [[ "$DESKTOP_SESSION" == 'openbox' ]]; then
-				openbox --exit
-			elif [[ "$DESKTOP_SESSION" == 'bspwm' ]]; then
-				bspc quit
-			elif [[ "$DESKTOP_SESSION" == 'i3' ]]; then
-				i3-msg exit
-			elif [[ "$DESKTOP_SESSION" == 'plasma' ]]; then
-				qdbus org.kde.ksmserver /KSMServer logout 0 0 0
-			fi
+			swaymsg exit
 		fi
 	else
 		exit 0
@@ -95,14 +85,10 @@ case ${chosen} in
 		run_cmd --reboot
         ;;
     $lock)
-		if [[ -x '/usr/bin/betterlockscreen' ]]; then
-			betterlockscreen -l
-		elif [[ -x '/usr/bin/i3lock' ]]; then
-			i3lock
-		fi
+		gtklock -c /home/daniel/.config/gtklock/config.ini -S
         ;;
     $suspend)
-		run_cmd --suspend
+		/home/daniel/scripts/lock.sh
         ;;
     $logout)
 		run_cmd --logout
