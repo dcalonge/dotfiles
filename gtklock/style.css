@@ -1,0 +1,16 @@
+window {
+    background-image: url("/home/daniel/wallpapers/ign-0008.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #2e3440;
+    color: #d8dee9;
+ }
+
+ #clock-label{
+    color: #d8dee9;
+ }
+
+ #error-label{
+   background-color: transparent;
+ }

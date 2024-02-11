@@ -30,18 +30,20 @@
 /* bg-solid: #2e3440*/
 #waybar {
     background: transparent;
-    color: #ffffff;
-    font-family: "JetBrains Mono";
+    color: #eceff4;
+    font-family: "JetBrains Mono Nerd Font";
     font-size: 14px;
     font-weight: 400;
 }
 
 /* Each module */
 #battery,
+#workspaces,
 #clock,
+#backlight,
 #custom-notification,
-#mode,
 #pulseaudio,
+
 #tray {
     padding-left: 10px;
     padding-right: 10px;
@@ -51,28 +53,12 @@
 /* -----------------------------------------------------------------------------
  * Module styles
  * -------------------------------------------------------------------------- */
-#pulseaudio-slider slider {
-    min-height: 0px;
-    min-width: 0px;
-    opacity: 0;
-    background-image: none;
-    border: 1px;
-    box-shadow: none;
-}
-#pulseaudio-slider trough {
-    min-height: 10px;
-    min-width: 100px;
-    border-radius: 5px;
-    background-color: transparent;
-    border: 1px;
-}
-#pulseaudio-slider highlight {
-    min-width: 10px;
-    border-radius: 5px;
-    background-color: green;
-}
 
+ #custom-notification{
+    
+ }
 
+ 
 
 #battery {
 
@@ -100,13 +86,6 @@
 #clock {
 }
 
-
-#mode {
-    /* To compensate for the top border and still have vertical centering */
-    padding-bottom: 2px;
-}
-
-
 #pulseaudio {
    
 }
@@ -126,27 +105,38 @@
 
 #workspaces button {
     /* To compensate for the top border and still have vertical centering */
-    padding-left: 7px;
-    padding-right: 7px;
-    color: white;
+    /*padding-left: 7px;*/
+    /*padding-right: 7px;*/
+    padding-left: 12px;
+    padding-right: 12px;
+    color: #eceff4;
     font-weight: bold;
     font-family: "Cantarell";
 }
 
-
-
-#workspaces button.focused {
-    color: #2e3440;;
+#workspaces button.active {
+    color: #2e3440;
     border:none;
-    border-radius: 3px;
+    border-radius: 0px;
     background-color: #81a1c1;
     margin-top: 3px;
     margin-bottom: 3px;
-    
+
 }
  
-#workspaces button.persistent {
+#workspaces button.empty {
+    padding-left: 7px;
+    padding-right: 7px;
     color: #888888;
+}
+
+#workspaces button.visible {
+    color: #2e3440;
+    border:none;
+    border-radius: 5px;
+    background-color: #81a1c1;
+    margin-top: 3px;
+    margin-bottom: 3px;
 }
  
 
