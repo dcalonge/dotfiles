@@ -65,7 +65,7 @@
 
     "clock": {
         "interval": 60,
-        "format": "   {:%H:%M    %a%e %b}",
+        "format": "   {:%H:%M    %a %e %b}",
         "tooltip": false
     },
 
