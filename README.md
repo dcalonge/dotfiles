@@ -10,7 +10,4 @@ My config for swaywm and hyprland with nord color scheme.
 
 * Font: JetBrains Mono Nerd Font
 
-![20240108_22h44m07s_grim](https://github.com/dcalonge/dotfiles/assets/114226495/74ced266-6d03-4b3e-9d59-41764f18ef67)
-
-
 ![20240211_18h34m51s_grim](https://github.com/dcalonge/dotfiles/assets/114226495/3ae3ed2a-cfa9-40c2-aa4d-150eea6de205)
