@@ -102,11 +102,7 @@
     
 }
 
-
 #workspaces button {
-    /* To compensate for the top border and still have vertical centering */
-    /*padding-left: 7px;*/
-    /*padding-right: 7px;*/
     padding-left: 12px;
     padding-right: 12px;
     color: #eceff4;
@@ -114,16 +110,6 @@
     font-family: "Cantarell";
 }
 
-#workspaces button.active {
-    color: #2e3440;
-    border:none;
-    border-radius: 0px;
-    background-color: #81a1c1;
-    margin-top: 3px;
-    margin-bottom: 3px;
-
-}
- 
 #workspaces button.empty {
     padding-left: 7px;
     padding-right: 7px;
@@ -133,14 +119,16 @@
 #workspaces button.visible {
     color: #2e3440;
     border:none;
-    border-radius: 5px;
+    border-radius: 100px;
     background-color: #81a1c1;
-    margin-top: 3px;
-    margin-bottom: 3px;
 }
  
 
 #workspaces button.urgent {
     border-color: #c9545d;
     color: #c9545d;
+}
+
+.modules-center {
+  margin-top: 5px;
 }

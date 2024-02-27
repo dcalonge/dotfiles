@@ -97,6 +97,7 @@
         "window-rewrite": {
             "class<firefox>": "󰈹", // Windows whose classes are "firefox"
             "alacritty": "", // Windows that contain "foot" in either class or title. For optimization reasons, it will only match against a title if at least one other window explicitly matches against a title.
+            "codium": "󰨞",
             "code": "󰨞",
             "nemo": "󰉋",
             "ranger": "󰉋",
@@ -104,7 +105,8 @@
             "nwg-look": "󰈈",
             "nwg-displays": "󰍹",
             "pavucontrol": "󰕾",
-            "btop": "󰄨"
+            "btop": "󰄨",
+            "nvim":""
         }
     },
 //        "format": "{icon} {name}",  

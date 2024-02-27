@@ -65,10 +65,8 @@ run_cmd() {
 			systemctl poweroff
 		elif [[ $1 == '--reboot' ]]; then
 			systemctl reboot
-		elif [[ $1 == '--suspend' ]]; then
-			/home/danie/scripts/lock.sh
 		elif [[ $1 == '--logout' ]]; then
-			swaymsg exit
+			hyprctl dispatch exit
 		fi
 	else
 		exit 0
@@ -88,7 +86,7 @@ case ${chosen} in
 		gtklock -c /home/daniel/.config/gtklock/config.ini -S
         ;;
     $suspend)
-		/home/daniel/scripts/lock.sh
+		systemctl suspend
         ;;
     $logout)
 		run_cmd --logout
