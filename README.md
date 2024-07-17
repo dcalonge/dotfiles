@@ -6,8 +6,8 @@ My config for swaywm and hyprland with nord color scheme.
 
 * Terminal emulator: foot
 
+![image](https://github.com/user-attachments/assets/90c94898-3ba0-41b4-919f-63e3af493f7f)
 
-![image](https://github.com/user-attachments/assets/aaf7c9a0-cd6c-4359-ad92-9abe5a081a32)
 
 
 
