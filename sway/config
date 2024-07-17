@@ -1,25 +1,18 @@
 # Read `man 5 sway` for a complete reference.
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10%
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10%
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
-bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
+bindsym XF86AudioRaiseVolume exec --no-startup-id wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ && ~/scripts/volume.sh
+bindsym XF86AudioLowerVolume exec --no-startup-id wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && ~/scripts/volume.sh
+bindsym XF86AudioMute exec --no-startup-id wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && ~/scripts/muteaudio.sh
+bindsym XF86AudioMicMute exec --no-startup-id wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && ~/scripts/mic.sh
 
-bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +5%
-bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
-
-exec --no-startup-id nm-applet
-exec --no-startup-id blueman-applet
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +5% && ~/scripts/brightness.sh
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%- && ~/scripts/brightness.sh
 
 include /etc/sway/config.d/*
 ### Variables
 #
 # Logo key. Use Mod1 for Alt.
 set $mod Mod4
-# Home row direction keys, like vim
-set $left h
-set $down j
-set $up k
-set $right l
+
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
 
@@ -38,10 +31,7 @@ set $right l
 #
 # Example configuration:
 #
-#exec swayidle -w \
-#          timeout 300 'swaylock -i Descargas/keys.png -u' \
-#          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-#          before-sleep 'swaylock --screenshots --effect-blur 5x3 -u --fade-in 0.5'
+exec swayidle before-sleep "gtklock -c /home/daniel/.config/gtklock/config.ini"
 #exec swayidle \
 #	before-sleep 'swaylock -i Descargas/keys.png -u' \
 #	lock 'swaylock -i Descargas/keys.png -u'
@@ -58,64 +48,68 @@ input "1739:52780:MSFT0004:00_06CB:CE2C_Touchpad" {
     click_method none
 }
 
-input * xkb_layout "es"
+set $menu rofi -show drun
 
 bindgesture swipe:right workspace prev
 bindgesture swipe:left workspace next
+bindgesture swipe:up exec $menu
+bindgesture swipe:down exec $menu
+input * xkb_layout "es"
+
 #
 # You can get the names of your inputs by running: swaymsg -t get_inputs
 # Read `man 5 sway-input` for more information about this section.
 
 #hotkeys
-bindsym Mod4+Return exec alacritty
-bindsym Mod4+p exec grim
+bindsym Mod4+Return exec foot
+bindsym Mod4+Shift+p exec grim
+bindsym Mod4+Shift+s exec "grim - | wl-copy"
 bindsym Mod4+b exec firefox
-bindsym Mod4+t exec "alacritty -e btop"
-bindsym Mod4+Shift+m exec "alacritty -e ranger"
-bindsym Mod4+n exec nemo
+bindsym Mod4+t exec "foot -e btop"
+bindsym Mod4+r exec "foot -e ranger"
+bindsym Mod4+v exec "foot -e nvim"
+bindsym Mod4+a exec "pavucontrol"
+bindsym Mod4+n exec  networkmanager_dmenu
+#bindsym Mod4+Tab exec rofi -show window
+
+
 
 # Kill focused window
 bindsym $mod+q kill
 
 # Start your launcher
-bindsym Mod4+d exec /home/daniel/.config/rofi/launchers/type-1/launcher.sh
+set $menu rofi -show drun
+bindsym $mod+d exec $menu
 
-    # Drag floating windows by holding down $mod and left mouse button.
-    # Resize them with right mouse button + $mod.
-    # Despite the name, also works for non-floating windows.
-    # Change normal to inverse to use left mouse button for resizing and right
-    # mouse button for dragging.
-    floating_modifier $mod normal
+# Drag floating windows by holding down $mod and left mouse button.
+# Resize them with right mouse button + $mod.
+# Despite the name, also works for non-floating windows.
+# Change normal to inverse to use left mouse button for resizing and right
+# mouse button for dragging.
+floating_modifier $mod normal
 
-    # Reload the configuration file
-    bindsym $mod+Shift+c reload
+# Reload the configuration file
+bindsym $mod+Shift+c reload
 
-    # Exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+# Exit sway (logs you out of your Wayland session)
+bindsym $mod+Shift+e exec swaynagmode -t warning -m 'You pressed the exit shortcut. Select an option.' -B 'Log out' 'swaymsg exit' -B 'Reboot' 'systemctl reboot' -B 'Power off' 'systemctl poweroff'  --background 000000  --border 000000  --button-background 000000 --button-text ffffff  --border-bottom 000000 --text ffffff
+
+bindsym $mod+Shift+u exec swaynagmode -t warning -m 'You pressed the update shorcut' --text ffffff --background 000000  --border 000000  --button-background 000000 --button-text ffffff  --border-bottom 000000 -B 'Update all packages' 'foot -e 'paru; flatpak update; read ' '
+
 #
 # Moving around:
 #
     # Move your focus around
-    bindsym $mod+$left focus left
-    bindsym $mod+$down focus down
-    bindsym $mod+$up focus up
-    bindsym $mod+$right focus right
-    # Or use $mod+[up|down|left|right]
     bindsym $mod+Left focus left
     bindsym $mod+Down focus down
     bindsym $mod+Up focus up
     bindsym $mod+Right focus right
 
     # Move the focused window with the same, but add Shift
-    bindsym $mod+Shift+$left move left
-    bindsym $mod+Shift+$down move down
-    bindsym $mod+Shift+$up move up
-    bindsym $mod+Shift+$right move right
-    # Ditto, with arrow keys
-    bindsym $mod+Shift+Left move left
-    bindsym $mod+Shift+Down move down
-    bindsym $mod+Shift+Up move up
-    bindsym $mod+Shift+Right move right
+    bindsym $mod+Shift+Left move left 40px
+    bindsym $mod+Shift+Down move down 40px
+    bindsym $mod+Shift+Up move up 40px
+    bindsym $mod+Shift+Right move right 40px
 #
 # Workspaces:
 #
@@ -169,8 +163,7 @@ bindsym Mod4+d exec /home/daniel/.config/rofi/launchers/type-1/launcher.sh
     # Swap focus between the tiling area and the floating area
     bindsym $mod+space focus mode_toggle
 
-    # Move focus to the parent container
-    bindsym $mod+a focus parent
+
 #
 # Scratchpad:
 #
@@ -186,83 +179,87 @@ bindsym Mod4+d exec /home/daniel/.config/rofi/launchers/type-1/launcher.sh
 #
 # Resizing containers:
 #
-mode "resize" {
-    # left will shrink the containers width
-    # right will grow the containers width
-    # up will shrink the containers height
-    # down will grow the containers height
-    bindsym $left resize shrink width 10px
-    bindsym $down resize grow height 10px
-    bindsym $up resize shrink height 10px
-    bindsym $right resize grow width 10px
 
-    # Ditto, with arrow keys
-    bindsym Left resize shrink width 10px
-    bindsym Down resize shrink height 10px
-    bindsym Up resize grow height 10px
-    bindsym Right resize grow width 10px
 
-    # Return to default mode
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-}
-bindsym $mod+r mode "resize"
-
-bindsym $mod+Control+Left resize shrink width 10px
-bindsym $mod+Control+Down resize shrink height 10px
-bindsym $mod+Control+Up resize grow height 10px
-bindsym $mod+Control+Right resize grow width 10px
+bindsym $mod+Control+Left resize shrink width 20px
+bindsym $mod+Control+Down resize shrink height 20px
+bindsym $mod+Control+Up resize grow height 20px
+bindsym $mod+Control+Right resize grow width 20px
 
 
 #borders
-default_border pixel
-hide_edge_borders smart_no_gaps
+default_border pixel 2
 default_floating_border none
 title_align center
 
-#gaps
-gaps inner 8
-gaps outer 0
-smart_gaps off
-
+gaps inner 8px
+smart_gaps on
+smart_borders on
 
 #bar
 bar {
-    position top
-    swaybar_command waybar
+    colors {
+        separator #000000
+        background #000000
+        statusline #ffffff
+        focused_workspace #000000 #000000 #ffffff
+        urgent_workspace #2f343a #900000 #ffffff
+        inactive_workspace #000000 #000000 #93a1a1
+    }
+  font JetBrainsMono Nerd Font 11
+  pango_markup enabled
+  position top
+  status_command i3status-rs
+  workspace_buttons yes
+  binding_mode_indicator no
+  }
 }
 
-#lock
-bindsym Mod4+x exec /home/daniel/scripts/lock.sh
+
 
 #wall
-exec --no-startup-id swaybg -i wallpapers/ign-0008.png -m fill
-
-
-#logout
-#bindsym Mod4+Shift+x exec swaymsg exit
-bindsym Mod4+Shift+x exec /home/daniel/.config/rofi/powermenu/type-1/powermenu.sh
-
-# Notification Daemon
-exec swaync
-
-# Toggle control center
-bindsym $mod+Shift+n exec swaync-client -t -sw
+output * bg ~/imagenes/arch.png fill
 
 bindsym $mod+c exec code
 
+
+font pango:JetBrainsMono Nerd Font 11
 exec python3 /home/daniel/scripts/autotiling.py
+exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 
-#theme colors and font
-font pango:JetBrains Mono Nerd Font 10
+# class                 border  backgr. text    indicator child_border
+client.focused          #93a1a1 #93a1a1 #161616 #93a1a1   #93a1a1
+client.focused_inactive #333333 #5f676a #ffffff #484e50   #222222
+client.unfocused        #333333 #222222 #888888 #292d2e   #222222
+client.urgent           #2f343a #900000 #ffffff #900000   #900000
+client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 
-#nord colors
+client.background       #ffffff
 
-# class                 border  backgr. text    indicator
-client.focused          #81a1c1 #81a1c1 #ffffff #81a1c1
-client.unfocused        #2e3440 #1f222d #888888 #1f222d
-client.focused_inactive #2e3440 #1f222d #888888 #1f222d
-client.placeholder      #2e3440 #1f222d #888888 #1f222d
-client.urgent           #900000 #900000 #ffffff #900000
 
-client.background       #242424
+
+for_window [app_id="pavucontrol"] floating enable
+
+
+
+set $nag exec swaynagmode
+mode "nag" {
+  bindsym {
+    Ctrl+d    mode "default"
+
+    Ctrl+c    $nag --exit
+    q         $nag --exit
+    Escape    $nag --exit
+
+    Return    $nag --confirm
+
+    Tab       $nag --select prev
+    Shift+Tab $nag --select next
+
+    Left      $nag --select next
+    Right     $nag --select prev
+
+    Up        $nag --select next
+    Down      $nag --select prev
+  }
+}

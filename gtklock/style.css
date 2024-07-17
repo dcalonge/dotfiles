@@ -1,16 +1,14 @@
 window {
-    background-image: url("/home/daniel/wallpapers/ign-0008.png");
+    background-image: url("/home/daniel/imagenes/arch.png");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    background-color: #2e3440;
-    color: #d8dee9;
+    background-color: #000000;
+    color: #ffffff;
  }
 
- #clock-label{
-    color: #d8dee9;
- }
+#error-label{
+  color:#ffffff;
+}
 
- #error-label{
-   background-color: transparent;
- }
+

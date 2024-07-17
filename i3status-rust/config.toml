@@ -1,0 +1,138 @@
+[icons]
+icons = "material-nf"
+[icons.overrides]
+bat = [
+ "󰁺",
+ "󰁻",
+ "󰁼",
+ "󰁽",
+ "󰁾",
+ "󰁿",
+ "󰂀",
+ "󰂁",
+ "󰂂",
+ "󰁹"
+]
+bat_not_available = "!"
+bat_charging = [
+ "󰢜",
+ "󰂆",
+ "󰂇",
+ "󰂈",
+ "󰢝",
+ "󰂉",
+ "󰢞",
+ "󰂊",
+ "󰂋",
+ "󰂅"
+]
+bluetooth ="󰂯"
+headphones = "󰋋"
+microphone = "󰍬"
+microphone_muted = ""
+mouse = "󰍽"
+time = ""
+volume = [
+ "󰕿",
+ "󰖀",
+ "󰕾",
+]
+volume_muted =  "󰖁"
+backlight = [
+    "󰃠",
+    "󰃟",
+    "󰃝",
+    "󰃞",
+
+]
+
+[theme]
+theme = "plain"
+[theme.overrides]
+good_fg = "#ffffff"
+info_fg = "#ffffff"
+idle_fg = "#ffffff"
+
+
+
+[[block]]
+block = "sound"
+driver = "pulseaudio"
+device_kind = "source"
+show_volume_when_muted = false
+headphones_indicator = true
+[block.theme_overrides]
+warning_fg="#676767"
+[[block.click]]
+button = "left"
+cmd = "pavucontrol -t 4"
+[block.format]
+full = "  $icon "
+short = " $icon "
+
+[[block]]
+block = "custom"
+command = "echo $(/home/daniel/scripts/checkup.sh)"
+interval = 86400
+[[block.click]]
+button = "left"
+cmd = "foot -e paru; foot -e flatpak update"
+
+
+[[block]]
+block = "sound"
+driver = "pulseaudio"
+device_kind = "sink"
+show_volume_when_muted = false
+headphones_indicator = true
+[block.theme_overrides]
+warning_fg="#ffffff"
+[[block.click]]
+button = "left"
+cmd = "pavucontrol -t 3"
+
+
+[[block]]
+block = "bluetooth"
+mac = ""
+disconnected_format = ""
+
+[[block]]
+block = "backlight"
+step_width = 5
+minimum = 15
+maximum = 100
+invert_icons = true
+
+[[block]]
+block = "net"
+device = "wlan0"
+inactive_format = " 󰤮 "
+missing_format = " 󰤮 "
+interval = 5
+[block.format]
+short = " $icon "
+full = " $icon "
+[[block.click]]
+button = "left"
+cmd = "networkmanager_dmenu"
+
+[[block]]
+block = "battery"
+device = "BAT1"
+driver = "upower"
+[block.format]
+full = " $percentage $icon"
+short = " $percentage $icon"
+[block.full_format]
+full = " $percentage $icon"
+short = " $percentage $icon"
+[[block.click]]
+button = "left"
+cmd = "tlpui"
+
+[[block]]
+block = "time"
+format = "$icon $timestamp.datetime(f:'%R')"
+interval = 60
+

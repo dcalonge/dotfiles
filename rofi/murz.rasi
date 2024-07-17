@@ -36,7 +36,7 @@ configuration {
 }
 
 window {
-  border: 4px;
+  border: 0 0 0 1px;
   border-color: @fg;
   padding: 6px;
   width:450px;
@@ -51,15 +51,30 @@ mainbox {
 
 inputbar {
   children: [entry];
+  color: white;
 }
 
 entry {
   padding: 10px;
+color: white;
+}
+
+message {
+	border: 1px solid 0px 0 px;
+	border-color: white;
+	padding:1px;
+	color: white;
 }
 
 listview {
   lines: 0;
   scrollbar: true;
+  border: 1px dash 0px 0px;
+  border-color: #93a1a1;
+  sapcing: 2px;
+
+
+
 }
 
 element {
@@ -75,21 +90,10 @@ element-text selected {
   background-color: @bg;
   text-color: #ffffff;
 }
-
-//@theme "/usr/share/rofi/themes/murz.rasi"
-
-//@theme "/usr/share/rofi/themes/dmenu.rasi"
-
-//@theme "/usr/share/rofi/themes/murz.rasi"
-
-//@theme "/usr/share/rofi/themes/android_notification.rasi"
-
-//@theme "/usr/share/rofi/themes/Adapta-Nokto.rasi"
-
-//@theme "/usr/share/rofi/themes/minimal.rasi"
-
-//@theme "/usr/share/rofi/themes/Adapta-Nokto.rasi"
-
-//@theme "/usr/share/rofi/themes/murz.rasi"
-
-@theme "/usr/share/rofi/themes/murz.rasi"
+scrollbar{
+	width: 2px;
+	border:0;
+	handle-color: #93a1a1;
+	handle-width:2px;
+	padding:0;
+}
