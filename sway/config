@@ -48,7 +48,6 @@ input "1739:52780:MSFT0004:00_06CB:CE2C_Touchpad" {
     click_method none
 }
 
-set $menu rofi -show drun
 
 bindgesture swipe:right workspace prev
 bindgesture swipe:left workspace next
