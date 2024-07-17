@@ -1,14 +1,13 @@
 My config for swaywm and hyprland with nord color scheme.
 
-* GTK Theme: https://github.com/EliverLara/Nordic
+* Distro: Arch Linux
 
-* Icons: https://github.com/alvatip/Nordzy-icon
+* WM: sway
 
-* Firefox Theme: https://addons.mozilla.org/en-US/firefox/addon/nord123
+* Terminal emulator: foot
 
-* File Manager: Nemo
 
-* Font: JetBrains Mono Nerd Font
+![image](https://github.com/user-attachments/assets/aaf7c9a0-cd6c-4359-ad92-9abe5a081a32)
 
-![image](https://github.com/user-attachments/assets/21aafd6e-dc04-40d3-b7d6-d290e74a5b18)
+
 
