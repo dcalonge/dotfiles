@@ -1,5 +1,3 @@
-My config for swaywm and hyprland with nord color scheme.
-
 * Distro: Arch Linux
 
 * WM: sway
