@@ -28,7 +28,7 @@ configuration {
 
   bg: #000000;
   bg-alt: #93a1a1;
-  fg: #93a1a1;
+  fg: #93a1ff;
   fg-alt: #5D5E72;
 
   background-color: @bg;

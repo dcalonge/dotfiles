@@ -26,11 +26,11 @@ bat_charging = [
  "󰂋",
  "󰂅"
 ]
-bluetooth ="󰂯"
-headphones = "󰋋"
-microphone = "󰍬"
+bluetooth =" 󰂯 "
+headphones = " 󰋋 "
+microphone = " 󰍬 "
 microphone_muted = ""
-mouse = "󰍽"
+mouse = " 󰍽 "
 time = ""
 volume = [
  "󰕿",
@@ -52,8 +52,23 @@ theme = "plain"
 good_fg = "#ffffff"
 info_fg = "#ffffff"
 idle_fg = "#ffffff"
+separator = " "
 
 
+[[block]]
+block = "custom"
+command = "echo $(/home/daniel/scripts/checkup.sh)"
+interval = 86400
+[[block.click]]
+button = "left"
+cmd = "/home/daniel/scripts/prompt.sh"
+
+[[block]]
+block = "hueshift"
+hue_shifter = "wlsunset"
+format = " 󰽥 "
+step = 100
+click_temp = 4500
 
 [[block]]
 block = "sound"
@@ -67,16 +82,9 @@ warning_fg="#676767"
 button = "left"
 cmd = "pavucontrol -t 4"
 [block.format]
-full = "  $icon "
-short = " $icon "
+full = "$icon"
+short = "$icon"
 
-[[block]]
-block = "custom"
-command = "echo $(/home/daniel/scripts/checkup.sh)"
-interval = 86400
-[[block.click]]
-button = "left"
-cmd = "foot -e paru; foot -e flatpak update"
 
 
 [[block]]
@@ -85,6 +93,8 @@ driver = "pulseaudio"
 device_kind = "sink"
 show_volume_when_muted = false
 headphones_indicator = true
+max_vol = 150
+format = " $icon "
 [block.theme_overrides]
 warning_fg="#ffffff"
 [[block.click]]
@@ -103,6 +113,7 @@ step_width = 5
 minimum = 15
 maximum = 100
 invert_icons = true
+format = " $icon "
 
 [[block]]
 block = "net"
@@ -126,13 +137,13 @@ full = " $percentage $icon"
 short = " $percentage $icon"
 [block.full_format]
 full = " $percentage $icon"
-short = " $percentage $icon"
+short = "$percentage $icon"
 [[block.click]]
 button = "left"
 cmd = "tlpui"
 
 [[block]]
 block = "time"
-format = "$icon $timestamp.datetime(f:'%R')"
+format = " $timestamp.datetime(f:'%R %d/%m') "
 interval = 60
 
