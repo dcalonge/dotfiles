@@ -31,7 +31,7 @@ set $mod Mod4
 #
 # Example configuration:
 #
-exec swayidle before-sleep "gtklock -c /home/daniel/.config/gtklock/config.ini"
+exec swayidle before-sleep '/home/daniel/scripts/lock-background.sh ; gtklock -c /home/daniel/.config/gtklock/config.ini'
 #exec swayidle \
 #	before-sleep 'swaylock -i Descargas/keys.png -u' \
 #	lock 'swaylock -i Descargas/keys.png -u'
