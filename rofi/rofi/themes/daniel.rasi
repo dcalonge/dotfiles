@@ -1,0 +1,83 @@
+/*
+ * ROFI color theme
+ *
+ * Based on Something Found in the Internet
+ *
+ * User: Daniel
+ * 
+ */
+
+configuration {
+  font: "JetBrainsMono Nerd Font Medium 12";
+
+  timeout {
+    delay: 10;
+    action: "kb-cancel";
+  }
+  show-icons:                 false;
+  display-drun:               "Apps";
+  display-run:                "Run";
+  display-window:             "Windows";
+}
+
+* {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  spacing: 0;
+
+  bg: #000000;
+  bg-alt: #93a1a1;
+  fg: #93a1a1;
+  fg-alt: #5D5E72;
+
+  background-color: @bg;
+  text-color: @fg;
+}
+
+window {
+  padding: 6px;
+  width:400px;
+  height:100%;
+  anchor:east;
+  location:east;
+}
+
+mainbox {
+  children: [inputbar, listview];
+}
+
+inputbar {
+  children: [entry];
+  color: white;
+}
+
+entry {
+  padding: 10px;
+  color: white;
+}
+
+listview {
+  lines: 0;
+  scrollbar: true;
+  border: 1px dash 0px 0px;
+  border-color: #93a1a1;
+  sapcing: 2px;
+}
+
+element {
+  children: [element-text];
+}
+
+element-text {
+  padding: 10px;
+}
+
+element-text selected {
+  text-color: #ffffff;
+}
+scrollbar{
+	width: 2px;
+	handle-color: #93a1a1;
+	handle-width:2px;
+}
