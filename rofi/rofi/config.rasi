@@ -96,4 +96,8 @@ element-text selected {
 
 //@theme "/usr/share/rofi/themes/Arc-Dark.rasi"
 
-@theme "/home/daniel/.config/rofi/themes/daniel.rasi"
+//@theme "/home/daniel/.config/rofi/themes/daniel.rasi"
+
+//@theme "/home/daniel/.config/rofi/themes/dmenu_custom.rasi"
+
+@theme "/home/daniel/.config/rofi/themes/minimal_custom.rasi"
