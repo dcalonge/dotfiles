@@ -1,0 +1,133 @@
+#!/bin/sh
+
+# Set environment variables
+export TERMINAL=foot
+export EDITOR=nvim
+
+riverctl keyboard-layout "es"
+
+# Set the wallpaper
+riverctl spawn 'swaybg -i ~/Pictures/arch.png'
+riverctl spawn "dbus-update-activation-environment SEATD_SOCK DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=river"
+
+# Key bindings
+mod=Mod4
+
+# Application Launchers
+riverctl map normal $mod Return spawn 'foot'
+riverctl map normal $mod+Shift s spawn '~/scripts/slurpshot.sh'
+riverctl map normal $mod b spawn 'firefox'
+riverctl map normal $mod h spawn 'foot -e btop'
+riverctl map normal $mod r spawn 'foot -e ranger'
+riverctl map normal $mod v spawn 'foot -e nvim'
+riverctl map normal $mod p spawn 'pavucontrol'
+riverctl map normal $mod n spawn 'networkmanager_dmenu'
+riverctl map normal $mod t spawn 'thunar'
+riverctl map normal $mod c spawn 'code'
+riverctl map normal $mod+Shift a spawn '~/ani-cli/ani-cli --rofi -c -q 1080p'
+riverctl map normal $mod+Control a spawn '~/ani-cli/ani-cli --rofi -q 1080p'
+riverctl map normal $mod Tab spawn 'rofi -show window'
+
+# Volume and Brightness Controls
+riverctl map normal None XF86AudioRaiseVolume spawn "wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ && ~/scripts/volume.sh"
+riverctl map normal None XF86AudioLowerVolume spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && ~/scripts/volume.sh"
+riverctl map normal None XF86AudioMute spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && ~/scripts/muteaudio.sh"
+riverctl map normal None XF86AudioMicMute spawn "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && ~/scripts/mic.sh"
+riverctl map normal None XF86MonBrightnessUp spawn "brightnessctl set +5% && ~/scripts/brightness.sh"
+riverctl map normal None XF86MonBrightnessDown spawn "brightnessctl set 5%- && ~/scripts/brightness.sh"
+
+# Clipboard History
+riverctl spawn 'wl-paste --watch cliphist store'
+riverctl map normal $mod+Shift v spawn '/home/daniel/scripts/cliphist-rofi'
+
+# Kill focused window
+riverctl map normal $mod q close
+
+# Start application launcher
+riverctl map normal $mod d spawn 'rofi -show drun'
+
+# Restart River
+riverctl map normal $mod+Shift C spawn "~/.config/river/init"
+
+# Exit River (this assumes you have a custom script)
+riverctl map normal $mod+Shift e spawn '/home/daniel/scripts/dmenu_logout_river.sh'
+
+# Open prompt script
+riverctl map normal $mod+Shift u spawn '/home/daniel/scripts/prompt.sh'
+
+# Move focus between windows
+riverctl map normal $mod Left send-layout-cmd rivertile "main-ratio -0.05"
+riverctl map normal $mod Down focus-view down
+riverctl map normal $mod Up focus-view up
+riverctl map normal $mod Right send-layout-cmd rivertile "main-ratio +0.05"
+
+# Mod+J and Mod+K to focus the next/previous view in the layout stack
+riverctl map normal $mod Up focus-view next
+riverctl map normal $mod Down focus-view previous
+
+# Mod+Shift+J and Mod+Shift+K to swap the focused view with the next/previous
+# view in the layout stack
+riverctl map normal $mod+Shift Up swap next
+riverctl map normal $mod+Shift Down swap previous
+
+# Switch to workspace
+for i in $(seq 1 9); do
+  riverctl map normal $mod $i set-focused-tags $((1 << ($i - 1)))
+  riverctl map normal $mod+Shift $i set-view-tags $((1 << ($i - 1)))
+done
+
+# Layout Management
+# Note: River does not have built-in layouts like tabbed, but you can use rivertile or another layout manager
+# Install rivertile and add to your startup programs
+
+# Fullscreen mode
+riverctl map normal $mod f toggle-fullscreen
+
+# Toggle floating mode
+riverctl map normal $mod+Shift space toggle-float
+
+# Swap focus between tiling and floating
+riverctl map normal $mod space focus-float
+riverctl map normal $mod a focus-parent
+
+# Scratchpad functionality
+# No direct equivalent in river, can be implemented with custom scripts
+
+# Scratchpad
+scratch_tag=$((1 << 20))
+
+riverctl map normal Super minus toggle-focused-tags ${scratch_tag} # toggle the scratchpad
+riverctl map normal Super+Shift minus set-view-tags ${scratch_tag} # send windows to the scratchpad
+
+# Set spawn tagmask to ensure new windows do not have the scratchpad tag unless explicitly set.
+all_but_scratch_tag=$((((1 << 32) - 1) ^ $scratch_tag))
+riverctl spawn-tagmask ${all_but_scratch_tag}
+
+# Borders and Gaps
+riverctl border-color-focused 0x93a1a1
+riverctl border-color-unfocused 0x333333
+# Bar Configuration
+riverctl spawn 'pkill i3bar-river; i3bar-river'
+
+# Startup Scripts
+riverctl spawn '/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1'
+
+# Window Rules
+# Specific rules can be added using riverctl
+riverctl rule-add app-id='pavucontrol' float
+# Set touchpad by grabbing the event
+for pad in $(riverctl list-inputs | grep -i touchpad); do
+  riverctl input $pad events enabled
+  riverctl input $pad tap enabled
+  riverctl input $pad disable-while-typing enabled
+  riverctl input $pad natural-scroll enabled
+done
+
+riverctl focus-follows-cursor normal
+
+# Set and exec into the default layout generator, rivertile.
+# River will send the process group of the init executable SIGTERM on exit.
+riverctl default-layout rivertile
+exec rivertile
+
+riverctl rule-add ssd
