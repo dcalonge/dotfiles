@@ -3,9 +3,9 @@
 # Set environment variables
 export TERMINAL=foot
 export EDITOR=nvim
-
+riverctl rule-add ssd
 riverctl keyboard-layout "es"
-
+riverctl spawn 'swayidle before-sleep gtklock'
 # Set the wallpaper
 riverctl spawn 'swaybg -i ~/Pictures/arch.png'
 riverctl spawn "dbus-update-activation-environment SEATD_SOCK DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=river"
@@ -55,20 +55,18 @@ riverctl map normal $mod+Shift e spawn '/home/daniel/scripts/dmenu_logout_river.
 # Open prompt script
 riverctl map normal $mod+Shift u spawn '/home/daniel/scripts/prompt.sh'
 
-# Move focus between windows
-riverctl map normal $mod Left send-layout-cmd rivertile "main-ratio -0.05"
+riverctl map normal $mod Left focus-view left
 riverctl map normal $mod Down focus-view down
 riverctl map normal $mod Up focus-view up
-riverctl map normal $mod Right send-layout-cmd rivertile "main-ratio +0.05"
+riverctl map normal $mod Right focus-view right
 
-# Mod+J and Mod+K to focus the next/previous view in the layout stack
-riverctl map normal $mod Up focus-view next
-riverctl map normal $mod Down focus-view previous
+riverctl map normal $mod+Shift Left swap left
+riverctl map normal $mod+Shift Down swap down
+riverctl map normal $mod+Shift Up swap up
+riverctl map normal $mod+Shift Right swap right
 
-# Mod+Shift+J and Mod+Shift+K to swap the focused view with the next/previous
-# view in the layout stack
-riverctl map normal $mod+Shift Up swap next
-riverctl map normal $mod+Shift Down swap previous
+riverctl map normal $mod+Control Left send-layout-cmd rivertile "main-ratio -0.05"
+riverctl map normal $mod+Control Right send-layout-cmd rivertile "main-ratio +0.05"
 
 # Switch to workspace
 for i in $(seq 1 9); do
@@ -96,8 +94,8 @@ riverctl map normal $mod a focus-parent
 # Scratchpad
 scratch_tag=$((1 << 20))
 
-riverctl map normal Super minus toggle-focused-tags ${scratch_tag} # toggle the scratchpad
-riverctl map normal Super+Shift minus set-view-tags ${scratch_tag} # send windows to the scratchpad
+riverctl map normal $mod minus toggle-focused-tags ${scratch_tag} # toggle the scratchpad
+riverctl map normal $mod+Shift minus set-view-tags ${scratch_tag} # send windows to the scratchpad
 
 # Set spawn tagmask to ensure new windows do not have the scratchpad tag unless explicitly set.
 all_but_scratch_tag=$((((1 << 32) - 1) ^ $scratch_tag))
@@ -123,32 +121,9 @@ for pad in $(riverctl list-inputs | grep -i touchpad); do
   riverctl input $pad natural-scroll enabled
 done
 
-riverctl focus-follows-cursor normal
+riverctl focus-follows-cursor always
 
 # Set and exec into the default layout generator, rivertile.
 # River will send the process group of the init executable SIGTERM on exit.
-# set layout manager
-riverctl default-layout wideriver
-exec wideriver
-# start layout manager
-wideriver \
-  --layout left \
-  --layout-alt monocle \
-  --stack dwindle \
-  --count-master 1 \
-  --ratio-master 0.50 \
-  --count-wide-left 0 \
-  --ratio-wide 0.35 \
-  --smart-gaps \
-  --inner-gaps 5 \
-  --outer-gaps 5 \
-  --border-width 2 \
-  --border-width-monocle 0 \
-  --border-width-smart-gaps 0 \
-  --border-color-focused "0x93a1a1" \
-  --border-color-focused-monocle "0x93a1a1" \
-  --border-color-unfocused "0x333333" \
-  --log-threshold info \
-  >"/tmp/wideriver.${XDG_VTNR}.${USER}.log" 2>&1 &
-
-riverctl rule-add ssd
+riverctl default-layout rivertile
+riverctl spawn 'rivertile -outer-padding 0 -view-padding 4 -main-ratio 0.55'
