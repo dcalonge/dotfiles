@@ -1,6 +1,6 @@
 * Distro: Arch Linux
 
-* WM: sway
+* WM: river
 
 * Terminal emulator: foot
 
