@@ -1,6 +1,6 @@
 #!/bin/sh
 
-case "$(printf "suspend\nlogout\nreboot\npoweroff" | rofi -dmenu)" in
+case "$(printf "logout\nsuspend\nreboot\npoweroff" | rofi -dmenu -p "Elige una opción:")" in
 suspend) systemctl suspend ;;
 logout) swaymsg exit ;;
 reboot) systemctl reboot ;;

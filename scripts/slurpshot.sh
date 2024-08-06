@@ -2,7 +2,7 @@
 
 FOCUSED=$(swaymsg -t get_tree | jq '.. | (.nodes? // empty)[] | select(.focused and .pid) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')
 
-CHOICE2=$(printf "Fullscreen\nSelection\nFocus\nAbort" | rofi -dmenu)
+CHOICE2=$(printf "Fullscreen\nSelection\nFocus\nAbort" | rofi -dmenu -p "Elige una opción:")
 
 case "$CHOICE2" in
 Fullscreen)

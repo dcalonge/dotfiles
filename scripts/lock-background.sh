@@ -1,2 +1,3 @@
 #!/bin/sh
-grim /tmp/lockscreen.png && magick convert -filter Gaussian -resize 20% -blur 0x1 -resize 500% /tmp/lockscreen.png /tmp/lockscreen.png
+
+grim /tmp/lockscreen.png && ffmpeg -i /tmp/lockscreen.png -vf "boxblur=3:3" /tmp/lockscreen_tmp.png && mv /tmp/lockscreen_tmp.png /tmp/lockscreen.png

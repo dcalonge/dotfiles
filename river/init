@@ -1,14 +1,7 @@
 #!/bin/sh
 
-# Set environment variables
-export TERMINAL=foot
-export EDITOR=nvim
 riverctl rule-add ssd
 riverctl keyboard-layout "es"
-riverctl spawn 'swayidle before-sleep gtklock'
-# Set the wallpaper
-riverctl spawn 'swaybg -i ~/Pictures/arch.png'
-riverctl spawn "dbus-update-activation-environment SEATD_SOCK DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=river"
 
 # Key bindings
 mod=Mod4
@@ -37,7 +30,6 @@ riverctl map normal None XF86MonBrightnessUp spawn "brightnessctl set +5% && ~/s
 riverctl map normal None XF86MonBrightnessDown spawn "brightnessctl set 5%- && ~/scripts/brightness.sh"
 
 # Clipboard History
-riverctl spawn 'wl-paste --watch cliphist store'
 riverctl map normal $mod+Shift v spawn '/home/daniel/scripts/cliphist-rofi'
 
 # Kill focused window
@@ -47,14 +39,15 @@ riverctl map normal $mod q close
 riverctl map normal $mod d spawn 'rofi -show drun'
 
 # Restart River
-riverctl map normal $mod+Shift C spawn "~/.config/river/init"
+riverctl map normal $mod+Shift C spawn "${XDG_CONFIG_HOME}/river/init >/dev/null && notify-send 'River' 'Refreshed'"
 
-# Exit River (this assumes you have a custom script)
+# Exit River
 riverctl map normal $mod+Shift e spawn '/home/daniel/scripts/dmenu_logout_river.sh'
 
-# Open prompt script
+# Open update prompt
 riverctl map normal $mod+Shift u spawn '/home/daniel/scripts/prompt.sh'
 
+# Layout stuff
 riverctl map normal $mod Left focus-view left
 riverctl map normal $mod Down focus-view down
 riverctl map normal $mod Up focus-view up
@@ -68,15 +61,16 @@ riverctl map normal $mod+Shift Right swap right
 riverctl map normal $mod+Control Left send-layout-cmd rivertile "main-ratio -0.05"
 riverctl map normal $mod+Control Right send-layout-cmd rivertile "main-ratio +0.05"
 
+# Change output
+riverctl map normal $mod+Control Up spawn "riverctl focus-output next"
+# Send to next output
+riverctl map normal $mod+Control Down spawn "riverctl send-to-output next"
+
 # Switch to workspace
 for i in $(seq 1 9); do
   riverctl map normal $mod $i set-focused-tags $((1 << ($i - 1)))
   riverctl map normal $mod+Shift $i set-view-tags $((1 << ($i - 1)))
 done
-
-# Layout Management
-# Note: River does not have built-in layouts like tabbed, but you can use rivertile or another layout manager
-# Install rivertile and add to your startup programs
 
 # Fullscreen mode
 riverctl map normal $mod f toggle-fullscreen
@@ -86,14 +80,9 @@ riverctl map normal $mod+Shift space toggle-float
 
 # Swap focus between tiling and floating
 riverctl map normal $mod space focus-float
-riverctl map normal $mod a focus-parent
-
-# Scratchpad functionality
-# No direct equivalent in river, can be implemented with custom scripts
 
 # Scratchpad
 scratch_tag=$((1 << 20))
-
 riverctl map normal $mod minus toggle-focused-tags ${scratch_tag} # toggle the scratchpad
 riverctl map normal $mod+Shift minus set-view-tags ${scratch_tag} # send windows to the scratchpad
 
@@ -104,15 +93,10 @@ riverctl spawn-tagmask ${all_but_scratch_tag}
 # Borders and Gaps
 riverctl border-color-focused 0x93a1a1
 riverctl border-color-unfocused 0x333333
-# Bar Configuration
-riverctl spawn 'pkill i3bar-river; i3bar-river'
-
-# Startup Scripts
-riverctl spawn '/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1'
 
 # Window Rules
 # Specific rules can be added using riverctl
-riverctl rule-add app-id='pavucontrol' float
+riverctl rule-add app-id="pavucontrol" float
 # Set touchpad by grabbing the event
 for pad in $(riverctl list-inputs | grep -i touchpad); do
   riverctl input $pad events enabled
@@ -122,8 +106,20 @@ for pad in $(riverctl list-inputs | grep -i touchpad); do
 done
 
 riverctl focus-follows-cursor always
-
-# Set and exec into the default layout generator, rivertile.
-# River will send the process group of the init executable SIGTERM on exit.
+riverctl focus-follows-cursor normal
 riverctl default-layout rivertile
-riverctl spawn 'rivertile -outer-padding 0 -view-padding 4 -main-ratio 0.55'
+riverctl default-attach-mode after
+
+dbus-update-activation-environment SEATD_SOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=river
+
+executes="rivertile swaybg swayidle /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 i3bar-river wl-paste"
+for execute in $executes; do
+  pidof -q "$execute" && continue
+  case $execute in
+  "rivertile") "$execute" -outer-padding 0 -view-padding 4 -main-ratio 0.55 & ;;
+  "swaybg") "$execute" -i ~/Pictures/arch.png & ;;
+  "swayidle") "$execute" before-sleep gtklock & ;;
+  "wl-paste") "$execute" --watch cliphist store & ;;
+  *) "$execute" & ;;
+  esac
+done >/dev/null 2>&1
