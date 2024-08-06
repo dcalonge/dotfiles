@@ -20,6 +20,7 @@ riverctl map normal $mod c spawn 'code'
 riverctl map normal $mod+Shift a spawn '~/ani-cli/ani-cli --rofi -c -q 1080p'
 riverctl map normal $mod+Control a spawn '~/ani-cli/ani-cli --rofi -q 1080p'
 riverctl map normal $mod Tab spawn 'rofi -show window'
+riverctl map normal $mod M send-layout-cmd wideriver "--layout-toggle"
 
 # Volume and Brightness Controls
 riverctl map normal None XF86AudioRaiseVolume spawn "wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ && ~/scripts/volume.sh"
@@ -49,8 +50,8 @@ riverctl map normal $mod+Shift u spawn '/home/daniel/scripts/prompt.sh'
 
 # Layout stuff
 riverctl map normal $mod Left focus-view left
-riverctl map normal $mod Down focus-view down
-riverctl map normal $mod Up focus-view up
+riverctl map normal $mod Down focus-view next
+riverctl map normal $mod Up focus-view previous
 riverctl map normal $mod Right focus-view right
 
 riverctl map normal $mod+Shift Left swap left
@@ -58,13 +59,12 @@ riverctl map normal $mod+Shift Down swap down
 riverctl map normal $mod+Shift Up swap up
 riverctl map normal $mod+Shift Right swap right
 
-riverctl map normal $mod+Control Left send-layout-cmd rivertile "main-ratio -0.05"
-riverctl map normal $mod+Control Right send-layout-cmd rivertile "main-ratio +0.05"
-
+riverctl map normal $mod+Control Left send-layout-cmd wideriver "--ratio -0.05"
+riverctl map normal $mod+Control Right send-layout-cmd wideriver "--ratio +0.05"
 # Change output
-riverctl map normal $mod+Control Up spawn "riverctl focus-output next"
+riverctl map normal $mod 0 spawn "riverctl focus-output next"
 # Send to next output
-riverctl map normal $mod+Control Down spawn "riverctl send-to-output next"
+riverctl map normal $mod+Shift 0 spawn "riverctl send-to-output next"
 
 # Switch to workspace
 for i in $(seq 1 9); do
@@ -90,13 +90,6 @@ riverctl map normal $mod+Shift minus set-view-tags ${scratch_tag} # send windows
 all_but_scratch_tag=$((((1 << 32) - 1) ^ $scratch_tag))
 riverctl spawn-tagmask ${all_but_scratch_tag}
 
-# Borders and Gaps
-riverctl border-color-focused 0x93a1a1
-riverctl border-color-unfocused 0x333333
-
-# Window Rules
-# Specific rules can be added using riverctl
-riverctl rule-add app-id="pavucontrol" float
 # Set touchpad by grabbing the event
 for pad in $(riverctl list-inputs | grep -i touchpad); do
   riverctl input $pad events enabled
@@ -105,21 +98,38 @@ for pad in $(riverctl list-inputs | grep -i touchpad); do
   riverctl input $pad natural-scroll enabled
 done
 
-riverctl focus-follows-cursor always
 riverctl focus-follows-cursor normal
-riverctl default-layout rivertile
-riverctl default-attach-mode after
 
 dbus-update-activation-environment SEATD_SOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=river
 
-executes="rivertile swaybg swayidle /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 i3bar-river wl-paste"
+# set layout manager
+riverctl default-layout wideriver
+
+# start layout manager
+wideriver \
+  --layout left \
+  --layout-alt monocle \
+  --stack even \
+  --count-master 1 \
+  --ratio-master 0.55 \
+  --smart-gaps \
+  --inner-gaps 5 \
+  --outer-gaps 5 \
+  --border-width 2 \
+  --border-width-monocle 2 \
+  --border-width-smart-gaps 0 \
+  --border-color-focused "0x93a1a1" \
+  --border-color-focused-monocle "0x93a1a1" \
+  --border-color-unfocused "0x333333" &
+
+executes="swaybg swayidle /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 i3bar-river wl-paste"
 for execute in $executes; do
   pidof -q "$execute" && continue
   case $execute in
-  "rivertile") "$execute" -outer-padding 0 -view-padding 4 -main-ratio 0.55 & ;;
   "swaybg") "$execute" -i ~/Pictures/arch.png & ;;
   "swayidle") "$execute" before-sleep gtklock & ;;
   "wl-paste") "$execute" --watch cliphist store & ;;
   *) "$execute" & ;;
   esac
+
 done >/dev/null 2>&1
