@@ -19,8 +19,10 @@ riverctl map normal $mod t spawn 'thunar'
 riverctl map normal $mod c spawn 'code'
 riverctl map normal $mod+Shift a spawn '~/ani-cli/ani-cli --rofi -c -q 1080p'
 riverctl map normal $mod+Control a spawn '~/ani-cli/ani-cli --rofi -q 1080p'
-riverctl map normal $mod Tab spawn 'rofi -show window'
+#toggle layout
 riverctl map normal $mod M send-layout-cmd wideriver "--layout-toggle"
+# mod+mouse bindings
+riverctl map-pointer normal $mod BTN_LEFT move-view
 
 # Volume and Brightness Controls
 riverctl map normal None XF86AudioRaiseVolume spawn "wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ && ~/scripts/volume.sh"
@@ -61,6 +63,9 @@ riverctl map normal $mod+Shift Right swap right
 
 riverctl map normal $mod+Control Left send-layout-cmd wideriver "--ratio -0.05"
 riverctl map normal $mod+Control Right send-layout-cmd wideriver "--ratio +0.05"
+riverctl map normal $mod+Control Down send-layout-cmd wideriver "--count -1"
+riverctl map normal $mod+Control Up send-layout-cmd wideriver "--count +1"
+
 # Change output
 riverctl map normal $mod 0 spawn "riverctl focus-output next"
 # Send to next output
@@ -98,37 +103,38 @@ for pad in $(riverctl list-inputs | grep -i touchpad); do
   riverctl input $pad natural-scroll enabled
 done
 
+# behaavoiur
 riverctl focus-follows-cursor normal
+riverctl rule-add -title "Open File" float
+riverctl rule-add -title "Open Folder" float
+riverctl set-cursor-warp on-output-change
 
 dbus-update-activation-environment SEATD_SOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=river
 
 # set layout manager
 riverctl default-layout wideriver
 
-# start layout manager
-wideriver \
-  --layout left \
-  --layout-alt monocle \
-  --stack even \
-  --count-master 1 \
-  --ratio-master 0.55 \
-  --smart-gaps \
-  --inner-gaps 5 \
-  --outer-gaps 5 \
-  --border-width 2 \
-  --border-width-monocle 2 \
-  --border-width-smart-gaps 0 \
-  --border-color-focused "0x93a1a1" \
-  --border-color-focused-monocle "0x93a1a1" \
-  --border-color-unfocused "0x333333" &
-
-executes="swaybg swayidle /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 i3bar-river wl-paste"
+executes="swaybg swayidle /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 i3bar-river wl-paste wideriver"
 for execute in $executes; do
   pidof -q "$execute" && continue
   case $execute in
   "swaybg") "$execute" -i ~/Pictures/arch.png & ;;
   "swayidle") "$execute" before-sleep gtklock & ;;
   "wl-paste") "$execute" --watch cliphist store & ;;
+  "wideriver") "$execute" --layout left \
+    --layout-alt monocle \
+    --stack even \
+    --count-master 1 \
+    --ratio-master 0.55 \
+    --smart-gaps \
+    --inner-gaps 5 \
+    --outer-gaps 5 \
+    --border-width 2 \
+    --border-width-monocle 2 \
+    --border-width-smart-gaps 0 \
+    --border-color-focused "0x93a1a1" \
+    --border-color-focused-monocle "0x93a1a1" \
+    --border-color-unfocused "0x333333" & ;;
   *) "$execute" & ;;
   esac
 
