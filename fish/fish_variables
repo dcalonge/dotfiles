@@ -1,6 +1,8 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
 SETUVAR --export EDITOR:nvim
+SETUVAR --export ELECTRON_OZONE_PLATFORM_HINT:auto
+SETUVAR --export XDG_CONFIG_HOME:/home/daniel/\x2econfig/
 SETUVAR __fish_initialized:3400
 SETUVAR fish_color_autosuggestion:585858
 SETUVAR fish_color_cancel:\x2d\x2dreverse

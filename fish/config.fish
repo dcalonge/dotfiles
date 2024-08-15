@@ -1,3 +1,8 @@
+if test (tty) = /dev/tty1
+    exec river -no-xwayland
+    #exec Hyprland
+end
+
 if status is-interactive
     #fastfetch
     fortune -s | cowsay -f tux
@@ -16,7 +21,9 @@ abbr -a ar 'paru -Rns'
 abbr -a as 'paru -Ss'
 abbr -a v nvim
 
-alias ls='eza -a --color=always --group-directories-first'
+alias ls='eza -a --color=always --icons --group-directories-first'
 alias cat='bat'
+alias sudo='doas'
+alias sudoedit='doas rnano'
 
-zoxide init fish | source
+set -Ux ELECTRON_OZONE_PLATFORM_HINT auto

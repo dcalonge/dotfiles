@@ -46,6 +46,7 @@ function fish_prompt --description 'Write out the prompt'
 
     # PWD
     set_color --bold $fish_color_cwd
+    echo -n " "
     echo -n (prompt_pwd --full-length-dirs 2)
     echo -n " $suffix "
     set_color normal

@@ -8,10 +8,10 @@ mod=Mod4
 
 # Application Launchers
 riverctl map normal $mod Return spawn 'foot'
-riverctl map normal $mod+Shift s spawn '~/scripts/slurpshot.sh'
+riverctl map normal $mod+Shift s spawn '~/scripts/screenshot_river.sh'
 riverctl map normal $mod b spawn 'firefox'
 riverctl map normal $mod h spawn 'foot -e btop'
-riverctl map normal $mod r spawn 'foot -e ranger'
+riverctl map normal $mod y spawn 'foot -e yazi'
 riverctl map normal $mod v spawn 'foot -e nvim'
 riverctl map normal $mod p spawn 'pavucontrol'
 riverctl map normal $mod n spawn 'networkmanager_dmenu'
@@ -19,8 +19,10 @@ riverctl map normal $mod t spawn 'thunar'
 riverctl map normal $mod c spawn 'code'
 riverctl map normal $mod+Shift a spawn '~/ani-cli/ani-cli --rofi -c -q 1080p'
 riverctl map normal $mod+Control a spawn '~/ani-cli/ani-cli --rofi -q 1080p'
+riverctl map normal Alt Tab spawn 'rofi -show window'
+
 #toggle layout
-riverctl map normal $mod M send-layout-cmd wideriver "--layout-toggle"
+riverctl map normal $mod Tab send-layout-cmd wideriver "--layout-toggle"
 # mod+mouse bindings
 riverctl map-pointer normal $mod BTN_LEFT move-view
 
@@ -75,6 +77,7 @@ riverctl map normal $mod+Shift 0 spawn "riverctl send-to-output next"
 for i in $(seq 1 9); do
   riverctl map normal $mod $i set-focused-tags $((1 << ($i - 1)))
   riverctl map normal $mod+Shift $i set-view-tags $((1 << ($i - 1)))
+  riverctl map normal $mod+Control $i toggle-focused-tags $((1 << ($i - 1)))
 done
 
 # Fullscreen mode
@@ -101,6 +104,7 @@ for pad in $(riverctl list-inputs | grep -i touchpad); do
   riverctl input $pad tap enabled
   riverctl input $pad disable-while-typing enabled
   riverctl input $pad natural-scroll enabled
+  riverctl input $pad drag-lock enabled
 done
 
 # behaavoiur
@@ -114,12 +118,12 @@ dbus-update-activation-environment SEATD_SOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTO
 # set layout manager
 riverctl default-layout wideriver
 
-executes="swaybg swayidle /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 i3bar-river wl-paste wideriver"
+executes="swaybg swayidle /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 i3bar-river wl-paste wideriver dunst"
 for execute in $executes; do
   pidof -q "$execute" && continue
   case $execute in
   "swaybg") "$execute" -i ~/Pictures/arch.png & ;;
-  "swayidle") "$execute" before-sleep gtklock & ;;
+  "swayidle") "$execute" -w before-sleep gtklock & ;;
   "wl-paste") "$execute" --watch cliphist store & ;;
   "wideriver") "$execute" --layout left \
     --layout-alt monocle \
