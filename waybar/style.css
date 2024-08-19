@@ -29,50 +29,74 @@
 /* The whole bar */
 /* bg-solid: #2e3440*/
 #waybar {
-    background: transparent;
-    color: #eceff4;
-    font-family: "JetBrains Mono Nerd Font";
-    font-size: 14px;
-    font-weight: 400;
+    background: black;
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: 'JetBrainsMono Nerd Font';
+    padding: 0px;
+    margin:0px;
 }
 
 /* Each module */
 #battery,
 #workspaces,
 #clock,
+#tray,
 #backlight,
-#custom-notification,
 #pulseaudio,
-
+#custom-pacman,
+#window
+#network
+#bluetooth {
+    padding-left: 10px;
+    padding-right: 10px;
+}
 #tray {
     padding-left: 10px;
     padding-right: 10px;
 }
 
 
+
 /* -----------------------------------------------------------------------------
  * Module styles
  * -------------------------------------------------------------------------- */
 
- #custom-notification{
-    
+
+#backlight {
+  padding-left: 10px;
+  padding-right: 10px;
+
+}
+
+ #pulseaudio {
+   padding-left: 10px;
+    padding-right: 10px;
+
  }
 
- 
+ #bluetooth {
+   padding-left: 10px;
+    padding-right: 10px;
+  }
+ #network {
+   padding-left: 10px;
+    padding-right: 10px;
+ }
 
 #battery {
+  padding-left: 10px;
+  padding-right: 10px;
 
 }
 
 #battery.warning {
     color: orange;
-    background-color: transparent;
 }
 
 #battery.critical {
     color: red;
-    background-color: transparent;
-
 }
 
 #battery.warning.discharging {
@@ -84,51 +108,35 @@
 }
 
 #clock {
+  padding-left: 10px;
+    padding-right: 10px;
+
 }
 
 #pulseaudio {
-   
+   padding-left: 10px;
+    padding-right: 10px;
+
 }
 
 #pulseaudio.muted {
     /* No styles */
 }
 
-#tray {
-    /* No styles */
-}
-
-#pulseaudio#microphone{
-    
-}
-
 #workspaces button {
-    padding-left: 12px;
-    padding-right: 12px;
-    color: #eceff4;
-    font-weight: bold;
-    font-family: "Cantarell";
-}
-
-#workspaces button.empty {
-    padding-left: 7px;
-    padding-right: 7px;
-    color: #888888;
+    padding-left: 4px;
+    padding-right: 4px;
+    color: grey;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 #workspaces button.visible {
-    color: #2e3440;
+    color: white;
     border:none;
-    border-radius: 100px;
-    background-color: #81a1c1;
 }
  
 
 #workspaces button.urgent {
-    border-color: #c9545d;
     color: #c9545d;
-}
-
-.modules-center {
-  margin-top: 5px;
 }

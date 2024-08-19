@@ -1,166 +1,114 @@
-// =============================================================================
-//
-// Waybar configuration
-//
-// Configuration reference: https://github.com/Alexays/Waybar/wiki/Configuration
-//
-// =============================================================================
-
 {
-    // -------------------------------------------------------------------------
-    // Global configuration
-    // -------------------------------------------------------------------------
-
-    "layer": "top",
-
-    "position": "top",
-
-    // If height property would be not present, it'd be calculated dynamically
-    "height": 28,
-
-    "modules-left": [
-        "clock"
-        ],
-    "modules-center": [
-        //"sway/workspaces",
-        //"sway/mode",
-        "hyprland/workspaces"
-        
+  "layer": "top",
+  "height": 24,
+  "spacing": 5,
+  // Choose the order of the modules
+  "modules-left": [
+    "hyprland/workspaces"
+  ],
+  "modules-right": [
+    "tray",
+    "custom/pacman",
+    "backlight",
+    "pulseaudio",
+    "bluetooth",
+    "network",
+    "battery",
+    "clock",
+  ],
+  "hyprland/workspaces": {
+    "disable-scroll": true,
+    "all-outputs": true,
+    "on-click": "activate"
+  },
+  "tray": {
+    // "icon-size": 21,
+    "spacing": 10
+  },
+  "custom/pacman": {
+    "interval": 3600,
+    "exec": "~/scripts/checkup.sh",
+    "on-click": "~/scripts/prompt.sh",
+    "format": "{}",
+    "signal": 8
+  },
+  "clock": {
+    "tooltip-format": "{:%A, %B %d, %Y}",
+    "format": "{:%H:%M}"
+  },
+  "battery": {
+    "states": {
+      "warning": 20
+    },
+    "format": "{capacity}% {icon}",
+    "format-icons": [
+      "󰂎",
+      "󰁺",
+      "󰁻",
+      "󰁼",
+      "󰁽",
+      "󰁾",
+      "󰁿",
+      "󰂀",
+      "󰂁",
+      "󰂂",
+      "󰁹"
     ],
-    "modules-right": [
-        "tray",
-        "backlight",
-        "pulseaudio",
-        "pulseaudio#microphone",
-        "battery",
-	    "custom/notification"
-        
-        
+    "format-charging": "{capacity}% 󰂄",
+    "format-warning": "{capacity}% 󰂃",
+    "tooltip-format": "{capacity}% capacity",
+    "on-click": "tlpui"
+  },
+  "network": {
+    "format-icons": [
+      "󰤟",
+      "󰤢",
+      "󰤥",
+      "󰤨"
     ],
-
-
-    // -------------------------------------------------------------------------
-    // Modules
-    // -------------------------------------------------------------------------
-
-    "battery": {
-        "interval": 10,
-        "states": {
-            "warning": 30,
-            "critical": 15
-        },
-        // Connected to AC
-        "format": " {icon}  {capacity}%", // Icon: bolt
-        // Not connected to AC
-        "format-discharging": "{icon}  {capacity}%",
-        "format-icons": [
-            "", // Icon: battery-full
-            "", // Icon: battery-three-quarters
-            "", // Icon: battery-half
-            "", // Icon: battery-quarter
-            ""  // Icon: battery-empty
-        ],
-        "tooltip": true
+    "format": "{icon}",
+    "format-disconnected": "󰤭",
+    "tooltip-format": "Connected to {essid}",
+    "on-click": "networkmanager_dmenu"
+  },
+  "pulseaudio": {
+    // "scroll-step": 1, // %, can be a float
+    "format": "{icon}{format_source}",
+    "format-muted": "󰖁",
+    "format-icons": {
+      "default": [
+        "󰕿",
+        "󰖀",
+        "󰕾"
+      ],
+      "headphone": "󰋋",
+      "hands-free": "󰋋",
+      "headset": "󰋋",
     },
-
-    "clock": {
-        "interval": 60,
-        "format": "   {:%H:%M    %a %e %b}",
-        "tooltip": false
-    },
-
-    "backlight": {
-        "device": "intel_backlight",
-        "format": "{icon} {percent}%",
-        "format-icons": ["󰃞","󰃝","󰃟","󰃠"],
-	"tooltip": false
-    },
-
-
-    "hyprland/workspaces": {
-        "format": "<sub>{icon} </sub>{windows}",
-        "format-window-separator": "  ",
-        "window-rewrite-default": "",
-        "all-outputs": true,
-        "persistent-workspaces": {
-            "1": [],
-            "2": [],
-            "3": [],
-            "4": [],
-            "5": [],
-            "6": [],
-            "7": [],
-            "8": []
-            //"9": [],
-            //"10": []
-        },
-        "window-rewrite": {
-            "class<firefox>": "󰈹", // Windows whose classes are "firefox"
-            "alacritty": "", // Windows that contain "foot" in either class or title. For optimization reasons, it will only match against a title if at least one other window explicitly matches against a title.
-            "codium": "󰨞",
-            "code": "󰨞",
-            "nemo": "󰉋",
-            "ranger": "󰉋",
-            "com.stremio.stremio": "",
-            "nwg-look": "󰈈",
-            "nwg-displays": "󰍹",
-            "pavucontrol": "󰕾",
-            "btop": "󰄨",
-            "nvim":""
-        }
-    },
-//        "format": "{icon} {name}",  
-
-    "pulseaudio": {
-    "scroll-step": 1,
-        "format": "{icon} {volume}%",
-        "format-bluetooth": "{icon}  {volume}%",
-        "format-muted": "",
-        "format-icons": {
-            "headphones": "",
-            "handsfree": "",
-            "headset": "",
-            "phone": "",
-            "portable": "",
-            "car": "",
-            "default": ["", "", ""]
-        },
-        "on-click": "pavucontrol"
-    },
-
-
-    "pulseaudio#microphone": {
-        "format": "{format_source}",
-        "format-source": "󰍬 {volume}%",
-        "format-source-muted": "",
-        "on-click": "pavucontrol -t 4",
-        "tooltip-format": "{format_source} {source_desc} // {source_volume}%",
-        "scroll-step": 5
-    },
-
-    "tray": {
-        "icon-size": 18,
-        "spacing": 18
-    },
-
-    "custom/notification": {
-        "tooltip": false,
-        "format": "{icon} ",
-        "format-icons": {
-          "notification": "󰂚<span foreground='red'><sup></sup></span>",
-          "none": "󰂚",
-          "dnd-notification": "󰂛<span foreground='red'><sup></sup></span>",
-          "dnd-none": "󰂛",
-          "inhibited-notification": "<span foreground='red'><sup></sup></span>",
-          "inhibited-none": "",
-          "dnd-inhibited-notification": "<span foreground='red'><sup></sup></span>",
-          "dnd-inhibited-none": ""
-        },
-        "return-type": "json",
-        "exec-if": "which swaync-client",
-        "exec": "swaync-client -swb",
-        "on-click": "swaync-client -t -sw",
-        "on-click-right": "swaync-client -d -sw",
-        "escape": true
-      }
+    "format-source": "   󰍬",
+    "format-source-muted": "",
+    "tooltip-format": "{volume}% volume",
+    "on-click": "pavucontrol",
+  },
+  "backlight": {
+    "device": "amdgpu_bl1",
+    "format": "{icon}",
+    "format-icons": [
+      "󰃞",
+      "󰃝",
+      "󰃟",
+      "󰃠"
+    ],
+    "tooltip-format": "{percent}% brightness"
+  },
+  "bluetooth": {
+    // "controller": "controller1", // specify the alias of the controller if there are more than 1 on the system
+    "format": "󰂯",
+    "format-disabled": "", // an empty format will hide the module
+    "format-connected": " {num_connections} connected",
+    "tooltip-format": "{controller_alias}\t{controller_address}",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}"
+  },
 }
+// vim: ft=jsonc
