@@ -1,50 +1,18 @@
 [icons]
 icons = "material-nf"
 [icons.overrides]
-bat = [
- "󰁺",
- "󰁻",
- "󰁼",
- "󰁽",
- "󰁾",
- "󰁿",
- "󰂀",
- "󰂁",
- "󰂂",
- "󰁹"
-]
+bat = ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
 bat_not_available = "!"
-bat_charging = [
- "󰢜",
- "󰂆",
- "󰂇",
- "󰂈",
- "󰢝",
- "󰂉",
- "󰢞",
- "󰂊",
- "󰂋",
- "󰂅"
-]
-bluetooth =" 󰂯 "
+bat_charging = ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"]
+bluetooth = " 󰂯 "
 headphones = " 󰋋 "
 microphone = " 󰍬 "
 microphone_muted = ""
 mouse = " 󰍽 "
 time = ""
-volume = [
- "󰕿",
- "󰖀",
- "󰕾",
-]
-volume_muted =  "󰖁"
-backlight = [
-    "󰃠",
-    "󰃟",
-    "󰃝",
-    "󰃞",
-
-]
+volume = ["󰕿", "󰖀", "󰕾"]
+volume_muted = "󰖁"
+backlight = ["󰃠", "󰃟", "󰃝", "󰃞"]
 
 [theme]
 theme = "plain"
@@ -58,7 +26,7 @@ separator = " "
 [[block]]
 block = "custom"
 command = "echo $(/home/daniel/scripts/checkup.sh)"
-interval = 86400
+interval = 3600
 [[block.click]]
 button = "left"
 cmd = "/home/daniel/scripts/prompt.sh"
@@ -77,14 +45,13 @@ device_kind = "source"
 show_volume_when_muted = false
 headphones_indicator = true
 [block.theme_overrides]
-warning_fg="#676767"
+warning_fg = "#676767"
 [[block.click]]
 button = "left"
 cmd = "pavucontrol -t 4"
 [block.format]
 full = "$icon"
 short = "$icon"
-
 
 
 [[block]]
@@ -96,16 +63,10 @@ headphones_indicator = true
 max_vol = 150
 format = " $icon "
 [block.theme_overrides]
-warning_fg="#ffffff"
+warning_fg = "#ffffff"
 [[block.click]]
 button = "left"
 cmd = "pavucontrol -t 3"
-
-
-[[block]]
-block = "bluetooth"
-mac = ""
-disconnected_format = ""
 
 [[block]]
 block = "backlight"
@@ -133,11 +94,11 @@ block = "battery"
 device = "BAT1"
 driver = "upower"
 [block.format]
-full = " $percentage $icon"
-short = " $percentage $icon"
+full = " $percentage $icon "
+short = " $percentage $icon "
 [block.full_format]
-full = " $percentage $icon"
-short = "$percentage $icon"
+full = " $percentage $icon "
+short = " $percentage $icon "
 [[block.click]]
 button = "left"
 cmd = "tlpui"
@@ -146,4 +107,3 @@ cmd = "tlpui"
 block = "time"
 format = " $timestamp.datetime(f:'%R %d/%m') "
 interval = 60
-
