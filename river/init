@@ -1,9 +1,9 @@
 #!/bin/sh
 
-riverctl rule-add ssd
-riverctl keyboard-layout "es"
-
+##############################################
 # Key bindings
+##############################################
+
 mod=Mod4
 
 # Application Launchers
@@ -17,8 +17,6 @@ riverctl map normal $mod p spawn 'pavucontrol'
 riverctl map normal $mod n spawn 'networkmanager_dmenu'
 riverctl map normal $mod t spawn 'thunar'
 riverctl map normal $mod c spawn 'code'
-riverctl map normal $mod+Shift a spawn '~/ani-cli/ani-cli --rofi -c -q 1080p'
-riverctl map normal $mod+Control a spawn '~/ani-cli/ani-cli --rofi -q 1080p'
 riverctl map normal Alt Tab spawn 'rofi -show window'
 
 #toggle layout
@@ -41,7 +39,7 @@ riverctl map normal $mod+Shift v spawn '/home/daniel/scripts/cliphist-rofi'
 riverctl map normal $mod q close
 
 # Start application launcher
-riverctl map normal $mod d spawn 'rofi -show drun'
+riverctl map normal $mod d spawn 'j4-dmenu-desktop --no-generic --skip-i3-exec-check -f --dmenu bemenu -t foot'
 
 # Restart River
 riverctl map normal $mod+Shift C spawn "${XDG_CONFIG_HOME}/river/init >/dev/null && notify-send 'River' 'Refreshed'"
@@ -69,36 +67,40 @@ riverctl map normal $mod+Control Down send-layout-cmd wideriver "--count -1"
 riverctl map normal $mod+Control Up send-layout-cmd wideriver "--count +1"
 
 # Change output
-riverctl map normal $mod 0 spawn "riverctl focus-output next"
+riverctl map normal $mod o spawn "riverctl focus-output next"
 # Send to next output
-riverctl map normal $mod+Shift 0 spawn "riverctl send-to-output next"
+riverctl map normal $mod+Shift o spawn "riverctl send-to-output next"
 
-# Switch to workspace
+# Workspaces
 for i in $(seq 1 9); do
   riverctl map normal $mod $i set-focused-tags $((1 << ($i - 1)))
   riverctl map normal $mod+Shift $i set-view-tags $((1 << ($i - 1)))
   riverctl map normal $mod+Control $i toggle-focused-tags $((1 << ($i - 1)))
 done
 
+all_tags_mask=$(((1 << 32) - 1))
+riverctl map normal $mod 0 set-focused-tags $all_tags_mask
+
 # Fullscreen mode
 riverctl map normal $mod f toggle-fullscreen
-
-# Toggle floating mode
 riverctl map normal $mod+Shift space toggle-float
-
-# Swap focus between tiling and floating
 riverctl map normal $mod space focus-float
 
 # Scratchpad
 scratch_tag=$((1 << 20))
 riverctl map normal $mod minus toggle-focused-tags ${scratch_tag} # toggle the scratchpad
 riverctl map normal $mod+Shift minus set-view-tags ${scratch_tag} # send windows to the scratchpad
-
-# Set spawn tagmask to ensure new windows do not have the scratchpad tag unless explicitly set.
 all_but_scratch_tag=$((((1 << 32) - 1) ^ $scratch_tag))
 riverctl spawn-tagmask ${all_but_scratch_tag}
 
-# Set touchpad by grabbing the event
+##############################################
+# Input configuration
+##############################################
+
+# Keyboard configuration
+riverctl keyboard-layout "es"
+
+# Touchpad configuration
 for pad in $(riverctl list-inputs | grep -i touchpad); do
   riverctl input $pad events enabled
   riverctl input $pad tap enabled
@@ -107,23 +109,31 @@ for pad in $(riverctl list-inputs | grep -i touchpad); do
   riverctl input $pad drag-lock enabled
 done
 
-# behaavoiur
+##############################################
+# Behavoiur & Autostart
+##############################################
+
+riverctl set-cursor-warp on-focus-change
 riverctl focus-follows-cursor normal
+
+riverctl rule-add ssd
 riverctl rule-add -title "Open File" float
 riverctl rule-add -title "Open Folder" float
-riverctl set-cursor-warp on-output-change
 
-dbus-update-activation-environment SEATD_SOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=river
+# Setup dbus
+riverctl spawn "dbus-update-activation-environment --systemd SEATD_SOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=river"
+riverctl spawn "systemctl --user import-environment SEATD_SOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=river"
 
-# set layout manager
+# Set layout manager
 riverctl default-layout wideriver
 
+# Autostart applications
 executes="swaybg swayidle /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 i3bar-river wl-paste wideriver dunst"
 for execute in $executes; do
   pidof -q "$execute" && continue
   case $execute in
   "swaybg") "$execute" -i ~/Pictures/montain.webp -m fill & ;;
-  "swayidle") "$execute" -w before-sleep hyprlock -q & ;;
+  "swayidle") "$execute" -w before-sleep 'pidof -q hyprlock || hyprlock -q' & ;;
   "wl-paste") "$execute" --watch cliphist store & ;;
   "wideriver") "$execute" --layout left \
     --layout-alt monocle \

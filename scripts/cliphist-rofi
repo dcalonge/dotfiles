@@ -1,1 +1,1 @@
-cliphist list | rofi -dmenu | cliphist decode | wl-copy
+cliphist list | bemenu | cliphist decode | wl-copy
