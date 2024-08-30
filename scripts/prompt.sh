@@ -1,17 +1,15 @@
-#!/bin/bash
+#!/bin/sh
 
 # Definir las opciones del menú
 OPTIONS="update\nexit"
 
 # Mostrar el menú usando rofi
-SELECTION=$(echo -e "$OPTIONS" | bemenu)
+SELECTION=$(echo "$OPTIONS" | bemenu)
 
 # Función para actualizar pacman y flatpak
 update_system() {
   # Ejecutar los comandos de actualización en una sub-shell
-  (
-    foot -e sh -c 'paru && flatpak update && read -p "pulsa enter para cerrar"'
-  )
+  foot -e bash -c 'paru && flatpak update && read -p "pulsa enter para cerrar"'
 }
 
 # Tomar acción según la selección del usuario

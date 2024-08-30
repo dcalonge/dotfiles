@@ -105,5 +105,5 @@ cmd = "tlpui"
 
 [[block]]
 block = "time"
-format = " $timestamp.datetime(f:'%R %d/%m') "
+format = "$timestamp.datetime(f:'%R %d/%m') "
 interval = 60

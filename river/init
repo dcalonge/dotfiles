@@ -8,32 +8,31 @@ mod=Mod4
 
 # Application Launchers
 riverctl map normal $mod Return spawn 'foot'
-riverctl map normal $mod+Shift s spawn '~/scripts/screenshot_river.sh'
+riverctl map normal $mod+Shift s spawn '/home/daniel/scripts/screenshot_river.sh'
 riverctl map normal $mod b spawn 'firefox'
-riverctl map normal $mod h spawn 'foot -e btop'
+riverctl map normal $mod h spawn 'foot -c /home/daniel/.config/foot/foot_no_pad.ini -e btop'
 riverctl map normal $mod y spawn 'foot -e yazi'
-riverctl map normal $mod v spawn 'foot -e nvim'
+riverctl map normal $mod n spawn 'foot -c /home/daniel/.config/foot/foot_no_pad.ini -e nvim'
 riverctl map normal $mod p spawn 'pavucontrol'
-riverctl map normal $mod n spawn 'networkmanager_dmenu'
+riverctl map normal $mod w spawn 'networkmanager_dmenu'
 riverctl map normal $mod t spawn 'thunar'
 riverctl map normal $mod c spawn 'code'
-riverctl map normal Alt Tab spawn 'rofi -show window'
 
 #toggle layout
 riverctl map normal $mod Tab send-layout-cmd wideriver "--layout-toggle"
-# mod+mouse bindings
-riverctl map-pointer normal $mod BTN_LEFT move-view
 
-# Volume and Brightness Controls
-riverctl map normal None XF86AudioRaiseVolume spawn "wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ && ~/scripts/volume.sh"
-riverctl map normal None XF86AudioLowerVolume spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && ~/scripts/volume.sh"
-riverctl map normal None XF86AudioMute spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && ~/scripts/muteaudio.sh"
+for mode in normal locked; do
+  # Volume and Brightness Controls
+  riverctl map $mode None XF86AudioRaiseVolume spawn "wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ && ~/scripts/volume.sh"
+  riverctl map $mode None XF86AudioLowerVolume spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && ~/scripts/volume.sh"
+  riverctl map $mode None XF86AudioMute spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && ~/scripts/muteaudio.sh"
+  riverctl map $mode None XF86MonBrightnessUp spawn "brightnessctl set +5% && ~/scripts/brightness.sh"
+  riverctl map $mode None XF86MonBrightnessDown spawn "brightnessctl set 5%- && ~/scripts/brightness.sh"
+done
 riverctl map normal None XF86AudioMicMute spawn "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && ~/scripts/mic.sh"
-riverctl map normal None XF86MonBrightnessUp spawn "brightnessctl set +5% && ~/scripts/brightness.sh"
-riverctl map normal None XF86MonBrightnessDown spawn "brightnessctl set 5%- && ~/scripts/brightness.sh"
 
 # Clipboard History
-riverctl map normal $mod+Shift v spawn '/home/daniel/scripts/cliphist-rofi'
+riverctl map normal $mod v spawn '/home/daniel/scripts/cliphist-rofi'
 
 # Kill focused window
 riverctl map normal $mod q close
@@ -42,13 +41,13 @@ riverctl map normal $mod q close
 riverctl map normal $mod d spawn 'j4-dmenu-desktop --no-generic --skip-i3-exec-check -f --dmenu bemenu -t foot'
 
 # Restart River
-riverctl map normal $mod+Shift C spawn "${XDG_CONFIG_HOME}/river/init >/dev/null && notify-send 'River' 'Refreshed'"
+riverctl map normal $mod+Shift c spawn "/home/daniel/.config/river/init >/dev/null && notify-send 'River' 'Refreshed'"
 
 # Exit River
-riverctl map normal $mod+Shift e spawn '/home/daniel/scripts/dmenu_logout_river.sh'
+riverctl map normal $mod e spawn '/home/daniel/scripts/dmenu_logout_river.sh'
 
 # Open update prompt
-riverctl map normal $mod+Shift u spawn '/home/daniel/scripts/prompt.sh'
+riverctl map normal $mod u spawn '/home/daniel/scripts/prompt.sh'
 
 # Layout stuff
 riverctl map normal $mod Left focus-view left
@@ -69,7 +68,7 @@ riverctl map normal $mod+Control Up send-layout-cmd wideriver "--count +1"
 # Change output
 riverctl map normal $mod o spawn "riverctl focus-output next"
 # Send to next output
-riverctl map normal $mod+Shift o spawn "riverctl send-to-output next"
+riverctl map normal $mod+Shift o spawn "riverctl send-to-output next && riverctl focus-output next"
 
 # Workspaces
 for i in $(seq 1 9); do
@@ -113,9 +112,17 @@ done
 # Behavoiur & Autostart
 ##############################################
 
+# Super + Left Mouse Button to move views
+riverctl map-pointer normal Super BTN_LEFT move-view
+
+# Super + Right Mouse Button to resize views
+riverctl map-pointer normal Super BTN_RIGHT resize-view
+
+# Set cursor behavoiur
 riverctl set-cursor-warp on-focus-change
 riverctl focus-follows-cursor normal
 
+# Set some rules
 riverctl rule-add ssd
 riverctl rule-add -title "Open File" float
 riverctl rule-add -title "Open Folder" float

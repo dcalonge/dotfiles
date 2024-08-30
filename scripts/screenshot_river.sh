@@ -1,7 +1,11 @@
 #!/bin/sh
 
-GEOMETRY=$(slurp) &&
-  CHOICE=$(printf "Save\nCopy\nSave+copy\nAbort" | bemenu)
+GEOMETRY=$(slurp)
+if [ $? -ne 0 ]; then
+  GEOMETRY="0,0 1920x1080" # Default to fullscreen if slurp fails
+fi
+
+CHOICE=$(printf "Save\nCopy\nSave+copy\nAbort" | bemenu)
 
 case "$CHOICE" in
 Save)
