@@ -1,10 +1,13 @@
 * Distro: Arch Linux
 
-* WM: river
+* WM: dwl
+  
+* bar: somebar & someblocks
 
 * Terminal emulator: foot
 
-![image](https://github.com/user-attachments/assets/90c94898-3ba0-41b4-919f-63e3af493f7f)
+![image](https://github.com/user-attachments/assets/dd65ba3a-12ed-469a-bf22-743478beccc7)
+
 
 
 
