@@ -6,9 +6,9 @@ send_volume_notification() {
   volume_level=$(pactl list sinks | grep "Volume: " | awk 'NR==1{print $5}' | sed 's/%//')
 
   if [ "$is_muted" = "yes" ]; then
-    dunstify -t 1000 -u low -i audio-volume-muted "Volume Muted" -h int:value:0 -h string:fgcolor:#ffffff -h string:bgcolor:#000000 -h string:x-dunst-stack-tag:volume -h string:x-dunst-stack-mode:replace
+    dunstify -t 1000 -u low -i audio-volume-muted "Volume Muted" -h int:value:0 -h string:x-dunst-stack-tag:volume -h string:x-dunst-stack-mode:replace
   else
-    dunstify -t 1000 -u low -i audio-volume-medium "Volume Unmuted" -h int:value:$volume_level -h string:fgcolor:#ffffff -h string:bgcolor:#000000 -h string:x-dunst-stack-tag:volume -h string:x-dunst-stack-mode:replace -h string:hlcolor:#ffffff
+    dunstify -t 1000 -u low -i audio-volume-medium "Volume Unmuted" -h int:value:$volume_level -h string:x-dunst-stack-tag:volume -h string:x-dunst-stack-mode:replace -h string:hlcolor:#bbbbbb
 
   fi
 }

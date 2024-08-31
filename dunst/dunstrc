@@ -17,7 +17,7 @@
     #
     # If this option is set to mouse or keyboard, the monitor option
     # will be ignored.
-    follow = none
+    follow = mouse
 
     ### Geometry ###
 
@@ -92,10 +92,10 @@
 
     # Defines width in pixels of frame around the notification window.
     # Set to 0 to disable.
-    frame_width = 1
+    frame_width = 2
 
     # Defines color of the frame around the notification window.
-    frame_color = "#93a1a1"
+    frame_color = "#005577"
 
     # Size of gap to display between notifications - requires a compositor.
     # If value is greater than 0, separator_height will be ignored and a border
@@ -206,7 +206,7 @@
     enable_recursive_icon_lookup = false
 
     # Set icon theme (only used for recursive icon lookup)
-    icon_theme = 
+    icon_theme = "Adwaita" 
     # You can also set multiple icon themes, with the leftmost one being used first.
     # icon_theme = "Adwaita, breeze"
 
@@ -236,7 +236,7 @@
     ### Misc/Advanced ###
 
     # dmenu path.
-    dmenu = /usr/bin/dmenu -p dunst:
+    dmenu = /usr/bin/rofi -dmenu -p dunst:
 
     # Browser for opening urls in context menu.
     browser = /usr/bin/xdg-open
@@ -318,23 +318,23 @@
 [urgency_low]
     # IMPORTANT: colors have to be defined in quotation marks.
     # Otherwise the "#" and following would be interpreted as a comment.
-    background = "#000000"
-    foreground = "#ffffff"
+    background = "#141414"
+    foreground = "#bbbbbb"
     timeout = 10
     # Icon for notifications with low urgency, uncomment to enable
     #default_icon = /path/to/icon
 
 [urgency_normal]
-    background = "#000000"
-    foreground = "#ffffff"
+    background = "#141414"
+    foreground = "#bbbbbb"
     timeout = 10
     override_pause_level = 30
     # Icon for notifications with normal urgency, uncomment to enable
     #default_icon = /path/to/icon
 
 [urgency_critical]
-    background = "#900000"
-    foreground = "#ffffff"
+    background = "#141414"
+    foreground = "#bbbbbb"
     frame_color = "#ff0000"
     timeout = 0
     override_pause_level = 60
