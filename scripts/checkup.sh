@@ -8,6 +8,4 @@ flatpak_updates=$(/usr/bin/flatpak remote-ls --columns=application -a --updates 
 
 num_updates=$((arch_updates + flatpak_updates))
 
-if [ "$num_updates" -gt 0 ]; then
-  echo "  $num_updates"
-fi
+echo -n "  $num_updates"
