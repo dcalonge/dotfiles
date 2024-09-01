@@ -1,7 +1,9 @@
 #!/bin/sh
 
+killall someblocks
+
 dbus-update-activation-environment --systemd SEATD_SOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
-systemctl --user import-environment SEATD_SOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+syestemctl --user import-environment SEATD_SOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 
 executes="swaybg swayidle /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 wl-paste dunst someblocks"
 for execute in $executes; do
