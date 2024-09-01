@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Get the selected man page from bemenu
+selection=$(man -k . | bemenu | awk '{print $1}')
+
+# Check if a selection was made
+if [ -n "$selection" ]; then
+  # If a selection was made, convert the man page to PDF and open it with zathura
+  echo "$selection" | xargs -r man -Tpdf | zathura -
+fi
