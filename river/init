@@ -21,8 +21,8 @@ riverctl map normal $mod c spawn 'code'
 #toggle layout
 riverctl map normal $mod Tab send-layout-cmd wideriver "--layout-toggle"
 
+# Volume and brightness Controls
 for mode in normal locked; do
-  # Volume and Brightness Controls
   riverctl map $mode None XF86AudioRaiseVolume spawn "wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ && ~/scripts/volume.sh"
   riverctl map $mode None XF86AudioLowerVolume spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && ~/scripts/volume.sh"
   riverctl map $mode None XF86AudioMute spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && ~/scripts/muteaudio.sh"
@@ -113,10 +113,10 @@ done
 ##############################################
 
 # Super + Left Mouse Button to move views
-riverctl map-pointer normal Super BTN_LEFT move-view
+riverctl map-pointer normal $mod BTN_LEFT move-view
 
-# Super + Right Mouse Button to resize views
-riverctl map-pointer normal Super BTN_RIGHT resize-view
+# Super + Shift + Left Mouse Button to resize views
+riverctl map-pointer normal $mod+Shift BTN_LEFT resize-view
 
 # Set cursor behavoiur
 riverctl set-cursor-warp on-focus-change
@@ -158,5 +158,4 @@ for execute in $executes; do
     --border-color-unfocused "0x333333" & ;;
   *) "$execute" & ;;
   esac
-
 done >/dev/null 2>&1
