@@ -2,7 +2,7 @@
 
 * WM: dwl
   
-* bar: somebar & someblocks
+* bar: dwl bar patch & someblocks
 
 * Terminal emulator: foot
 
