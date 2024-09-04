@@ -135,7 +135,7 @@ riverctl spawn "systemctl --user import-environment SEATD_SOCK WAYLAND_DISPLAY X
 riverctl default-layout wideriver
 
 # Autostart applications
-executes="swaybg swayidle /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 i3bar-river wl-paste wideriver dunst"
+executes="swaybg swayidle /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 wl-paste wideriver dunst"
 for execute in $executes; do
   pidof -q "$execute" && continue
   case $execute in
@@ -159,3 +159,5 @@ for execute in $executes; do
   *) "$execute" & ;;
   esac
 done >/dev/null 2>&1
+
+someblocks -p | /home/daniel/creek/zig-out/bin/creek
