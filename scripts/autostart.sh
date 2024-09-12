@@ -3,7 +3,7 @@
 executes="swaybg swayidle /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 wl-paste dunst"
 for execute in $executes; do
   case $execute in
-  "swaybg") "$execute" -i /home/daniel/Pictures/wallpapers/$(ls /home/daniel/Pictures/wallpapers | sort -R | tail -1) -m fill & ;;
+  "swaybg") "$execute" -i /tmp/wallpaper.jpg & ;;
   "swayidle") "$execute" -w before-sleep 'pidof -q hyprlock || hyprlock -q' & ;;
   "wl-paste") "$execute" --watch cliphist store & ;;
   *) "$execute" & ;;
