@@ -1,9 +1,8 @@
 #!/bin/sh
 
-executes="swaybg swayidle /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 wl-paste dunst"
+executes="/home/daniel/scripts/background.sh swayidle /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 wl-paste dunst"
 for execute in $executes; do
   case $execute in
-  "swaybg") "$execute" -i /tmp/wallpaper.jpg & ;;
   "swayidle") "$execute" -w before-sleep 'pidof -q hyprlock || hyprlock -q' & ;;
   "wl-paste") "$execute" --watch cliphist store & ;;
   *) "$execute" & ;;

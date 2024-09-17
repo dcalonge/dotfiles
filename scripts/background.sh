@@ -5,4 +5,6 @@ RANDOM_IMAGE=$(find "$WALLPAPER_DIR" -type f \( -name "*.jpg" -o -name "*.png" -
 
 cp "$RANDOM_IMAGE" /tmp/wallpaper.jpg
 
-killall swaybg && swaybg -i /tmp/wallpaper.jpg
+killall swaybg
+
+exec swaybg -i /tmp/wallpaper.jpg
