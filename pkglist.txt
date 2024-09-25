@@ -10,8 +10,8 @@ bat
 bemenu
 bison
 blueman
-bluez
 bluez-utils
+brave-bin
 brightnessctl
 btop
 btrfs-progs
@@ -22,9 +22,7 @@ debugedit
 dunst
 eza
 fakeroot
-fastfetch
 fd
-firefox
 fish
 flatpak
 flex
@@ -60,8 +58,6 @@ nm-connection-editor
 nwg-look
 opendoas
 pacman-contrib
-paru
-paru-debug
 patch
 pavucontrol
 pipewire
@@ -70,7 +66,8 @@ pipewire-jack
 pipewire-pulse
 pkgconf
 polkit-gnome
-stremio-service-bin
+qt5-wayland
+stremio
 swaybg
 swayidle
 thunar
@@ -86,7 +83,6 @@ visual-studio-code-bin
 vulkan-headers
 vulkan-radeon
 vulkan-validation-layers
-wdisplays
 wl-clipboard
 wlr-randr
 wlroots
@@ -95,7 +91,8 @@ xdg-desktop-portal-wlr
 xdg-utils
 xf86-video-amdgpu
 xf86-video-ati
+yay
 yazi
 zathura-pdf-mupdf
-zig
+zed
 zip
