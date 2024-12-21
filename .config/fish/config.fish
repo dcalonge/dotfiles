@@ -9,6 +9,7 @@ abbr -a au paru
 abbr -a ai 'paru -S'
 abbr -a ar 'paru -Rns'
 abbr -a as 'paru -Ss'
+abbr -a m 'sudo make clean install; rm -f config.h'
 abbr -a v nvim
 
 alias ls='eza -a --color=always --icons --group-directories-first'

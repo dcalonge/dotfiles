@@ -5,7 +5,7 @@ if [ $? -ne 0 ]; then
   GEOMETRY="0,0 1920x1080" # Default to fullscreen if slurp fails
 fi
 
-CHOICE=$(printf "Save\nCopy\nSave+copy\nAbort" | bemenu)
+CHOICE=$(printf "Save\nCopy\nSave & Copy\nAbort" | bemenu)
 
 case "$CHOICE" in
 Save)

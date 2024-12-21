@@ -8,8 +8,11 @@ for execute in $executes; do
   *) "$execute" & ;;
   esac
 done >/dev/null 2>&1
+
 systemctl --user set-environment XDG_CURRENT_DESKTOP=sway
 systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 
 hash dbus-update-activation-environment 2>/dev/null
-exec dbus-update-activation-environment --systemd DISPLAY XDG_CURRENT_DESKTOP=sway WAYLAND_DISPLAY
+dbus-update-activation-environment --systemd DISPLAY XDG_CURRENT_DESKTOP=sway WAYLAND_DISPLAY
+
+exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ 1

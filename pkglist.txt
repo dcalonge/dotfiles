@@ -9,7 +9,8 @@ base
 bat
 bemenu
 bison
-blueman
+bluetuith-bin
+bluez
 bluez-utils
 brightnessctl
 btop
@@ -22,6 +23,7 @@ dunst
 eza
 fakeroot
 fd
+firefox
 fish
 flatpak
 flex
@@ -33,7 +35,6 @@ gcc
 git
 github-cli
 gnome-themes-extra
-google-chrome
 grim
 gst-plugin-pipewire
 hyprlock
@@ -41,20 +42,18 @@ imv
 iwd
 j4-dmenu-desktop
 libliftoff
-libva-mesa-driver
-libva-vdpau-driver
 libvdpau-va-gl
 libzip
 linux
 linux-firmware
 make
 man-db
-mesa-vdpau
 meson
 mpv
 neovim
 networkmanager-dmenu-git
 nm-connection-editor
+nvtop
 nwg-look
 opendoas
 pacman-contrib
@@ -66,6 +65,7 @@ pipewire-alsa
 pipewire-jack
 pipewire-pulse
 pkgconf
+playerctl
 polkit-gnome
 stremio-service-bin
 swaybg
@@ -84,6 +84,7 @@ visual-studio-code-bin
 vulkan-headers
 vulkan-radeon
 vulkan-validation-layers
+wev
 wl-clipboard
 wlr-randr
 wlroots
