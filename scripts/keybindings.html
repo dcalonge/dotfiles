@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dwl Keybindings</title>
+    <style>
+        body {
+            background-color: #141414;
+            color: #eeeeee;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 24px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .column {
+            width: 30%;
+        }
+        pre {
+            white-space: pre-wrap;
+        }
+        .keybinding {
+            display: flex;
+            justify-content: space-between;
+        }
+        .key {
+            margin-right: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h1>dwm Keybindings</h1>
+    <div class="container">
+        <div class="column">
+            <h2>Apps and Scripts</h2>
+            <pre>
+<span class="keybinding"><span class="key">MODKEY + Return:</span> Open terminal</span>
+<span class="keybinding"><span class="key">MODKEY + b:</span> Open browser</span>
+<span class="keybinding"><span class="key">MODKEY + Shift + B:</span> Open Bluetooth manager</span>
+<span class="keybinding"><span class="key">MODKEY + h:</span> Open btop</span>
+<span class="keybinding"><span class="key">MODKEY + y:</span> Open yazi</span>
+<span class="keybinding"><span class="key">MODKEY + n:</span> Open nvim</span>
+<span class="keybinding"><span class="key">MODKEY + p:</span> Open pavucontrol</span>
+<span class="keybinding"><span class="key">MODKEY + w:</span> Open network manager</span>
+<span class="keybinding"><span class="key">MODKEY + e:</span> Open file manager</span>
+<span class="keybinding"><span class="key">MODKEY + c:</span> Open vscode</span>
+<span class="keybinding"><span class="key">MODKEY + z:</span> Open zeditor</span>
+<span class="keybinding"><span class="key">MODKEY + d:</span> Open dmenu</span>
+<span class="keybinding"><span class="key">MODKEY + l:</span> Logout</span>
+<span class="keybinding"><span class="key">MODKEY + u:</span> Update arch</span>
+<span class="keybinding"><span class="key">MODKEY + v:</span> Open clipboard manager</span>
+<span class="keybinding"><span class="key">MODKEY + a:</span> Open man page search</span>
+<span class="keybinding"><span class="key">MODKEY + Shift + F:</span> Toggle fullscreen</span>
+<span class="keybinding"><span class="key">MODKEY + Shift + S:</span> Take screenshot</span>
+<span class="keybinding"><span class="key">MODKEY + Shift + W:</span> Change wallpaper</span>
+<span class="keybinding"><span class="key">MODKEY + q:</span> Close window</span>
+            </pre>
+        </div>
+        <div class="column">
+            <h2>Volume, Brightness, and Media Controls</h2>
+            <pre>
+<span class="keybinding"><span class="key">XF86AudioMute:</span> Mute audio</span>
+<span class="keybinding"><span class="key">XF86AudioMicMute:</span> Mute microphone</span>
+<span class="keybinding"><span class="key">XF86AudioLowerVolume:</span> Lower volume</span>
+<span class="keybinding"><span class="key">XF86AudioRaiseVolume:</span> Raise volume</span>
+<span class="keybinding"><span class="key">XF86MonBrightnessUp:</span> Increase brightness</span>
+<span class="keybinding"><span class="key">XF86MonBrightnessDown:</span> Decrease brightness</span>
+<span class="keybinding"><span class="key">XF86AudioPlay:</span> Play/Pause media</span>
+<span class="keybinding"><span class="key">XF86AudioNext:</span> Next track</span>
+<span class="keybinding"><span class="key">XF86AudioPrev:</span> Previous track</span>
+            </pre>
+        </div>
+        <div class="column">
+            <h2>Window Manager Stuff</h2>
+            <pre>
+          <span class="keybinding"><span class="key">MODKEY + {num}:</span> View tag {num}</span>
+<span class="keybinding"><span class="key">MODKEY + Left:</span> Focus left</span>
+<span class="keybinding"><span class="key">MODKEY + Right:</span> Focus right</span>
+<span class="keybinding"><span class="key">MODKEY + Up:</span> Focus up</span>
+<span class="keybinding"><span class="key">MODKEY + Down:</span> Focus down</span>
+<span class="keybinding"><span class="key">MODKEY + Shift + Left:</span> Swap left</span>
+<span class="keybinding"><span class="key">MODKEY + Shift + Right:</span> Swap right</span>
+<span class="keybinding"><span class="key">MODKEY + Shift + Up:</span> Swap up</span>
+<span class="keybinding"><span class="key">MODKEY + Shift + Down:</span> Swap down</span>
+<span class="keybinding"><span class="key">MODKEY + plus:</span> Increase master</span>
+<span class="keybinding"><span class="key">MODKEY + minus:</span> Decrease master</span>
+<span class="keybinding"><span class="key">MODKEY + Ctrl + Right:</span> Increase master factor</span>
+<span class="keybinding"><span class="key">MODKEY + Ctrl + Left:</span> Decrease master factor</span>
+<span class="keybinding"><span class="key">MODKEY + Shift + Return:</span> Zoom</span>
+<span class="keybinding"><span class="key">MODKEY + Tab:</span> View Previous Tag</span>
+<span class="keybinding"><span class="key">MODKEY + q:</span> Kill client</span>
+<span class="keybinding"><span class="key">MODKEY + t:</span> Set tiling layout</span>
+<span class="keybinding"><span class="key">MODKEY + f:</span> Set floating layout</span>
+<span class="keybinding"><span class="key">MODKEY + m:</span> Set monocle layout</span>
+<span class="keybinding"><span class="key">MODKEY + space:</span> Toggle floating</span>
+<span class="keybinding"><span class="key">MODKEY + 0:</span> View all tags</span>
+<span class="keybinding"><span class="key">MODKEY + o:</span> Focus monitor left</span>
+<span class="keybinding"><span class="key">MODKEY + Shift + O:</span> Move tag to monitor left</span>
+            </pre>
+        </div>
+    </div>
+</body>
+</html>
