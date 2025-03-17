@@ -1,6 +1,6 @@
 #!/bin/sh
 
-executes="/home/daniel/scripts/background.sh swayidle /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 wl-paste dunst"
+executes="/home/daniel/scripts/bing_wall.sh swayidle wl-paste dunst"
 for execute in $executes; do
   case $execute in
   "swayidle") "$execute" -w before-sleep 'pidof -q hyprlock || hyprlock -q' & ;;
