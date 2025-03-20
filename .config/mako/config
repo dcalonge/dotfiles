@@ -1,0 +1,14 @@
+font=JetbrainsMono Nerd Font 10
+background-color=#000000
+text-color=#eeeeee
+border-color=#eeeeee
+progress-color=source #eeeeee
+anchor=top-center
+layer=overlay
+border-size=1
+group-by=category,app-icon
+[category="osd-text"]
+format=<b>%s</b>\n%b
+[category="osd"]
+text-color=#000000
+format=<b>%s</b>\n%b
