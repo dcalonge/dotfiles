@@ -1,8 +1,8 @@
-* Distro: Arch Linux
+* Distro: Fedora
 
-* WM: dwl
+* WM: [My dwl fork][https://github.com/dcalonge/dwl]
   
-* bar: dwl bar patch & someblocks
+* bar: dwl bar patch & [someblocks][https://github.com/dcalonge/someblocks]
 
 * Terminal emulator: foot
 
