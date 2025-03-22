@@ -4,7 +4,7 @@ SETUVAR --export BEMENU_OPTS:\x2dW\x200\x2e3\x20\x2dc\x20\x2dl\x2015\x20\x2dp\x2
 SETUVAR --export EDITOR:nvim
 SETUVAR --export ELECTRON_OZONE_PLATFORM_HINT:auto
 SETUVAR --export XDG_CONFIG_HOME:/home/daniel/\x2econfig/
-SETUVAR __fish_initialized:3400
+SETUVAR __fish_initialized:3800
 SETUVAR fish_color_autosuggestion:585858
 SETUVAR fish_color_cancel:\x2d\x2dreverse
 SETUVAR fish_color_command:a1b56c
@@ -25,7 +25,7 @@ SETUVAR fish_color_option:\x1d
 SETUVAR fish_color_param:d8d8d8
 SETUVAR fish_color_quote:f7ca88
 SETUVAR fish_color_redirection:d8d8d8
-SETUVAR fish_color_search_match:bryellow\x1e\x2d\x2dbackground\x3dbrblack
+SETUVAR fish_color_search_match:white\x1e\x2d\x2dbackground\x3dbrblack
 SETUVAR fish_color_selection:white\x1e\x2d\x2dbold\x1e\x2d\x2dbackground\x3dbrblack
 SETUVAR fish_color_status:red
 SETUVAR fish_color_user:brgreen
