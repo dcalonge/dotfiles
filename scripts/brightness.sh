@@ -1,11 +1,17 @@
 #!/bin/sh
 
-# Function to send brightness notification
-send_brightness_notification() {
-  local brightness_level=$(brightnessctl -m | grep -oP ',[0-9]+,(\d{1,3}%),' | cut -d '%' -f1 | cut -d ',' -f3)
+if [ "$1" = "up" ]; then
+  brightnessctl set +5%
+elif [ "$1" = "down" ]; then
+  brightnessctl set 5%-
+fi
 
-  dunstify -t 1000 -u low -i audio-volume-muted "Brightness: $((brightness_level))%" -h string:x-dunst-stack-tag:volume -h string:x-dunst-stack-mode:replace -h int:value:$brightness_level -h string:hlcolor:"#bbbbbb"
-}
+max_brightness=$(brightnessctl max)
 
-# Call function to send notification
-send_brightness_notification
+if [ "$max_brightness" -gt 0 ]; then
+  brightness_percent=$(($(brightnessctl get) * 100 / max_brightness))
+else
+  brightness_percent=0
+fi
+
+notify-send " 󰃟" -t 1000 -u low -h int:value:$brightness_percent -c "osd" --hint=string:x-dunst-stack-tag:osd

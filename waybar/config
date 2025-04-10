@@ -1,0 +1,128 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 24,
+    "spacing": 5,
+
+    "modules-left": ["hyprland/workspaces"],
+    "modules-center": ["hyprland/window"],
+    "modules-right": ["tray", "custom/pacman", "pulseaudio", "backlight", "bluetooth", "network", "battery", "clock"],
+    
+    "custom/pacman": {
+      "format": "{}",
+      "interval": "36000",
+      "exec": "~/mis_repos/someblocks/blocks/checkup",
+      "on-click": "~/scripts/prompt.sh",
+      "signal": 8
+    },
+
+    "hyprland/window":{
+      "format": "{title}" 
+    },
+
+    "hyprland/workspaces": {
+      "format": "{icon}: {windows}",
+      "format-window-separator": " ",
+      "window-rewrite-default": " ",
+      "window-rewrite": {
+        "title<.*youtube.*>": " ",
+        "title<.*amazon.*>": " ",
+        "title<.*reddit.*>": " ",
+        "title<.*Picture-in-Picture.*>": " ",
+        "class<firefox>": "  ",
+        "class<google-chrome>": " ",
+        "class<foot>": "󰆍 ",
+        "class<Chromium>": "<span font='12'> </span>",
+        "class<org.telegram.desktop|io.github.tdesktop_x64.TDeskto>": "<span font='12'> </span>",
+        "class<[Ss]potify>": "<span font='12'> </span>",
+        "class<VSCode|code-url-handler>": "<span font='12'>󰨞 </span>",
+        "class<thunar>": "󰝰 ",
+        "class<pcmanfm>": "󰝰 ",
+        "class<discord>": " ",
+        "class<virt-manager>": " ",
+        "class<code>": "󰨞 ",
+        "class<codium|codium-url-handler|VSCodium>": "󰨞 ",
+        "class<libreoffice-writer>": " ",
+        "class<libreoffice-startcenter>": "󰏆 ",
+        "class<com.obsproject.Studio>": " ",
+        "title<.*nvim.*>":" ",
+        "title<.*yazi.*>":"󰇥 ",
+      },
+      "format-icons": {
+        "1": "1",
+        "2": "2",
+        "3": "3",
+        "4": "4",
+        "5": "5",
+        "6": "6",
+        "7": "7",
+        "8": "8",
+        "9": "9",
+        "10": "10",
+      },
+      "on-click": "activate",
+      "sort-by-number": true,
+    
+    },
+
+    "clock": {
+        "format": "{:%H:%M  %d/%m}"
+    },
+
+    "pulseaudio": {
+        "format": "{format_source}{icon} {volume}%",
+        "format-icons": {
+          "headphone": "󰋋",
+          "headset": "󰋋",
+          "car": "󰄋",
+          "default": ["󰕿","󰖀","󰕾"],
+        },
+        "format-bluetooth": "{icon} {volume}%",
+        "format-muted":"󰖁",
+        "format-source": "󰍬   ",
+        "format-source-muted": "",
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "max-volume": 150,
+        "scroll-step": 5
+    },
+
+    "battery": {
+        "bat": "BAT1",
+        "interval": 60,
+        "format": "{icon} {capacity}%",
+        "format-charging": "{icon}󱐋 {capacity}%",
+        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"], 
+    },
+
+    "backlight": {
+        "format": "{icon} {percent}%",
+        "format-icons": ["󰃞","󰃝","󰃟", "󰃠"],
+    },
+
+    "network": {
+        "format": "",
+        "format-ethernet": "󰈀",
+        "format-wifi": "{icon} ",
+        "format-disconnected": "󰤮",
+        "format-icons": ["󰤯","󰤟", "󰤢", "󰤨"],
+        "tooltip-format-wifi": "{essid} ({signalStrength}%)",
+        "tooltip-format-ethernet": "{ifname}",
+        "tooltip-format-disconnected": "Disconnected",
+        "on-click": "networkmanager_dmenu"
+    },
+
+    "bluetooth": {
+        "format": "󰂯",
+        "format-disabled": "󰂲",
+        "format-connected": "󰂱",
+        "tooltip-format": "{controller_alias}\t{controller_address}",
+        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+        "on-click": "foot -e bluetuith"
+    },
+
+    "tray": {
+        "icon-size": 16,
+        "spacing": 16
+    }
+}
