@@ -7,11 +7,11 @@ random() {
   WALLPAPER_DIR="/home/daniel/Pictures/wallpapers"
   IMAGE=$(find "$WALLPAPER_DIR" -type f \( -name "*.jpg" -o -name "*.png" -o -name "*.jpeg" \) | shuf -n 1)
 
-  cp "$IMAGE" /tmp/wallpaper.jpg
+  cp "$IMAGE" ~/Pictures/wallpaper.jpg
 
   killall swaybg
 
-  exec swaybg -i /tmp/wallpaper.jpg
+  exec swaybg -i ~/Pictures/wallpaper.jpg
 }
 
 daily() {
@@ -24,9 +24,9 @@ daily() {
   fi
 
   # Download the image
-  if curl -s "$BING_URL" -o /tmp/wallpaper.jpg; then
+  if curl -s "$BING_URL" -o ~/Pictures/wallpaper.jpg; then
     killall swaybg
-    exec swaybg -i /tmp/wallpaper.jpg
+    exec swaybg -i ~/Pictures/wallpaper.jpg
   else
     exit 1
   fi

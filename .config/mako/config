@@ -12,6 +12,7 @@ default-timeout=3000
 history=0
 format=<b>%s</b>\n%b
 [category="osd"]
+font=JetbrainsMono Nerd Font 10
 history=0
 text-color=#000000
 format=<b>%s</b>\n%b

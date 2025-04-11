@@ -9,9 +9,9 @@ if [ -z "$BING_URL" ] || [ "$BING_URL" = "null" ]; then
 fi
 
 # Download the image
-if curl -s "$BING_URL" -o /tmp/wallpaper.jpg; then
+if curl -s "$BING_URL" -o ~/Pictures/wallpaper.jpg; then
   killall swaybg
-  exec swaybg -i /tmp/wallpaper.jpg
+  exec swaybg -i ~/Pictures/wallpaper.jpg
 else
   exit 1
 fi
