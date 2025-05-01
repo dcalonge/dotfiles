@@ -1,0 +1,17 @@
+#!/bin/sh
+vol_info=$(wpctl get-volume @DEFAULT_AUDIO_SINK@)
+vol=$(echo "$vol_info" | awk '{print $2 * 100}')
+mute=$(echo "$vol_info" | awk '{print $3}')
+
+if [ "$mute" = "[MUTED]" ]; then
+  echo -n "󰖁"
+else
+  if [ "$vol" -le 33 ]; then
+    icon="$vol% 󰕿"
+  elif [ "$vol" -le 66 ]; then
+    icon="$vol% 󰖀"
+  else
+    icon="$vol% 󰕾"
+  fi
+  echo -n "$icon"
+fi

@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# This scripts may not work on all hardware, adapt it to your needs.
+CONSERVATION_MODE_PATH="/sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode"
+
+if [ ! -f "$CONSERVATION_MODE_PATH" ]; then
+  echo "Conservation mode control not found."
+  exit 1
+fi
+
+current_state=$(cat "$CONSERVATION_MODE_PATH")
+
+if [ "$current_state" -eq 1 ]; then
+  options="Enabled 󰄬\nDisabled"
+else
+  options="Enabled\nDisabled 󰄬"
+fi
+
+choice=$(printf "$options" | bemenu -i -p "battery threshold")
+
+case "$choice" in
+"Enabled" | "Enabled (*)")
+  systemctl start conservation-enable.service
+
+  ;;
+"Disabled" | "Disabled (*)")
+  systemctl start conservation-disable.service
+  ;;
+*) ;;
+esac

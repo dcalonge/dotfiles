@@ -15,5 +15,5 @@ systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 dbus-update-activation-environment --systemd DISPLAY XDG_CURRENT_DESKTOP=sway WAYLAND_DISPLAY
 
 wlr-randr --output eDP-1 --adaptive-sync enabled
-
+bluetoothctl power off
 exit

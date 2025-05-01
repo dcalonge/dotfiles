@@ -1,6 +1,6 @@
 #!/bin/sh
 
-GEOMETRY=$(slurp)
+GEOMETRY=$(wfreeze slurp)
 if [ $? -ne 0 ]; then
   GEOMETRY="0,0 1920x1080" # Default to fullscreen if slurp fails
 fi

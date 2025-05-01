@@ -1,0 +1,21 @@
+#!/bin/sh
+
+max_brightness=$(brightnessctl max)
+
+if [ "$max_brightness" -gt 0 ]; then
+  brightness_percent=$(($(brightnessctl get) * 100 / max_brightness))
+else
+  brightness_percent=0
+fi
+
+if [ "$brightness_percent" -le 24 ]; then
+  icon="$brightness_percent% 󰃞"
+elif [ "$brightness_percent" -le 49 ]; then
+  icon="$brightness_percent% 󰃝"
+elif [ "$brightness_percent" -le 74 ]; then
+  icon="$brightness_percent% 󰃟"
+else
+  icon="$brightness_percent% 󰃠"
+fi
+
+echo -n "$icon"

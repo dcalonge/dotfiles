@@ -17,3 +17,5 @@ if [ "$mute" = "[MUTED]" ]; then
 else
   notify-send " 󰕾" -t 1000 -u low -h int:value:$vol -c "osd" --hint=string:x-dunst-stack-tag:osd
 fi
+
+kill -44 $(pidof i3status-rs)
