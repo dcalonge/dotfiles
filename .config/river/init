@@ -1,0 +1,189 @@
+#!/bin/bash
+
+export ELECTRON_OZONE_PLATFORM_HINT='auto'
+export XDG_CURRENT_DESKTOP=wlroots
+export XDG_SESSION_TYPE=wayland
+export XDG_SESSION_DESKTOP=wlroots
+export QT_QPA_PLATFORM=wayland
+export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+export QT_QPA_PLATFORMTHEME="qt5ct"
+export EDITOR="nvim"
+
+# Setup dbus
+systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=wlr
+systemctl --user restart xdg-desktop-portal
+
+##############################################
+# Key bindings
+##############################################
+
+mod=Mod4
+
+# Application Launchers
+riverctl map normal $mod Return spawn 'foot'
+riverctl map normal $mod+Shift s spawn '~/scripts/screenshot_river.sh'
+riverctl map normal $mod+Shift e spawn '~/scripts/emoji_dmenu'
+riverctl map normal $mod b spawn 'flatpak run com.google.Chrome'
+riverctl map normal $mod h spawn 'foot -c /home/daniel/.config/foot/foot_no_pad.ini -e btop'
+riverctl map normal $mod n spawn 'foot -c /home/daniel/.config/foot/foot_no_pad.ini -e nvim'
+riverctl map normal $mod p spawn 'foot -e pulsemixer'
+riverctl map normal $mod w spawn 'killall bemenu || networkmanager_dmenu'
+riverctl map normal $mod y spawn 'foot -e yazi'
+riverctl map normal $mod+Shift a spawn 'foot -e bluetuith'
+riverctl map normal $mod a spawn 'killall bemenu || ~/scripts/dmenu-bluetooth; kill -39 $(pidof dwmblocks)'
+riverctl map normal $mod e spawn 'pcmanfm'
+riverctl map normal $mod r spawn 'killall bemenu || ~/scripts/wlr-menu'
+riverctl map normal $mod s spawn 'pgrep wlsunset && killall wlsunset || wlsunset -l 40.4165 -L -3.7026'
+
+# Volume and brightness Controls
+for mode in normal locked; do
+  riverctl map $mode None XF86AudioRaiseVolume spawn 'wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ && kill -44 $(pidof dwmblocks)'
+  riverctl map $mode None XF86AudioLowerVolume spawn 'wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && kill -44 $(pidof dwmblocks)'
+  riverctl map $mode None XF86AudioMute spawn 'wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && kill -44 $(pidof dwmblocks)'
+  riverctl map $mode None XF86MonBrightnessUp spawn 'brightnessctl set +5% && kill -54 $(pidof dwmblocks)'
+  riverctl map $mode None XF86MonBrightnessDown spawn 'brightnessctl set 5%- && kill -54 $(pidof dwmblocks)'
+  riverctl map $mode $mod XF86MonBrightnessUp spawn '~/scripts/keyboard_backlight down'
+  riverctl map $mode $mod XF86MonBrightnessDown spawn '~/scripts/keyboard_backlight down'
+  riverctl map $mode None XF86AudioPlay spawn 'playerctl play-pause'
+  riverctl map $mode None XF86AudioNext spawn 'playerctl next'
+  riverctl map $mode None XF86AudioPrev spawn 'playerctl previous'
+done
+
+riverctl map normal None Caps_Lock spawn '~/scripts/caps_lock'
+
+riverctl map normal None XF86AudioMicMute spawn 'wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && kill -49 $(pidof dwmblocks)'
+
+# Clipboard History
+riverctl map normal $mod v spawn 'killall bemenu || /home/daniel/scripts/cliphist-rofi'
+
+# Kill focused window
+riverctl map normal $mod q close
+
+# Start application launcher
+riverctl map normal $mod d spawn 'killall bemenu || j4-dmenu-desktop --no-generic --skip-i3-exec-check -f --dmenu bemenu -t foot'
+
+# Restart River
+riverctl map normal $mod+Shift c spawn "/home/daniel/.config/river/init >/dev/null && notify-send 'River' 'Refreshed'"
+
+# Exit River
+riverctl map normal $mod l spawn 'killall bemenu || /home/daniel/scripts/dmenu_logout_dwl.sh'
+
+# Change wallpaper
+riverctl map normal $mod+Shift w spawn "killall bemenu || ~/scripts/background.sh"
+
+# Open update prompt
+riverctl map normal $mod u spawn 'killall bemenu || /home/daniel/scripts/prompt.sh && kill -64 $(pidof dwmblocks)'
+
+# Layout stuff
+riverctl map normal $mod Left focus-view left
+riverctl map normal $mod Down focus-view next
+riverctl map normal $mod Up focus-view previous
+riverctl map normal $mod Right focus-view right
+
+riverctl map normal $mod+Shift Left swap left
+riverctl map normal $mod+Shift Down swap down
+riverctl map normal $mod+Shift Up swap up
+riverctl map normal $mod+Shift Right swap right
+
+riverctl map normal $mod m send-layout-cmd tile "layout monocle"
+riverctl map normal $mod t send-layout-cmd tile "layout tile"
+riverctl map normal $mod+Control Left send-layout-cmd tile "main_ratio -0.05"
+riverctl map normal $mod+Control Right send-layout-cmd tile "main_ratio +0.05"
+riverctl map normal $mod plus send-layout-cmd tile "main_count +1"
+riverctl map normal $mod minus send-layout-cmd tile "main_count -1"
+
+# Change output
+riverctl map normal $mod o spawn "riverctl focus-output next"
+# Send to next output
+riverctl map normal $mod+Shift o spawn "riverctl send-to-output next && riverctl focus-output next"
+
+# Workspaces
+
+for i in $(seq 1 9); do
+  tags=$((1 << (i - 1)))
+
+  riverctl map normal $mod $i \
+    set-focused-tags $tags
+  riverctl send-layout-cmd tile reset
+
+  riverctl map normal $mod+Shift $i \
+    set-view-tags $tags
+  riverctl send-layout-cmd tile reset
+
+  riverctl map normal $mod+Control $i \
+    toggle-focused-tags $tags
+  riverctl send-layout-cmd tile reset
+done
+
+all_tags_mask=$(((1 << 32) - 1))
+riverctl map normal $mod 0 set-focused-tags $all_tags_mask
+
+# Fullscreen mode
+riverctl map normal $mod f toggle-fullscreen
+riverctl map normal $mod+Shift space toggle-float
+riverctl map normal $mod space focus-float
+
+# Scratchpad
+scratch_tag=$((1 << 20))
+riverctl map normal $mod x toggle-focused-tags ${scratch_tag} # toggle the scratchpad
+riverctl map normal $mod+Shift x set-view-tags ${scratch_tag} # send windows to the scratchpad
+all_but_scratch_tag=$((((1 << 32) - 1) ^ $scratch_tag))
+riverctl spawn-tagmask ${all_but_scratch_tag}
+
+##############################################
+# Input configuration
+##############################################
+
+# Keyboard configuration
+riverctl keyboard-layout "es"
+
+# Touchpad configuration
+for pad in $(riverctl list-inputs | grep -i touchpad); do
+  riverctl input $pad events enabled
+  riverctl input $pad tap enabled
+  riverctl input $pad disable-while-typing enabled
+  riverctl input $pad natural-scroll enabled
+  riverctl input $pad drag-lock enabled
+done
+
+##############################################
+# Behavoiur & Autostart
+##############################################
+
+# Super + Left Mouse Button to move views
+riverctl map-pointer normal $mod BTN_LEFT move-view
+
+# Super + Shift + Left Mouse Button to resize views
+riverctl map-pointer normal $mod+Control BTN_LEFT resize-view
+
+# Set cursor behavoiur
+riverctl set-cursor-warp on-focus-change
+riverctl focus-follows-cursor normal
+
+# Set some rules
+riverctl rule-add ssd
+riverctl rule-add -title "Open File" float
+riverctl rule-add -title "Open Folder" float
+
+# Set layout manager
+riverctl default-layout tile
+
+# Autostart applications
+killall udiskie
+executes="udiskie swayidle swaybg wl-paste layout mako /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
+for execute in $executes; do
+  pidof -q "$execute" && continue
+  case $execute in
+  "swaybg") "$execute" -i ~/Pictures/wallpaper.jpg & ;;
+  "swayidle") "$execute" -w timeout 120 'systemctl suspend' before-sleep 'pidof -q hyprlock || hyprlock -q' & ;;
+  "wl-paste") "$execute" --watch cliphist store & ;;
+  *) "$execute" & ;;
+  esac
+done >/dev/null 2>&1
+
+killall dwmblocks
+killall dam
+dwmblocks | dam
+
+exec wlr-randr --output eDP-1 --adaptive-sync enabled
