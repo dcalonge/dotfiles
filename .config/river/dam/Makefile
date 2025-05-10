@@ -11,7 +11,7 @@ INCS != $(PKG_CONFIG) --cflags $(PKGS)
 LIBS != $(PKG_CONFIG) --libs $(PKGS)
 
 CPPFLAGS += -DVERSION=\"$(VERSION)\" -D_GNU_SOURCE
-CFLAGS   += -pedantic -Wall $(INCS)
+CFLAGS   += -pedantic -Wall -Wno-unused-function -Wno-strict-prototypes $(INCS)
 LDLIBS   = $(LIBS)
 
 PROTO = xdg-shell-protocol.h wlr-layer-shell-unstable-v1-protocol.h \

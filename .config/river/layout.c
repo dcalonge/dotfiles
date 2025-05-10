@@ -1,33 +1,18 @@
-/* Tiled layout for river, implemented in understandable, simple, commented code.
- * Reading this code should help you get a basic understanding of how to use
- * river-layout to create a basic layout generator.
+/* layout generator for river based on the c layout example from the river repo
+ * with some features added to it:
  *
- * Q: Wow, this is a lot of code just for a layout!
- * A: No, it really is not. Most of the code here is just generic Wayland client
- *    boilerplate. The actual layout part is pretty small.
+ * Per-tag state
+ * Master/stack(s) layout
+ * Monocle with no borders borders
+ * Layout toggling via cmd
+ * Inner, outer and smart gaps
+ * Smart borders
  *
- * Q: Can I use this to port dwm layouts to river?
- * A: Yes you can! You just need to replace the logic in layout_handle_layout_demand().
- *    You don't even need to fully understand the protocol if all you want to
- *    do is just port some layouts.
  *
- * Q: I have no idea how any of this works.
- * A: If all you want to do is create layouts, you do not need to understand
- *    the Wayland parts of the code. If you still want to understand it and are
- *    familiar with how Wayland clients work, read the protocol. If you are new
- *    to writing Wayland client code, you can read https://wayland-book.com,
- *    then read the protocol.
  *
- * Q: How do I build this?
- * A: To build, you need to generate the header and code of the layout protocol
- *    extension and link against them. This is achieved with the following
- *    commands (You may want to setup a build system).
- *
- *        wayland-scanner private-code < river-layout-v3.xml > river-layout-v3.c
- *        wayland-scanner client-header < river-layout-v3.xml > river-layout-v3.h
- *        gcc -Wall -Wextra -Wpedantic -Wno-unused-parameter -c -o layout.o layout.c
- *        gcc -Wall -Wextra -Wpedantic -Wno-unused-parameter -c -o river-layout-v3.o river-layout-v3.c
- *        gcc -o layout layout.o river-layout-v3.o -lwayland-client
+ * To build, you need to generate the header and code of the layout protocol
+ * extension and link against them. This is done by the makefile provide in
+ * this directory. You just need to make install.
  */
 
 #include <assert.h>
@@ -46,12 +31,6 @@
 #define MIN(a, b) ( (a) < (b) ? (a) : (b) )
 #define MAX(a, b) ( (a) > (b) ? (a) : (b) )
 #define CLAMP(a, b, c) ( MIN(MAX(b, c), MAX(MIN(b, c), a)) )
-
-
-static unsigned int
-tag_index(uint32_t tags) {
-    return (tags == 0 ? 0 : __builtin_ffs(tags) - 1);
-}
 
 struct Output {
     struct wl_list link;
@@ -73,6 +52,7 @@ struct Output {
     // borders
     uint32_t border_width;
     bool     smart_borders;
+    uint32_t last_sent_border_width;
 
     bool configured;
 };
@@ -99,40 +79,43 @@ static void layout_handle_layout_demand(void *data,
     bool     mono   = o->monocle[ti];
 
     // Determine effective gaps
-    bool hide_gaps = o->smart_gaps && (mono || view_count <= 1);
+    bool hide_gaps = o->smart_gaps && view_count <= 1;
     uint32_t outer = hide_gaps ? 0 : o->outer_padding;
     uint32_t inner = hide_gaps ? 0 : o->view_padding;
 
 
 
-    /* Monocle: every view full‑screen */
+    /* Monocle: every view full‑screen with no borders */
     if (mono) {
         if (o->smart_borders) {
-          char cmd[64];
-          snprintf(cmd, sizeof(cmd), "riverctl border-width 0");
-          system(cmd);
+          if (o->last_sent_border_width != 0) {
+            char cmd[64];
+            snprintf(cmd, sizeof(cmd), "riverctl border-width 0");
+            system(cmd);
+            o->last_sent_border_width = 0;
+          }
         }
         for (uint32_t i = 0; i < view_count; i++) {
-            river_layout_v3_push_view_dimensions(o->layout,
-                outer + inner, outer + inner,
-                width  - 2*(outer + inner),
-                height - 2*(outer + inner),
-                serial);
+            river_layout_v3_push_view_dimensions(o->layout, 0, 0, width, height, serial);
         }
         char label[16];
         snprintf(label, sizeof(label), "[%u]", view_count);
         river_layout_v3_commit(o->layout, label, serial);
         return;
-      }
+    }
 
     if (o->smart_borders) {
         bool hide_border = mono || view_count <= 1;
         char cmd[64];
-        if (hide_border)
-            snprintf(cmd, sizeof(cmd), "riverctl border-width 0");
-        else
-            snprintf(cmd, sizeof(cmd), "riverctl border-width %u", o->border_width);
+        uint32_t bw = hide_border ? 0 : o->border_width;
+        if (bw != o->last_sent_border_width) {
+          if (hide_border)
+              snprintf(cmd, sizeof(cmd), "riverctl border-width 0");
+          else
+              snprintf(cmd, sizeof(cmd), "riverctl border-width %u", bw);
         system(cmd);
+        o->last_sent_border_width = bw;
+        }
     }
     width  -= 2 * outer;
     height -= 2 * outer;

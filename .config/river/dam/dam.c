@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#include <assert.h>
 #include <errno.h>
 #include <getopt.h>
 #include <linux/input-event-codes.h>
@@ -12,8 +13,8 @@
 #include <unistd.h>
 #include <wayland-client.h>
 
-#include "drwl.h"
-#include "bufpool.h"
+#include "drwl/drwl.h"
+#include "drwl/bufpool.h"
 #include "river-status-unstable-v1-protocol.h"
 #include "river-control-unstable-v1-protocol.h"
 #include "wlr-layer-shell-unstable-v1-protocol.h"
@@ -206,7 +207,7 @@ bar_load_fonts(Bar *bar)
 		die("failed to load fonts");
 
 	bar->lrpad = bar->drw->font->height;
-	bar->height = user_bh ? user_bh :  bar->drw->font->height + 2;
+	bar->height = 24;
 	if (bar->layer_surface) {
 		zwlr_layer_surface_v1_set_size(bar->layer_surface, 0, bar->height / bar->scale);
 		zwlr_layer_surface_v1_set_exclusive_zone(bar->layer_surface, bar->height / bar->scale);
@@ -260,13 +261,11 @@ bar_draw(Bar *bar)
 	x = drwl_text(bar->drw, x, 0, w, bar->height, bar->lrpad / 2, bar->layout, 0);
 
 	if ((w = bar->width - tw - x) > bar->height) {
-		if (bar->title) {
-			drwl_setscheme(bar->drw, colors[SchemeNorm]);
+		drwl_setscheme(bar->drw, colors[bar == selbar && SchemeNorm]);
+		if (bar->title)
 			drwl_text(bar->drw, x, 0, w, bar->height, bar->lrpad / 2, bar->title, 0);
-		} else {
-			drwl_setscheme(bar->drw, colors[SchemeNorm]);
+		else
 			drwl_rect(bar->drw, x, 0, w, bar->height, 1, 1);
-		}
 	}
 
 	drwl_setimage(bar->drw, NULL);
@@ -726,6 +725,7 @@ setup(void)
 
 	sigemptyset(&mask);
 	sigaddset(&mask, SIGUSR1);
+	sigaddset(&mask, SIGUSR2);
 	sigaddset(&mask, SIGTERM);
 	sigaddset(&mask, SIGINT);
 
@@ -752,21 +752,16 @@ run(void)
 	};
 
 	for (;;) {
-		if (wl_display_prepare_read(display) < 0)
-			if (wl_display_dispatch_pending(display) < 0)
-				die("wl_display_dispatch_pending:");
+		wl_display_flush(display);
 
-		if (wl_display_flush(display) < 0)
-			die("wl_display_flush:");
-
-		while (poll(pfds, 3, -1) < 0) {
-			if (errno == EAGAIN)
-				continue;
-			wl_display_cancel_read(display);
+		while (poll(pfds, 3, -1) < 0)
 			die("poll:");
-		}
 
-		if (pfds[1].revents & POLLHUP) {
+		if (pfds[0].revents & POLLIN)
+			if (wl_display_dispatch(display) < 0)
+				die("display dispatch failed");
+
+		if (pfds[1].revents & POLLHUP) { /* stdin closed */
 			pfds[1].fd = -1;
 			stext[0] = '\0';
 			bars_draw();
@@ -785,16 +780,6 @@ run(void)
 			         si.ssi_signo == SIGINT)
 				break;
 		}
-
-		if (!(pfds[0].revents & POLLIN)) {
-			wl_display_cancel_read(display);
-			continue;
-		}
-
-		if (wl_display_read_events(display) < 0)
-			die("wl_display_read_events:");
-		if (wl_display_dispatch_pending(display) < 0)
-			die("wl_display_dispatch_pending");
 	}
 }
 
