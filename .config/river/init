@@ -30,7 +30,7 @@ riverctl map normal $mod n spawn 'foot -c /home/daniel/.config/foot/foot_no_pad.
 riverctl map normal $mod p spawn 'foot -e pulsemixer'
 riverctl map normal $mod w spawn 'killall bemenu || networkmanager_dmenu'
 riverctl map normal $mod y spawn 'foot -e yazi'
-riverctl map normal $mod+Shift a spawn 'foot -e bluetuith'
+riverctl map normal $mod+Shift a spawn 'foot -e bluetuith; kill -39 $(pidof dwmblocks)'
 riverctl map normal $mod a spawn 'killall bemenu || ~/scripts/dmenu-bluetooth; kill -39 $(pidof dwmblocks)'
 riverctl map normal $mod e spawn 'pcmanfm'
 riverctl map normal None XF86Calculator spawn 'qalculate-gtk'
@@ -66,7 +66,7 @@ riverctl map normal $mod q close
 riverctl map normal $mod d spawn 'killall bemenu || j4-dmenu-desktop --no-generic --skip-i3-exec-check -f --dmenu bemenu -t foot'
 
 # Restart River
-riverctl map normal $mod+Shift c spawn "/home/daniel/.config/river/init >/dev/null && notify-send 'River' 'Refreshed'"
+riverctl map normal $mod+Shift c spawn "/bin/bash /home/daniel/.config/river/init"
 
 # Exit River
 riverctl map normal $mod l spawn 'killall bemenu || /home/daniel/scripts/dmenu_logout_dwl.sh'
@@ -90,6 +90,7 @@ riverctl map normal $mod+Shift Right swap right
 
 riverctl map normal $mod m send-layout-cmd tile "layout monocle"
 riverctl map normal $mod t send-layout-cmd tile "layout tile"
+riverctl map normal $mod Tab send-layout-cmd tile "layout toggle"
 riverctl map normal $mod+Control Left send-layout-cmd tile "main_ratio -0.05"
 riverctl map normal $mod+Control Right send-layout-cmd tile "main_ratio +0.05"
 riverctl map normal $mod plus send-layout-cmd tile "main_count +1"
@@ -170,7 +171,7 @@ for execute in $executes; do
   pidof -q "$execute" && continue
   case $execute in
   "swaybg") "$execute" -i ~/Pictures/wallpaper.jpg & ;;
-  "swayidle") "$execute" -w timeout 120 'systemctl suspend' before-sleep 'pidof -q hyprlock || hyprlock -q' & ;;
+  "swayidle") "$execute" -w before-sleep 'pidof -q hyprlock || hyprlock -q' & ;;
   "wl-paste") "$execute" --watch cliphist store & ;;
   *) "$execute" & ;;
   esac
@@ -181,5 +182,6 @@ killall dam
 dwmblocks | dam
 
 wlr-randr --output eDP-1 --adaptive-sync enabled
+bluetoothctl power off
 
 exit

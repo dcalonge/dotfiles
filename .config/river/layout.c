@@ -1,4 +1,4 @@
-/* layout generator for river based on the c layout example from the river repo
+/* Layout generator for river based on the layout example from the river repo
  * with some features added to it:
  *
  * Per-tag state
@@ -11,7 +11,7 @@
  *
  *
  * To build, you need to generate the header and code of the layout protocol
- * extension and link against them. This is done by the makefile provide in
+ * extension and link against them. This is done by the makefile provided in
  * this directory. You just need to make install.
  */
 
@@ -283,7 +283,20 @@ static void layout_handle_user_command(void *data,
         char *p = cmd;
         const char *arg = get_second_word(&p, "layout");
         if (!arg) return;
-        o->monocle[ti] = (strcmp(arg, "monocle") == 0);
+
+        if (strcmp(arg, "monocle") == 0) {
+            o->monocle[ti] = true;
+        }
+        else if (strcmp(arg, "tile") == 0) {
+            o->monocle[ti] = false;
+        }
+        else if (strcmp(arg, "toggle") == 0) {
+            o->monocle[ti] = !o->monocle[ti];
+        }
+        else {
+            fprintf(stderr, "Unknown layout mode '%s'\n", arg);
+            return;
+        }
         return;
     }
         fprintf(stderr, "Unknown command '%s'\n", cmd);

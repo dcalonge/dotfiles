@@ -16,4 +16,3 @@ dbus-update-activation-environment --systemd DISPLAY XDG_CURRENT_DESKTOP=sway WA
 
 wlr-randr --output eDP-1 --adaptive-sync enabled
 bluetoothctl power off
-exit
