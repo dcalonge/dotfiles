@@ -6,7 +6,7 @@
  * Monocle with no borders borders
  * Layout toggling via cmd
  * Inner, outer and smart gaps
- * Smart borders
+ * Smart borders (dont work too well with floating windows, feel free to fix if needed)
  *
  *
  *

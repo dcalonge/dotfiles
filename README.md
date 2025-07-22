@@ -1,6 +1,6 @@
 * Distro: archlinux
 
-* wayland compositor: river
+* wayland compositor: river (using my own layout generator written in c)
 
 * Terminal emulator: foot
 

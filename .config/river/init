@@ -1,14 +1,5 @@
 #!/bin/bash
 
-export ELECTRON_OZONE_PLATFORM_HINT='auto'
-export XDG_CURRENT_DESKTOP=wlroots
-export XDG_SESSION_TYPE=wayland
-export XDG_SESSION_DESKTOP=wlroots
-export QT_QPA_PLATFORM=wayland
-export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
-export QT_QPA_PLATFORMTHEME="qt5ct"
-export EDITOR="nvim"
-
 # Setup dbus
 systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=wlr
@@ -45,7 +36,7 @@ for mode in normal locked; do
   riverctl map $mode None XF86AudioMute spawn 'wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && kill -44 $(pidof dwmblocks)'
   riverctl map $mode None XF86MonBrightnessUp spawn 'brightnessctl set +5% && kill -54 $(pidof dwmblocks)'
   riverctl map $mode None XF86MonBrightnessDown spawn 'brightnessctl set 5%- && kill -54 $(pidof dwmblocks)'
-  riverctl map $mode $mod XF86MonBrightnessUp spawn '~/scripts/keyboard_backlight down'
+  riverctl map $mode $mod XF86MonBrightnessUp spawn '~/scripts/keyboard_backlight up'
   riverctl map $mode $mod XF86MonBrightnessDown spawn '~/scripts/keyboard_backlight down'
   riverctl map $mode None XF86AudioPlay spawn 'playerctl play-pause'
   riverctl map $mode None XF86AudioNext spawn 'playerctl next'
@@ -106,7 +97,7 @@ riverctl map normal $mod+Shift o spawn "riverctl send-to-output next && riverctl
 for i in $(seq 1 9); do
   tags=$((1 << (i - 1)))
   riverctl map normal $mod $i set-focused-tags $tags
-  riverctl map normal $mod+Shift $i spawn "riverctl set-view-tags $tags && riverctl set-focused-tags $tags"
+  riverctl map normal $mod+Shift $i spawn "riverctl set-view-tags $tags; riverctl set-focused-tags $tags"
   riverctl map normal $mod+Control $i toggle-focused-tags $tags
 done
 
