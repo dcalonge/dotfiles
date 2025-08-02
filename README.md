@@ -4,4 +4,5 @@
 
 * Terminal emulator: foot
 
-![image](https://github.com/user-attachments/assets/122d06fa-baf1-4952-b25d-d85fdabe1637)
+
+<img width="1920" height="1080" alt="20250802_21h20m57s_grim" src="https://github.com/user-attachments/assets/f39d47bd-0f42-47d8-8574-a2163bf17957" />
