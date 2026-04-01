@@ -90,7 +90,7 @@
             .direction  = .horizontal,
         },
         .monocle = .{
-            .gap = 9,
+            .gap = 0,
         },
         .deck = .{
             .inner_gap       = 12,
@@ -358,8 +358,8 @@
             .{ .mode = "lock", .keysym = "XF86AudioPrev",         .modifiers = .{}, .event = .{ .click = .{ .pressed = .{ .spawn = .{ .argv = .{ "playerctl", "previous" } } } } } },
 
             // Window focus - arrow keys (sequential, not spatial like River)
-            .{ .keysym = "Left",  .modifiers = .{ .mod4 = true }, .event = .{ .click = .{ .pressed = .{ .focus_iter = .{ .direction = .reverse } } } } },
-            .{ .keysym = "Right", .modifiers = .{ .mod4 = true }, .event = .{ .click = .{ .pressed = .{ .focus_iter = .{ .direction = .forward } } } } },
+            .{ .keysym = "Left",  .modifiers = .{ .mod4 = true }, .event = .{ .click = .{ .pressed = .focus_master_return } } },
+            .{ .keysym = "Right", .modifiers = .{ .mod4 = true }, .event = .{ .click = .{ .pressed = .focus_master_return } } },
             .{ .keysym = "Up",    .modifiers = .{ .mod4 = true }, .event = .{ .click = .{ .pressed = .{ .focus_iter = .{ .direction = .reverse } } } } },
             .{ .keysym = "Down",  .modifiers = .{ .mod4 = true }, .event = .{ .click = .{ .pressed = .{ .focus_iter = .{ .direction = .forward } } } } },
 
