@@ -38,7 +38,8 @@ if [ "$change_option" = "Mode" ]; then
     exit 1
   fi
 
-  selected_mode=$(echo "$mode" | cut -d' ' -f1)
+  selected_mode=$(echo "$mode" | sed 's/ @ /@/; s/  .*//')
+
   brightness=$(brightnessctl get)
 
   wlr-randr --output "$output" --mode "$selected_mode"
