@@ -211,7 +211,7 @@
             .{
                 .keysym    = "e",
                 .modifiers = .{ .mod4 = true },
-                .event     = .{ .click = .{ .pressed = .{ .spawn = .{ .argv = .{ "pcmanfm" } } } } },
+                .event     = .{ .click = .{ .pressed = .{ .spawn = .{ .argv = .{ "thunar" } } } } },
             },
             .{
                 .keysym    = "XF86Calculator",
