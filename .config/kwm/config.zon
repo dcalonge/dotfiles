@@ -15,7 +15,7 @@
         .{ "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1" },
         .{ "wlr-randr", "--output", "eDP-1", "--adaptive-sync", "enabled" },
         .{ "swaybg", "-i", "Pictures/wallpaper.jpg"},
-        .{ "swayidle", "-w", "before-sleep", "'pidof -q hyprlock || hyprlock -q'" },
+        .{ "swayidle", "-w", "before-sleep", "hyprlock" },
     },
 
     // .none
