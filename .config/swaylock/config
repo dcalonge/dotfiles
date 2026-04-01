@@ -1,0 +1,49 @@
+image=~/Pictures/wallpaper.jpg
+show-failed-attempts
+ignore-empty-password
+indicator-idle-visible
+font=JetbrainsMono Nerd Font
+
+# Outside (background)
+color=222222
+
+# Text
+text-color=eeeeeeff
+text-clear-color=bbbbbbff
+text-ver-color=eeeeeeff
+text-wrong-color=ff0000ff
+text-caps-lock-color=eeeeeeff
+
+# Ring 
+ring-color=222222ff
+ring-clear-color=222222ff
+ring-ver-color=222222ff
+ring-wrong-color=ff0000ff
+ring-caps-lock-color=222222ff
+
+# Inside
+inside-color=222222ff
+inside-clear-color=222222ff
+inside-ver-color=222222ff
+inside-wrong-color=222222ff
+inside-caps-lock-color=222222ff
+
+# Lines
+line-color=222222ff
+line-clear-color=222222ff
+line-ver-color=222222ff
+line-wrong-color=222222ff
+line-caps-lock-color=222222ff
+
+# Separator
+separator-color=22222200
+
+# Highlights
+key-hl-color=005577ff
+caps-lock-key-hl-color=005577ff
+caps-lock-bs-hl-color=ff0000ff
+
+# Layout
+layout-bg-color=22222200
+layout-border-color=22222200
+layout-text-color=eeeeeeff

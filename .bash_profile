@@ -14,7 +14,7 @@ export QT_QPA_PLATFORMTHEME="qt5ct"
 export EDITOR="nvim"
 export BEMENU_OPTS='
 -l 20 -p ">" -i -w
---fn "JetBrains Mono Nerd Font 12:size=11:antialias=true:hinting=true"
+--fn "JetBrains Mono Nerd Font 16:size=11:antialias=true:hinting=true"
 
 --nb "#222222" --nf "#bbbbbb"
 --sb "#005577" --sf "#eeeeee"

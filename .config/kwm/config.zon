@@ -15,7 +15,7 @@
         .{ "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1" },
         .{ "wlr-randr", "--output", "eDP-1", "--adaptive-sync", "enabled" },
         .{ "swaybg", "-i", "Pictures/wallpaper.jpg"},
-        .{ "swayidle", "-w", "before-sleep", "hyprlock" },
+        .{ "swayidle", "-w", "before-sleep", "swaylock" },
     },
 
     // .none
@@ -248,6 +248,11 @@
                 .keysym    = "l",
                 .modifiers = .{ .mod4 = true },
                 .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "killall bemenu || /home/daniel/scripts/dmenu_logout_dwl.sh" } } } },
+            },
+            .{
+                .keysym    = "q",
+                .modifiers = .{ .mod4 = true, .ctrl = true },
+                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "systemctl suspend" } } } },
             },
             .{
                 .keysym    = "u",
