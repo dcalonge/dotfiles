@@ -14,6 +14,6 @@ update_system() {
 # Tomar acción según la selección del usuario
 case "$SELECTION" in
 "update")
-  update_system && pkill -RTMIN+8 waybar
+  update_system
   ;;
 esac

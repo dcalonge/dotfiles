@@ -1,0 +1,52 @@
+#!/bin/sh
+
+set -e
+
+bm_db_location="${XDG_DATA_HOME:-$HOME/.local/share}/bemoji"
+
+ensure_data_dir() {
+  [ -d "$bm_db_location" ] || mkdir -p "$bm_db_location"
+}
+
+dl_default_emoji() {
+  curl -sSL "https://unicode.org/Public/emoji/16.0/emoji-test.txt" |
+    sed -ne 's/^.*; fully-qualified.*# \(\S*\) \S* \(.*$\)/\1 \2/gp' \
+      >"$bm_db_location/emojis.txt"
+}
+
+dl_nerd_symbols() {
+  curl -sSL "https://raw.githubusercontent.com/ryanoasis/nerd-fonts/master/glyphnames.json" |
+    jq -r '
+            to_entries[]
+            | select(.key != "METADATA")
+            | "\(.value.char) \(.key)"
+        ' >"$bm_db_location/nerdfont.txt"
+}
+
+ensure_datasets() {
+  ensure_data_dir
+
+  [ -f "$bm_db_location/emojis.txt" ] || dl_default_emoji
+  [ -f "$bm_db_location/nerdfont.txt" ] || dl_nerd_symbols
+}
+
+list() {
+  cat "$bm_db_location/"*.txt 2>/dev/null
+}
+
+copy() {
+  input=$(tee)
+
+  if [ -n "$input" ]; then
+    symbol=$(printf "%s" "$input" | cut -d' ' -f1)
+    wl-copy "$symbol"
+    notify-send "$symbol copied!" -t 1000
+  fi
+}
+
+main() {
+  ensure_datasets
+  list | bemenu -p "copy symbol:" | copy
+}
+
+main

@@ -10,7 +10,7 @@
 
     .startup_cmds = .{
         .{ "wl-paste", "--watch", "cliphist", "store" },
-        .{ "udiskie" },
+        .{ "udiskie", "--no-tray"},
         .{ "mako" },
         .{ "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1" },
         .{ "wlr-randr", "--output", "eDP-1", "--adaptive-sync", "enabled" },
@@ -30,7 +30,7 @@
     .bar = .{
         .show_default = true,
         .position = .top,
-        .font = "JetbrainsMono Nerd Font:size=11:antialias=true:hinting=true",
+        .font = "JetbrainsMono Nerd Font:size=12:antialias=true:hinting=true",
         .color = .{
             .normal = .{
                 .fg = 0xbbbbbbff,
@@ -45,7 +45,7 @@
         .click = .{
             .tags = .{
                 .left   = .{ .action = .{ .set_output_tag    = .{ .tag  = .{ .tag  = 0 } } } },
-                .right  = .{ .action = .{ .toggle_output_tag = .{ .mask = 0 } } },
+                .right  = .{ .action = .{ .set_window_tag = .{ .tag  = .{ .tag  = 0 } } } },
                 .middle = .{ .action = .{ .toggle_window_tag = .{ .mask = 0 } } },
             },
             .layout = .{
@@ -107,8 +107,8 @@
     .layout_tag = .{
         .tile     = .{ .left = "[]=", .right = "=[]", .top = "[^]", .bottom = "[_]" },
         .grid     = .{ .horizontal = "|+|", .vertical = "|||" },
-        .monocle  = "[M]",
-        .deck     = .{ .left = "[D]=", .right = "=[D]", .top = "[D^]", .bottom = "[D_]" },
+        .monocle  = "[{{M}}]",
+        .deck     = .{ .left = "[{{D}}]=", .right = "=[{{D}}]", .top = "[{{D}}^]", .bottom = "[{{D}}_]"},
         .scroller = "[==]",
         .float    = "><>",
     },
@@ -138,11 +138,6 @@
             },
             .{
                 .keysym    = "q",
-                .modifiers = .{ .mod4 = true, .shift = true },
-                .event     = .{ .click = .{ .pressed = .{ .quit = .{ .exit_session = true } } } },
-            },
-            .{
-                .keysym    = "q",
                 .modifiers = .{ .mod4 = true },
                 .event     = .{ .click = .{ .pressed = .close } },
             },
@@ -150,6 +145,16 @@
                 .keysym    = "b",
                 .modifiers = .{ .mod4 = true, .shift = true },
                 .event     = .{ .click = .{ .pressed = .toggle_bar } },
+            },
+            .{
+                .keysym = "plus",
+                .modifiers = .{ .mod4 = true },
+                .event = .{ .click = .{ .pressed = .{ .modify_nmaster = .{ .change = .increase } } } }
+            },
+            .{
+                .keysym = "minus",
+                .modifiers = .{ .mod4 = true },
+                .event = .{ .click = .{ .pressed = .{ .modify_nmaster = .{ .change = .decrease } } } }
             },
 
             // Passthrough mode
@@ -186,17 +191,17 @@
             .{
                 .keysym    = "r",
                 .modifiers = .{ .mod4 = true },
-                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "killall bemenu || ~/scripts/wlr-menu" } } } },
+                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "killall bemenu || scripts/wlr-menu" } } } },
             },
             .{
                 .keysym    = "n",
                 .modifiers = .{ .mod4 = true },
-                .event     = .{ .click = .{ .pressed = .{ .spawn = .{ .argv = .{ "foot", "-c", "/home/daniel/.config/foot/foot_no_pad.ini", "-e", "nvim" } } } } },
+                .event     = .{ .click = .{ .pressed = .{ .spawn = .{ .argv = .{ "foot", "-c", ".config/foot/foot_no_pad.ini", "-e", "nvim" } } } } },
             },
             .{
                 .keysym    = "h",
                 .modifiers = .{ .mod4 = true },
-                .event     = .{ .click = .{ .pressed = .{ .spawn = .{ .argv = .{ "foot", "-c", "/home/daniel/.config/foot/foot_no_pad.ini", "-e", "btop" } } } } },
+                .event     = .{ .click = .{ .pressed = .{ .spawn = .{ .argv = .{ "foot", "-c", ".config/foot/foot_no_pad.ini", "-e", "btop" } } } } },
             },
             .{
                 .keysym    = "p",
@@ -204,14 +209,9 @@
                 .event     = .{ .click = .{ .pressed = .{ .spawn = .{ .argv = .{ "foot", "-e", "pulsemixer" } } } } },
             },
             .{
-                .keysym    = "y",
-                .modifiers = .{ .mod4 = true },
-                .event     = .{ .click = .{ .pressed = .{ .spawn = .{ .argv = .{ "foot", "-e", "yazi" } } } } },
-            },
-            .{
                 .keysym    = "e",
                 .modifiers = .{ .mod4 = true },
-                .event     = .{ .click = .{ .pressed = .{ .spawn = .{ .argv = .{ "thunar" } } } } },
+                .event     = .{ .click = .{ .pressed = .{ .spawn = .{ .argv = .{ "foot", "-e", "yazi" } } } } },
             },
             .{
                 .keysym    = "XF86Calculator",
@@ -222,7 +222,7 @@
                 // Chrome on Super+Shift+B (Super+B is reserved for toggle_bar)
                 .keysym    = "b",
                 .modifiers = .{ .mod4 = true},
-                .event     = .{ .click = .{ .pressed = .{ .spawn = .{ .argv = .{ "google-chrome-stable" } } } } },
+                .event     = .{ .click = .{ .pressed = .{ .spawn = .{ .argv = .{ "chromium" } } } } },
             },
             .{
                 .keysym    = "w",
@@ -232,7 +232,7 @@
             .{
                 .keysym    = "a",
                 .modifiers = .{ .mod4 = true },
-                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "killall bemenu || ~/scripts/dmenu-bluetooth; kill -39 $(pidof dwmblocks)" } } } },
+                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "killall bemenu || scripts/dmenu-bluetooth; kill -39 $(pidof dwmblocks)" } } } },
             },
             .{
                 .keysym    = "a",
@@ -242,12 +242,12 @@
             .{
                 .keysym    = "v",
                 .modifiers = .{ .mod4 = true },
-                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "killall bemenu || /home/daniel/scripts/cliphist-rofi" } } } },
+                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "killall bemenu || scripts/cliphist-rofi" } } } },
             },
             .{
                 .keysym    = "l",
                 .modifiers = .{ .mod4 = true },
-                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "killall bemenu || /home/daniel/scripts/dmenu_logout_dwl.sh" } } } },
+                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "killall bemenu || scripts/dmenu_logout_dwl.sh" } } } },
             },
             .{
                 .keysym    = "q",
@@ -257,7 +257,7 @@
             .{
                 .keysym    = "u",
                 .modifiers = .{ .mod4 = true },
-                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "killall bemenu || /home/daniel/scripts/prompt.sh && kill -64 $(pidof dwmblocks)" } } } },
+                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "killall bemenu || scripts/prompt.sh; kill -64 $(pidof dwmblocks)" } } } },
             },
             .{
                 .keysym    = "s",
@@ -267,28 +267,28 @@
             .{
                 .keysym    = "w",
                 .modifiers = .{ .mod4 = true, .shift = true },
-                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "killall bemenu || ~/scripts/background.sh" } } } },
+                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "killall bemenu || scripts/background.sh" } } } },
             },
             .{
                 .keysym    = "e",
                 .modifiers = .{ .mod4 = true, .shift = true },
-                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "~/scripts/emoji_dmenu" } } } },
+                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "scripts/bemoji" } } } },
             },
             .{
                 .keysym    = "s",
                 .modifiers = .{ .mod4 = true, .shift = true },
-                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "~/scripts/screenshot_river.sh" } } } },
+                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "scripts/screenshot_river.sh" } } } },
             },
             .{
                 // battery_threshold on Super+Shift+I (Super+Shift+B taken by Chrome)
                 .keysym    = "i",
                 .modifiers = .{ .mod4 = true, .shift = true },
-                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "killall bemenu || ~/scripts/battery_threshold" } } } },
+                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "killall bemenu || scripts/battery_threshold" } } } },
             },
             .{
                 .keysym    = "Caps_Lock",
                 .modifiers = .{},
-                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "~/scripts/caps_lock" } } } },
+                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "scripts/caps_lock" } } } },
             },
 
             // Volume / brightness - normal mode
@@ -325,12 +325,12 @@
             .{
                 .keysym    = "XF86MonBrightnessUp",
                 .modifiers = .{ .mod4 = true },
-                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "~/scripts/keyboard_backlight up" } } } },
+                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "scripts/keyboard_backlight up" } } } },
             },
             .{
                 .keysym    = "XF86MonBrightnessDown",
                 .modifiers = .{ .mod4 = true },
-                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "~/scripts/keyboard_backlight down" } } } },
+                .event     = .{ .click = .{ .pressed = .{ .spawn_shell = .{ .cmd = "scripts/keyboard_backlight down" } } } },
             },
             .{
                 .keysym    = "XF86AudioPlay",
@@ -381,20 +381,25 @@
             },
             .{
                 .keysym    = "Tab",
-                .modifiers = .{ .mod4 = true },
+                .modifiers = .{ .mod4 = true, .shift = true},
                 .event     = .{ .click = .{ .pressed = .switch_to_previous_layout } },
+            },
+            .{
+                .keysym    = "Tab",
+                .modifiers = .{ .mod4 = true},
+                .event     = .{ .click = .{ .pressed = .switch_to_previous_tag } },
             },
 
             // mfact
             .{
                 .keysym    = "Left",
                 .modifiers = .{ .mod4 = true, .ctrl = true },
-                .event     = .{ .click = .{ .pressed = .{ .modify_mfact = .{ .step = -0.05 } } } },
+                .event     = .{ .click = .{ .pressed = .{ .modify_mfact = .{ .change = .{ .step = -0.05 } } } } },
             },
             .{
                 .keysym    = "Right",
                 .modifiers = .{ .mod4 = true, .ctrl = true },
-                .event     = .{ .click = .{ .pressed = .{ .modify_mfact = .{ .step =  0.05 } } } },
+                .event     = .{ .click = .{ .pressed = .{ .modify_mfact = .{ .change = .{ .step = 0.05 } } } } },
             },
 
             // nmaster
