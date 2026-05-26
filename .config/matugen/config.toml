@@ -54,3 +54,8 @@ output_path = "~/.config/swaylock/config"
 [templates.zathura]
 input_path = "~/.config/matugen/templates/zathurarc"
 output_path = "~/.config/zathura/zathurarc"
+
+[templates.papirus_color]
+input_path  = "~/.config/matugen/papirus-folders/folder-color.template"
+output_path = "~/.config/matugen/papirus-folders/folder-color.txt"
+post_hook   = "~/.config/matugen/papirus-folders/change-icons.py"
