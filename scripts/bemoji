@@ -46,7 +46,7 @@ copy() {
 
 main() {
   ensure_datasets
-  list | bemenu -p "copy symbol:" | copy
+  list | fuzzel --dmenu -p "copy symbol: " | copy
 }
 
 main

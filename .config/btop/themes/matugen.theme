@@ -1,0 +1,35 @@
+# Main background and foreground
+theme[main_bg] = "#19120d"
+theme[main_fg] = "#f0dfd7"
+
+# Title and headings
+theme[title] = "#f0dfd7"
+theme[hi_fg] = "#ffb689"
+
+# Selected/Active items
+theme[selected_bg] = "#ffb689"
+theme[selected_fg] = "#512300"
+
+# Inactive items
+theme[inactive_fg] = "#d7c2b8"
+
+# Graph/Chart colors
+theme[graph_text] = "#f0dfd7"
+theme[meter_bg] = "#52443c"
+theme[proc_misc] = "#cbc992"
+theme[proc_start] = "#ffb689"
+theme[proc_mid] = "#6e3810"
+theme[proc_end] = "#e5bfa9"
+
+# Cpu/Mem/Disk graphs
+theme[cpu_start] = "#ffb689"
+theme[cpu_mid] = "#6e3810"
+theme[cpu_end] = "#cbc992"
+
+theme[mem_start] = "#ffb689"
+theme[mem_mid] = "#6e3810"
+theme[mem_end] = "#cbc992"
+
+theme[net_start] = "#ffb689"
+theme[net_mid] = "#6e3810"
+theme[net_end] = "#cbc992"

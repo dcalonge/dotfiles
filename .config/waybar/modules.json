@@ -1,0 +1,160 @@
+{
+  "niri/workspaces": {
+    "on-click": "activate",
+    "hide-empty": false,
+    "format": "{icon}",
+    "format-icons": {
+      "active": "󱓻",
+      //"default": ""
+    },
+  },
+  
+  "clock": {
+    "format": "{:L%B %d %H:%M}",
+    "tooltip": false
+  },
+
+  "tray": {
+    "spacing": 16,
+    "reverse-direction": true,
+    "icon-size": 14,
+    "show-passive-items": false
+  },
+
+  "privacy": {
+    "icon-size": 12,
+    "transition-duration": 250,
+    "modules": [
+      {
+        "type": "screenshare",
+        "tooltip": true,
+      },
+      {
+        "type": "audio-in",
+        "tooltip": true,
+      },
+    ]
+  },
+
+  "network": {
+    "format-icons": {
+      "wifi": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
+      "ethernet": "󰈀",
+      "disabled": "󰤮",
+      "disconnected": "󰤫"
+    },
+    "format-wifi": "{icon}",
+    "format-ethernet": "{icon}",
+    "format-disconnected": "{icon}",
+    "format-disabled": "{icon}",
+    "interval": 5,
+    "tooltip-format": "{essid}\t{gwaddr}",
+    "tooltip-format-disconnected": "Disconnected",
+    "tooltip-format-disabled": "Disabled",
+    "on-click-right": "rfkill toggle wifi",
+    "on-click": "pkill bemenu || iwmenu -l fuzzel",
+    "tooltip": true,
+    "max-length": 20
+  },
+
+  "bluetooth": {
+    "format-on": "󰂯",
+    "format-off": "󰂲",
+    "format-disabled": "󰂲",
+    "format-connected": "{device_alias} 󰂱",
+    "format-no-controller": "󰂯",
+    "tooltip": true,
+    "tooltip-format": "{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_address}",
+    "tooltip-format-enumerate-connected-battery": "{device_address} | Battery: {device_battery_percentage}%",
+    "on-click-right": "bluetoothctl show | grep -q 'Powered: yes' && bluetoothctl power off || bluetoothctl power on",
+    "on-click": "pkill bemenu || bzmenu -l fuzzel"
+  },
+
+  "wireplumber": {
+    "format": "{format_source} {icon}" ,
+    "format-icons": ["󰕿", "󰖀", "󰕾", "󰝝"],
+    "format-muted": "󰖁",
+    "format-source": "󰍬 ",
+    "format-source-muted": "",
+    "on-click-right": "foot -e pulsemixer",
+    "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "reverse-scrolling": true,
+    "tooltip": true,
+    "tooltip-format": "Volume: {volume}%",
+    "scroll-step":5
+  },
+
+  "backlight": {
+    "format": "{icon}",
+    "format-icons": [
+      "󰃞",
+      "󰃝",
+      "󰃟",
+      "󰃠"
+    ],
+    "reverse-scrolling": true,
+    "tooltip": true,
+    "scroll-step":5,
+    "tooltip-format": "Brightness: {percent}%"
+  },
+
+  "battery": {
+    "interval": 5,
+    "states": {
+      "critical": 10
+    },
+    "format": "{icon} {capacity}%",
+    "format-icons": {
+        "default": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+        "charging": ["󰢟", "󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"]
+    },
+    "format-plugged": "󰚥",
+    "format-critical": "󰂃 {capacity}%",
+    "tooltip": true,
+    "tooltip-format": "Charge: {capacity}%",
+    "tooltip-format-charging": "Charging: {capacity}%"
+  },
+  "custom/updates": {
+    "format": "{}",
+    "return-type": "json",
+    "tooltip": true,
+    "interval": 600,
+    "exec": "~/.config/waybar/scripts/check-updates.sh",
+    "on-click": "~/scripts/prompt.sh"
+  },
+
+  "custom/weather": {
+    "format": "{}",
+    "return-type": "json",
+    "tooltip": true,
+    "interval": 1800,
+    "exec": "~/.config/waybar/scripts/weather.sh Soria",
+    "signal": 8,
+    "on-click": "pkill -SIGRTMIN+8 waybar"
+  },
+
+  "group/tray-expander": {
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 600,
+      "children-class": "tray-group-item"
+    },
+    "modules": ["custom/expand-icon", "tray"]
+  },
+  "custom/expand-icon": {
+    "format": "",
+    "tooltip": false,
+  },
+
+  "keyboard-state": {
+    "capslock": true,
+    "format": {
+        "capslock": "{icon}",
+    },
+    "format-icons": {
+        "locked": "Caps ",
+        "unlocked": ""
+    }
+}
+}

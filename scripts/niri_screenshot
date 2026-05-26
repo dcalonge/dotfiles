@@ -1,0 +1,9 @@
+#!/bin/sh
+
+MODE=$(printf "Region\nScreen\nWindow\nAbort" | bemenu)
+case "$MODE" in
+Region) niri msg action screenshot ;;
+Screen) niri msg action screenshot-screen ;;
+Window) niri msg action screenshot-window ;;
+*) exit 0 ;;
+esac

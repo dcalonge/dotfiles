@@ -1,0 +1,24 @@
+{
+  "reload_style_on_change": true,
+  "toggle": true,
+  "layer": "top",
+  "position": "top",
+  "margin-top": 0,
+  "margin-bottom": 0,
+  "margin-left": 0,
+  "margin-right": 0,
+  "spacing": 4,
+  "height": 24,
+  "include": ["~/.config/waybar/modules.json"],
+  "modules-left": ["niri/workspaces", ],
+  "modules-center": ["clock","custom/weather","custom/updates","privacy"],
+  "modules-right": [
+    "keyboard-state",
+    "group/tray-expander",
+    "wireplumber",
+    "backlight",
+    "bluetooth",
+    "network",
+    "battery",
+  ]
+}

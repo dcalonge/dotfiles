@@ -1,0 +1,46 @@
+scheme: "Matugen nvim"
+author: "Matugen"
+
+# ==========================================
+# UI Layout & Deep Backgrounds
+# ==========================================
+# Deep pitch-black depth for extreme text pop
+base00: "{{colors.surface.default.hex_stripped}}" 
+# Margins, Panels, status lines
+base01: "{{colors.surface.default.hex_stripped}}"             
+# Highly visible selections and search match tracking
+base02: "{{colors.surface_container_highest.default.hex_stripped}}" 
+# High-visibility comments (brought forward so they don't disappear)
+base03: "{{colors.on_surface_variant.default.hex_stripped}}"       
+
+# ==========================================
+# Core Code Text Elements
+# ==========================================
+# Sharp midtones for punctuation, operators, and brackets
+base04: "{{colors.outline.default.hex_stripped}}"                  
+# Stark light default text for core variables
+base05: "{{colors.on_surface.default.hex_stripped}}"               
+# Extra bright secondary highlights
+base06: "{{colors.inverse_on_surface.default.hex_stripped}}"       
+# Pure primary pop accent color
+base07: "{{colors.primary.default.hex_stripped}}"                  
+
+# ==========================================
+# Vibrant Syntax Elements (Using High-Chroma Valid Tokens)
+# ==========================================
+# Variables & Tags (Pure Red Error Accent)
+base08: "{{colors.error.default.hex_stripped}}"                    
+# Numbers, Constants, Booleans (Bright Tertiary accent)
+base09: "{{colors.tertiary.default.hex_stripped}}"                 
+# Classes, Structural Types, Enums (Vibrant Inverse Primary/Gold)
+base0A: "{{colors.inverse_primary.default.hex_stripped}}"           
+# Strings, Text Literals (Vibrant Secondary Green/Teal)
+base0B: "{{colors.secondary.default.hex_stripped}}"                
+# Special characters, Regex Escapes (High-contrast On Secondary Container)
+base0C: "{{colors.on_secondary_container.default.hex_stripped}}"    
+# Functions, Methods, Called Logic (Vibrant Blue/Primary)
+base0D: "{{colors.primary.default.hex_stripped}}"                  
+# Keywords, Conditionals, Loops (Stark, urgent Error emphasis)
+base0E: "{{colors.error.default.hex_stripped}}"                    
+# Delimiters and rare sub-properties
+base0F: "{{colors.outline_variant.default.hex_stripped}}"

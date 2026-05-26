@@ -1,0 +1,55 @@
+[config]
+# Optional: Set your wallpaper daemon here if you want Matugen to also set the wallpaper
+# wallpaper_set_command = "swww img" 
+
+[templates.waybar]
+input_path = "~/.config/matugen/templates/waybar-colors.css"
+output_path = "~/.config/waybar/colors.css"
+post_hook = "pkill -SIGUSR2 waybar || true"
+
+[templates.fuzzel]
+input_path = "~/.config/matugen/templates/fuzzel-colors.ini"
+output_path = "~/.config/fuzzel/colors.ini"
+
+[templates.foot]
+input_path = "~/.config/matugen/templates/foot-colors.ini"
+output_path = "~/.config/foot/colors.ini"
+post_hook = "pkill -USR1 foot || true"
+
+[templates.niri]
+input_path = "~/.config/matugen/templates/niri-colors.kdl"
+output_path = "~/.config/niri/niri-colors.kdl"
+
+[templates.gtk3]
+input_path = "~/.config/matugen/templates/gtk3.css"
+output_path = "~/.config/gtk-3.0/matugen-colors.css"
+
+[templates.gtk4]
+input_path = "~/.config/matugen/templates/gtk4.css"
+output_path = "~/.config/gtk-4.0/matugen-colors.css"
+
+[templates.mako]
+input_path = "~/.config/matugen/templates/mako.conf"
+output_path = "~/.config/mako/config"
+post_hook = "makoctl reload || true"
+
+[templates.nvim]
+input_path = "~/.config/matugen/templates/nvim.yaml"
+output_path = "~/.config/nvim/lua/config/matugen-theme.yaml"
+post_hook = "pkill -USR1 nvim || true"
+
+[templates.btop]
+input_path = "~/.config/matugen/templates/btop.theme"
+output_path = "~/.config/btop/themes/matugen.theme"
+
+[templates.yazi]
+input_path = "~/.config/matugen/templates/yazi.toml"
+output_path = "~/.config/yazi/theme.toml"
+
+[templates.swaylock]
+input_path = "~/.config/matugen/templates/swaylock.conf"
+output_path = "~/.config/swaylock/config"
+
+[templates.zathura]
+input_path = "~/.config/matugen/templates/zathurarc"
+output_path = "~/.config/zathura/zathurarc"

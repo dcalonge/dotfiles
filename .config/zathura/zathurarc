@@ -1,0 +1,33 @@
+set default-bg              "rgba(25, 18, 13, 0.8)"
+set default-fg              "#f0dfd7"
+set recolor-lightcolor      "rgba(0,0,0,0)"
+set recolor-darkcolor       "#f0dfd7"
+
+set statusbar-bg            "#512300"
+set statusbar-fg            "#ffb689"
+set inputbar-bg             "#512300"
+set inputbar-fg             "#ffb689"
+
+set notification-bg         "#512300"
+set notification-fg         "#ffb689"
+set notification-error-bg   "#690005"
+set notification-error-fg   "#ffb4ab"
+set notification-warning-bg "#ffdbc8"
+set notification-warning-fg "#93000a"
+
+set index-bg                "rgba(0,0,0,0)"
+set index-fg                "#f0dfd7"
+set index-active-bg         "#ffb689"
+set index-active-fg         "#512300"
+set highlight-color         "rgba(255, 219, 200, 0.5)"
+set highlight-active-color  "rgba(255, 182, 137, 0.5)"
+set highlight-fg            "#512300"
+
+set completion-bg           "#512300"
+set completion-fg           "#ffb689"
+set completion-group-bg     "#512300"
+set completion-group-fg     "#ffb689"
+set completion-highlight-fg "#512300"
+set completion-highlight-bg "#ffb689"
+
+set font "JetBrainsMono Nerd Font 10"

@@ -1,0 +1,228 @@
+// Niri config — migrated from MangoWM
+// Place at: ~/.config/niri/config.kdl
+//
+// ─────────────────────────────────────────────────────────────────────────────
+// Startup
+// ─────────────────────────────────────────────────────────────────────────────
+
+environment {
+  XDG_SESSION_DESKTOP "niri"
+  XDG_CURRENT_DESKTOP "niri"
+}
+
+spawn-at-startup ".config/niri/autostart.sh"
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Input
+// ─────────────────────────────────────────────────────────────────────────────
+
+input {
+    focus-follows-mouse
+
+    keyboard {
+        xkb {
+            layout "es"
+        }
+        repeat-delay 300
+        repeat-rate 50
+    }
+
+    touchpad {
+        tap
+        drag true
+        drag-lock
+        natural-scroll
+        dwt
+    }
+    mouse
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Outputs
+// ─────────────────────────────────────────────────────────────────────────────
+
+output "HDMI-A-1" {
+    mode "1920x1080@100.000"
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Layout
+// ─────────────────────────────────────────────────────────────────────────────
+
+layout {
+    gaps 8
+
+    always-center-single-column
+
+    center-focused-column "never"
+
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    default-column-width { proportion 0.5; }
+
+    focus-ring {
+        width 2
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Cursor
+// ─────────────────────────────────────────────────────────────────────────────
+
+cursor {
+    hide-after-inactive-ms 5000
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Appearance
+// ─────────────────────────────────────────────────────────────────────────────
+
+prefer-no-csd
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Window rules
+// ─────────────────────────────────────────────────────────────────────────────
+
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+xwayland-satellite {
+    off
+}
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+blur {
+    off
+}
+
+layer-rule {
+    match namespace="waybar"
+    place-within-backdrop true
+}
+
+window-rule {
+    match app-id="yazi-floating"
+    open-floating true
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Keybindings
+// ─────────────────────────────────────────────────────────────────────────────
+
+binds {
+
+    // ── System ─────────────────────────────────────────────────────────────
+    Mod+Q repeat=false { close-window; }
+    Mod+Shift+M { quit; }
+
+    // ── Launchers ──────────────────────────────────────────────────────────
+    Mod+Return { spawn "foot"; }
+    Mod+D      { spawn "sh" "-c" "pkill fuzzel || fuzzel"; }
+    Mod+R      { spawn "sh" "-c" "pkill fuzzel || scripts/wlr-menu"; }
+
+    // ── Apps ───────────────────────────────────────────────────────────────
+    Mod+N          { spawn "foot" "-c" ".config/foot/foot_no_pad.ini" "-e" "nvim"; }
+    Mod+H          { spawn "foot" "-c" ".config/foot/foot_no_pad.ini" "-e" "btop"; }
+    Mod+P          { spawn "foot" "-e" "pulsemixer"; }
+    Mod+E          { spawn "foot" "-c" ".config/foot/foot_no_pad.ini" "-e" "yazi"; }
+    Mod+B          { spawn "flatpak" "run" "io.github.ungoogled_software.ungoogled_chromium"; }
+    XF86Calculator { spawn "qalculate-gtk"; }
+    Mod+Shift+A    { spawn "foot" "-e" "bluetuith"; }
+
+    // ── Scripts ────────────────────────────────────────────────────────────
+    Mod+W      { spawn "sh" "-c" "pkill fuzzel || iwmenu -l fuzzel"; }
+    Mod+S      { spawn "sh" "-c" "pkill wlsunset || wlsunset -l 40.4165 -L -3.70256"; }
+    Mod+A      { spawn "sh" "-c" "pkill fuzzel || bzmenu -l fuzzel"; }
+    Mod+V      { spawn "sh" "-c" "pkill fuzzel || cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"; }
+    Mod+L      { spawn "sh" "-c" "pkill fuzzel || scripts/dmenu_logout_dwl.sh"; }
+    Mod+U      { spawn "sh" "-c" "pkill fuzzel || scripts/prompt.sh"; }
+    Mod+Shift+W { spawn "sh" "-c" "pkill fuzzel || scripts/background.sh"; }
+    Mod+Shift+E { spawn "sh" "-c" "pkill fuzzel || scripts/bemoji"; }
+    Mod+Shift+S { screenshot; }
+    Mod+Shift+B { spawn "sh" "-c" "pgrep waybar && pkill waybar || exec waybar"; }
+
+    // ── Suspend ────────────────────────────────────────────────────────────
+    Mod+Ctrl+Q { spawn "loginctl" "suspend"; }
+
+    // ── Media / Brightness ─────────────────────────────────────────────────
+    XF86AudioRaiseVolume  allow-when-locked=true { spawn "sh" "-c" "~/scripts/volume.sh up"; }
+    XF86AudioLowerVolume  allow-when-locked=true { spawn "sh" "-c" "~/scripts/volume.sh down"; }
+    XF86AudioMute         allow-when-locked=true { spawn "sh" "-c" "~/scripts/volume.sh mute"; }
+    XF86AudioMicMute      allow-when-locked=true { spawn "sh" "-c" "~/scripts/mic.sh"; }
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "sh" "-c" "~/scripts/brightness.sh up"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "sh" "-c" "~/scripts/brightness.sh down"; }
+    XF86AudioPlay         allow-when-locked=true { spawn "playerctl" "play-pause"; }
+    XF86AudioNext         allow-when-locked=true { spawn "playerctl" "next"; }
+    XF86AudioPrev         allow-when-locked=true { spawn "playerctl" "previous"; }
+
+    // ── Window focus ───────────────────────────────────────────────────────
+    Mod+Up    { focus-window-or-workspace-up; }
+    Mod+Down  { focus-window-or-workspace-down; }
+    Mod+Left  { focus-column-left; }
+    Mod+Right { focus-column-right; }
+
+    // ── Monitor ────────────────────────────────────────────────────────────
+    Mod+O       { focus-monitor-next; }
+    Mod+Shift+O { move-window-to-monitor-next; }
+
+    // ── Fullscreen / floating ───────────────────────────────────────────
+    Mod+F       { maximize-column; }
+    Mod+Shift+F { maximize-window-to-edges; }
+    Mod+Shift+Space { toggle-window-floating; }
+
+    // ── Column width ───────────────────────────────────────────────────────
+    Mod+Ctrl+Left  { set-column-width "-5%"; }
+    Mod+Ctrl+Right { set-column-width "+5%"; }
+    Mod+Ctrl+Down  { set-window-height "-10%"; }
+    Mod+Ctrl+Up    { set-window-height "+10%"; }
+
+    // ── Width presets ──────────────────────────────────────────────────────
+    Mod+Z      { switch-preset-column-width; }
+    Mod+Ctrl+Z { set-column-width "50%"; }
+    Mod+Ctrl+X { set-column-width "80%"; }
+    Mod+Ctrl+V { set-column-width "100%"; }
+
+    // ── Column stacking ────────────────────────────────────────────────────
+    Mod+Shift+Up    { move-window-up-or-to-workspace-up; }
+    Mod+Shift+Down  { move-window-down-or-to-workspace-down; }
+    Mod+Shift+Left  { consume-or-expel-window-left; }
+    Mod+Shift+Right { consume-or-expel-window-right; }
+
+    // ── Workspace cycling ──────────────────────────────────────────────────
+    Mod+Tab { focus-workspace-previous; }
+
+    // ── Workspaces 1–9 ────────────────────────────────────────────────────
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+
+    Mod+Shift+1 { move-window-to-workspace 1; }
+    Mod+Shift+2 { move-window-to-workspace 2; }
+    Mod+Shift+3 { move-window-to-workspace 3; }
+    Mod+Shift+4 { move-window-to-workspace 4; }
+    Mod+Shift+5 { move-window-to-workspace 5; }
+    Mod+Shift+6 { move-window-to-workspace 6; }
+    Mod+Shift+7 { move-window-to-workspace 7; }
+    Mod+Shift+8 { move-window-to-workspace 8; }
+    Mod+Shift+9 { move-window-to-workspace 9; }
+
+    // ── Mouse bindings ─────────────────────────────────────────────────────
+    Mod+WheelScrollDown       cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp         cooldown-ms=150 { focus-workspace-up; }
+    Mod+Shift+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+Shift+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+}
+
+include "niri-colors.kdl"

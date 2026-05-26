@@ -22,25 +22,22 @@ goback="Back"
 
 # Checks if bluetooth controller is powered on
 power_on() {
-  if bluetoothctl show | grep -q "Powered: yes"; then
+  if rfkill list bluetooth | grep -q "Soft blocked: no"; then
     return 0
   else
     return 1
   fi
 }
 
-# Toggles power state
 toggle_power() {
   if power_on; then
-    bluetoothctl power off
-    show_menu
+    rfkill block bluetooth
   else
-    if rfkill list bluetooth | grep -q 'blocked: yes'; then
-      rfkill unblock bluetooth && sleep 3
-    fi
-    bluetoothctl power on
-    show_menu
+    rfkill unblock bluetooth
+    sleep 2
   fi
+
+  show_menu
 }
 
 # Checks if controller is scanning for new devices

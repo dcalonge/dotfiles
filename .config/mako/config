@@ -1,19 +1,21 @@
-font=JetbrainsMono Nerd Font 10
-background-color=#222222
-text-color=#bbbbbb
-border-color=#bbbbbb
-progress-color=source #bbbbbb
+font=JetBrainsMono Nerd Font 10
+background-color=#19120d
+text-color=#f0dfd7
+border-color=#ffb689
+progress-color=source #ffb689
 anchor=top-center
 layer=overlay
 border-size=1
 group-by=category,app-icon
 default-timeout=3000
 margin=30,0,0,0
+
 [category="osd-text"]
 history=0
 format=<b>%s</b>\n%b
+
 [category="osd"]
 font=JetbrainsMono Nerd Font 10
 history=0
-text-color=#222222
+text-color=#19120d
 format=<b>%s</b>\n%b

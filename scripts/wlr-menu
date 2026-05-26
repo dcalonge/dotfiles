@@ -1,6 +1,6 @@
 #!/bin/sh
 
-output=$(wlr-randr --json | jq -r '.[].name' | bemenu -p "Select an output:")
+output=$(wlr-randr --json | jq -r '.[].name' | fuzzel --dmenu -p "Select an output:")
 
 if [ -z "$output" ]; then
   exit 1
@@ -10,7 +10,7 @@ scaling=$(wlr-randr --json | jq -r --arg output "$output" '.[] | select(.name ==
 adaptive_sync=$(wlr-randr --json | jq -r --arg output "$output" '.[] | select(.name == $output) | .adaptive_sync')
 enabled=$(wlr-randr --json | jq -r --arg output "$output" '.[] | select(.name == $output) | .enabled')
 
-change_option=$(printf "Mode\nScaling\nAdaptive Sync\nPower" | bemenu -p "Options for $output:")
+change_option=$(printf "Mode\nScaling\nAdaptive Sync\nPower" | fuzzel --dmenu -p "Options for $output:")
 
 if [ -z "$change_option" ] || [ "$change_option" = "Exit" ]; then
   exit 0
@@ -32,7 +32,7 @@ if [ "$change_option" = "Mode" ]; then
     exit 1
   fi
 
-  mode=$(echo "$modes" | bemenu -p "Select a mode:")
+  mode=$(echo "$modes" | fuzzel --dmenu -p "Select a mode:")
 
   if [ -z "$mode" ]; then
     exit 1
@@ -53,7 +53,7 @@ if [ "$change_option" = "Scaling" ]; then
     "$([ "$scaling" = "1.500000" ] && echo "1.5 󰄬" || echo "1.5")" \
     "$([ "$scaling" = "1.750000" ] && echo "1.75 󰄬" || echo "1.75")" \
     "$([ "$scaling" = "2.000000" ] && echo "2.0 󰄬" || echo "2.0")" |
-    bemenu -p "Select scaling:")
+    fuzzel --dmenu -p "Select scaling:")
 
   if [ -z "$scaling_option" ]; then
     exit 1
@@ -68,7 +68,7 @@ if [ "$change_option" = "Adaptive Sync" ]; then
     printf "%s\n" \
       "$([ "$adaptive_sync" = "true" ] && echo "Enabled 󰄬" || echo "Enabled")" \
       "$([ "$adaptive_sync" = "false" ] && echo "Disabled 󰄬" || echo "Disabled")" |
-      bemenu -p "Toggle Adaptive Sync:"
+      fuzzel --dmenu -p "Toggle Adaptive Sync:"
   )
 
   if [ -z "$adaptive_sync_option" ]; then
@@ -90,7 +90,7 @@ if [ "$change_option" = "Power" ]; then
   output_status=$(printf "%s\n" \
     "$([ "$enabled" = "true" ] && echo "Enable 󰄬" || echo "Enable")" \
     "$([ "$enabled" = "false" ] && echo "Disable 󰄬" || echo "Disable")" |
-    bemenu -p "Power $output:")
+    fuzzel --dmenu -p "Power $output:")
 
   if [ -z "$output_status" ]; then
     exit 1

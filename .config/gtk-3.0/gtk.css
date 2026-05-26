@@ -10,3 +10,5 @@ window.csd,             /* gtk4? */
 window.csd decoration { /* gtk3 */
   box-shadow: none;
 }
+
+@import url("matugen-colors.css");

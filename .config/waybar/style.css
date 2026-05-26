@@ -1,0 +1,93 @@
+@import "colors.css";
+
+* {
+  background-color: @surface;
+
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+  font-family: 'JetBrainsMono Nerd Font';
+  font-size: 13px;
+}
+
+/* === GLOBAL MODULE TEXT COLOR === */
+#clock,
+#custom-menu,
+#tray,
+#network,
+#bluetooth,
+#wireplumber,
+#backlight,
+#custom-updates,
+#privacy,
+#custom-power,
+#battery,
+#custom-expand-icon,
+#group-tray-expander,
+#keyboard-state,
+#workspaces button {
+  color: @on-surface;
+}
+
+.modules-left {
+  margin-left: 12px;
+}
+
+.modules-right {
+  margin-right: 12px;
+}
+
+#workspaces button {
+  all: initial;
+  padding: 0 6px;
+  margin: 0 2px;
+}
+
+#window {
+  color: @on-surface-variant;
+}
+
+#workspaces button.hidden {
+  color: @on-surface-variant;
+}
+
+/* === MODULE SPACING === */
+#clock,
+#custom-menu,
+#tray,
+#network,
+#bluetooth,
+#wireplumber,
+#backlight,
+#custom-updates,
+#privacy,
+#custom-power,
+#custom-expand-icon,
+#group-tray-expander,
+#custom-expand-icon,
+#keyboard-state,
+#battery {
+  min-width: 12px;
+  margin: 0 6px;
+}
+
+/* === STATES === */
+#battery.critical {
+  color: @error;
+}
+
+/* === HOVER EFFECT === */
+#custom-updates:hover,
+#network:hover,
+#bluetooth:hover,
+#wireplumber:hover,
+#workspaces button:hover {
+  background: transparent;
+  opacity: 0.7;
+}
+
+/* === TOOLTIP === */
+tooltip {
+  background: @surface;
+  color: @on-surface;
+}

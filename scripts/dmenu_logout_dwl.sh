@@ -1,8 +1,9 @@
 #!/bin/sh
 
-case "$(printf "logout\nsuspend\nreboot\npoweroff" | bemenu)" in
-suspend) systemctl suspend ;;
+case "$(printf "logout\nsuspend\nreboot\npoweroff\nuefi" | fuzzel --dmenu)" in
+suspend) loginctl suspend ;;
 logout) loginctl terminate-user "" ;;
-reboot) systemctl reboot ;;
-poweroff) systemctl poweroff ;;
+reboot) loginctl reboot ;;
+poweroff) loginctl poweroff ;;
+uefi) loginctl reboot --firmware-setup ;;
 esac
