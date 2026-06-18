@@ -1,0 +1,72 @@
+* {
+    all: unset;
+}
+
+.background {
+    background-image: url("/home/daniel/Pictures/wallpaper");
+    background-size: cover;
+    background-position: center;
+}
+
+#window-box {
+    background-color: {{colors.surface.default.hex}};
+    color: {{colors.on_surface.default.hex}};
+    margin: 18px;
+    padding: 48px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+#window-box #clock-label {
+    color: {{colors.on_surface.default.hex}};
+    font-size: 4em;
+}
+
+#window-box #date-label {
+    color: {{colors.on_surface_variant.default.hex}};
+}
+
+#window-box #input-label {
+    opacity: 0;
+    font-size: 0;
+    margin: 0;
+    padding: 0;
+}
+
+#window-box #input-field {
+    margin-top: 16px;
+    background-color: {{colors.surface_container_high.default.hex}};
+    color: {{colors.on_surface.default.hex}};
+    border: 1px solid {{colors.outline.default.hex}};
+    min-height: 32px;
+    padding-left: 1em;
+    padding-right: 1em;
+    letter-spacing: 0.3em;
+}
+
+#window-box #input-field:focus {
+    border-color: {{colors.primary.default.hex}};
+}
+
+#window-box #unlock-button {
+    background-color: {{colors.primary.default.hex}};
+    color: {{colors.on_primary.default.hex}};
+    padding: 6px 12px;
+}
+
+#window-box #unlock-button:hover {
+    background-color: {{colors.primary_container.default.hex}};
+    color: {{colors.on_primary_container.default.hex}};
+}
+
+#window-box #unlock-button:active {
+    background-color: {{colors.secondary.default.hex}};
+    color: {{colors.on_secondary.default.hex}};
+}
+
+#window-box #warning-label {
+    color: {{colors.tertiary.default.hex}};
+}
+
+#window-box #error-label {
+    color: {{colors.error.default.hex}};
+}
