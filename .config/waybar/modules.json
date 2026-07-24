@@ -61,7 +61,7 @@
     "format-on": "󰂯",
     "format-off": "󰂲",
     "format-disabled": "󰂲",
-    "format-connected": "{device_alias} 󰂱",
+    "format-connected": "󰂱",
     "format-no-controller": "󰂯",
     "tooltip": true,
     "tooltip-format": "{device_enumerate}",

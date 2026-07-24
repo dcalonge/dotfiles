@@ -128,7 +128,7 @@ binds {
     Mod+H          { spawn "foot" "-c" ".config/foot/foot_no_pad.ini" "-e" "btop"; }
     Mod+P          { spawn "foot" "-e" "pulsemixer"; }
     Mod+E          { spawn "foot" "-c" ".config/foot/foot_no_pad.ini" "-e" "yazi"; }
-    Mod+B          { spawn "flatpak" "run" "io.github.ungoogled_software.ungoogled_chromium"; }
+    Mod+B          { spawn "chromium"; }
     XF86Calculator { spawn "qalculate-gtk"; }
     Mod+Shift+A    { spawn "foot" "-e" "bluetuith"; }
 
@@ -137,15 +137,15 @@ binds {
     Mod+S      { spawn "sh" "-c" "pkill wlsunset || wlsunset -l 40.4165 -L -3.70256"; }
     Mod+A      { spawn "sh" "-c" "pkill fuzzel || bzmenu -l fuzzel"; }
     Mod+V      { spawn "sh" "-c" "pkill fuzzel || cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"; }
-    Mod+L      { spawn "sh" "-c" "pkill fuzzel || scripts/dmenu_logout_dwl.sh"; }
+    Mod+L      { spawn "sh" "-c" "pkill fuzzel || scripts/dmenu_logout.sh"; }
     Mod+U      { spawn "sh" "-c" "pkill fuzzel || scripts/prompt.sh"; }
     Mod+Shift+W { spawn "sh" "-c" "pkill fuzzel || scripts/background.sh"; }
     Mod+Shift+E { spawn "sh" "-c" "pkill fuzzel || scripts/bemoji"; }
     Mod+Shift+S { screenshot; }
-    Mod+Shift+B { spawn "sh" "-c" "pgrep waybar && pkill waybar || exec waybar"; }
+    Mod+Shift+B { spawn "sh" "-c" "pkill -SIGUSR2 waybar"; }
 
     // ── Suspend ────────────────────────────────────────────────────────────
-    Mod+Ctrl+Q { spawn "loginctl" "suspend"; }
+    Mod+Ctrl+Q { spawn "systemctl" "suspend"; }
 
     // ── Media / Brightness ─────────────────────────────────────────────────
     XF86AudioRaiseVolume  allow-when-locked=true { spawn "sh" "-c" "~/scripts/volume.sh up"; }
