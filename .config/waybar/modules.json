@@ -10,7 +10,7 @@
   },
   
   "clock": {
-    "format": "{:L%B %d %H:%M}",
+    "format": "{:%H:%M %a, %B %d}",
     "tooltip": false
   },
 
@@ -65,8 +65,8 @@
     "format-no-controller": "󰂯",
     "tooltip": true,
     "tooltip-format": "{device_enumerate}",
-    "tooltip-format-enumerate-connected": "{device_address}",
-    "tooltip-format-enumerate-connected-battery": "{device_address} | Battery: {device_battery_percentage}%",
+    "tooltip-format-enumerate-connected": "{device_alias}",
+    "tooltip-format-enumerate-connected-battery": "{device_alias} | Battery: {device_battery_percentage}%",
     "on-click-right": "bluetoothctl show | grep -q 'Powered: yes' && bluetoothctl power off || bluetoothctl power on",
     "on-click": "pkill bemenu || bzmenu -l fuzzel"
   },
@@ -77,7 +77,7 @@
     "format-muted": "󰖁",
     "format-source": "󰍬 ",
     "format-source-muted": "",
-    "on-click-right": "foot -e pulsemixer",
+    "on-click-right": "foot -a foot-floating -e pulsemixer",
     "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
     "reverse-scrolling": true,
     "tooltip": true,

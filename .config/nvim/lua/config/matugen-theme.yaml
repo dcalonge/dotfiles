@@ -5,25 +5,25 @@ author: "Matugen"
 # UI Layout & Deep Backgrounds
 # ==========================================
 # Deep pitch-black depth for extreme text pop
-base00: "0f1512" 
+base00: "18120c" 
 # Margins, Panels, status lines
-base01: "0f1512"             
+base01: "18120c"             
 # Highly visible selections and search match tracking
-base02: "303632" 
+base02: "3b332c" 
 # High-visibility comments (brought forward so they don't disappear)
-base03: "bfc9c2"       
+base03: "d4c4b5"       
 
 # ==========================================
 # Core Code Text Elements
 # ==========================================
 # Sharp midtones for punctuation, operators, and brackets
-base04: "8a938d"                  
+base04: "9d8e81"                  
 # Stark light default text for core variables
-base05: "dee4de"               
+base05: "eee0d5"               
 # Extra bright secondary highlights
-base06: "2c322e"       
+base06: "372f27"       
 # Pure primary pop accent color
-base07: "8cd5b4"                  
+base07: "f9ba72"                  
 
 # ==========================================
 # Vibrant Syntax Elements (Using High-Chroma Valid Tokens)
@@ -31,16 +31,16 @@ base07: "8cd5b4"
 # Variables & Tags (Pure Red Error Accent)
 base08: "ffb4ab"                    
 # Numbers, Constants, Booleans (Bright Tertiary accent)
-base09: "a6ccdf"                 
+base09: "bdcd9d"                 
 # Classes, Structural Types, Enums (Vibrant Inverse Primary/Gold)
-base0A: "1e6a4f"           
+base0A: "835415"           
 # Strings, Text Literals (Vibrant Secondary Green/Teal)
-base0B: "b3ccbe"                
+base0B: "e0c1a3"                
 # Special characters, Regex Escapes (High-contrast On Secondary Container)
-base0C: "cfe9da"    
+base0C: "fdddbd"    
 # Functions, Methods, Called Logic (Vibrant Blue/Primary)
-base0D: "8cd5b4"                  
+base0D: "f9ba72"                  
 # Keywords, Conditionals, Loops (Stark, urgent Error emphasis)
 base0E: "ffb4ab"                    
 # Delimiters and rare sub-properties
-base0F: "404944"
+base0F: "50453a"

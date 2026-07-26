@@ -28,7 +28,7 @@ random() {
 gallery() {
   tmp_file=$(mktemp)
   trap 'rm -f "$tmp_file"' EXIT
-  foot -a yazi-floating -e sh -c "
+  foot -a foot-floating -e sh -c "
     cd '$WALLPAPER_DIR' &&
     yazi . --chooser-file='$tmp_file'
   "

@@ -104,7 +104,7 @@ layer-rule {
 }
 
 window-rule {
-    match app-id="yazi-floating"
+    match app-id="foot-floating"
     open-floating true
 }
 
@@ -130,7 +130,7 @@ binds {
     Mod+E          { spawn "foot" "-c" ".config/foot/foot_no_pad.ini" "-e" "yazi"; }
     Mod+B          { spawn "chromium"; }
     XF86Calculator { spawn "qalculate-gtk"; }
-    Mod+Shift+A    { spawn "foot" "-e" "bluetuith"; }
+    Mod+Shift+A    { spawn "foot" "-a" "foot-floating" "-e" "bluetuith"; }
 
     // ── Scripts ────────────────────────────────────────────────────────────
     Mod+W      { spawn "sh" "-c" "pkill fuzzel || iwmenu -l fuzzel"; }

@@ -54,7 +54,7 @@ output_path = "~/.config/zathura/zathurarc"
 input_path = "~/.config/matugen/templates/gtklock.css"
 output_path = "~/.config/gtklock/style.css"
 
-[templates.papirus_color]
-input_path  = "~/.config/matugen/papirus-folders/folder-color.template"
-output_path = "~/.config/matugen/papirus-folders/folder-color.txt"
-post_hook   = "~/.config/matugen/papirus-folders/change-icons.py"
+[templates.dwl]
+input_path = "~/.config/matugen/templates/dwl-colors.in"
+output_path = "~/.cache/wal/dwl-colors"
+post_hook = "pkill -USR1 dwl || true"
