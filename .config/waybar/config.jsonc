@@ -10,7 +10,7 @@
   "spacing": 4,
   "height": 24,
   "include": ["~/.config/waybar/modules.json"],
-  "modules-left": ["niri/workspaces", ],
+  "modules-left": ["ext/workspaces", ],
   "modules-center": ["clock","custom/weather","custom/updates","privacy"],
   "modules-right": [
     "keyboard-state",

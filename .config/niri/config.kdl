@@ -98,11 +98,6 @@ blur {
     off
 }
 
-layer-rule {
-    match namespace="waybar"
-    place-within-backdrop true
-}
-
 window-rule {
     match app-id="foot-floating"
     open-floating true
@@ -142,7 +137,7 @@ binds {
     Mod+Shift+W { spawn "sh" "-c" "pkill fuzzel || scripts/background.sh"; }
     Mod+Shift+E { spawn "sh" "-c" "pkill fuzzel || scripts/bemoji"; }
     Mod+Shift+S { screenshot; }
-    Mod+Shift+B { spawn "sh" "-c" "pkill -SIGUSR2 waybar"; }
+    Mod+Shift+B { spawn "sh" "-c" "pkill waybar; waybar"; }
 
     // ── Suspend ────────────────────────────────────────────────────────────
     Mod+Ctrl+Q { spawn "systemctl" "suspend"; }

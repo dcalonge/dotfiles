@@ -5,9 +5,9 @@ TIMEOUT=10
 
 # XBPS updates (with timeout)
 if command -v timeout >/dev/null 2>&1; then
-  xbps_pkgs=$(timeout "$TIMEOUT" xbps-install -nuM 2>/dev/null | awk '{print $1}')
+  xbps_pkgs=$(timeout "$TIMEOUT" checkupdates --nocolor 2>/dev/null | awk '{print $1}')
 else
-  xbps_pkgs=$(xbps-install -nuM 2>/dev/null | awk '{print $1}')
+  xbps_pkgs=$(checkupdates --nocolor 2>/dev/null | awk '{print $1}')
 fi
 
 # Flatpak updates (with timeout, only if installed)

@@ -1,7 +1,6 @@
 {
-  "niri/workspaces": {
+  "ext/workspaces": {
     "on-click": "activate",
-    "hide-empty": false,
     "format": "{icon}",
     "format-icons": {
       "active": "󱓻",
@@ -10,7 +9,7 @@
   },
   
   "clock": {
-    "format": "{:%H:%M %a, %B %d}",
+    "format": "{:L%B %d %H:%M}",
     "tooltip": false
   },
 
@@ -65,7 +64,7 @@
     "format-no-controller": "󰂯",
     "tooltip": true,
     "tooltip-format": "{device_enumerate}",
-    "tooltip-format-enumerate-connected": "{device_alias}",
+    "tooltip-format-enumerate-connected": "{device_address}",
     "tooltip-format-enumerate-connected-battery": "{device_alias} | Battery: {device_battery_percentage}%",
     "on-click-right": "bluetoothctl show | grep -q 'Powered: yes' && bluetoothctl power off || bluetoothctl power on",
     "on-click": "pkill bemenu || bzmenu -l fuzzel"
@@ -77,7 +76,7 @@
     "format-muted": "󰖁",
     "format-source": "󰍬 ",
     "format-source-muted": "",
-    "on-click-right": "foot -a foot-floating -e pulsemixer",
+    "on-click-right": "foot -e pulsemixer",
     "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
     "reverse-scrolling": true,
     "tooltip": true,
@@ -119,7 +118,7 @@
     "format": "{}",
     "return-type": "json",
     "tooltip": true,
-    "interval": 600,
+    "interval": 3600,
     "exec": "~/.config/waybar/scripts/check-updates.sh",
     "on-click": "~/scripts/prompt.sh"
   },
