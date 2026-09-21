@@ -119,10 +119,10 @@ binds {
     Mod+R      { spawn "sh" "-c" "pkill fuzzel || scripts/wlr-menu"; }
 
     // ── Apps ───────────────────────────────────────────────────────────────
-    Mod+N          { spawn "foot" "-c" ".config/foot/foot_no_pad.ini" "-e" "nvim"; }
-    Mod+H          { spawn "foot" "-c" ".config/foot/foot_no_pad.ini" "-e" "btop"; }
+    Mod+N          { spawn "foot" "-e" "nvim"; }
+    Mod+H          { spawn "foot" "-e" "btop"; }
     Mod+P          { spawn "foot" "-e" "pulsemixer"; }
-    Mod+E          { spawn "foot" "-c" ".config/foot/foot_no_pad.ini" "-e" "yazi"; }
+    Mod+E          { spawn "foot" "-e" "yazi"; }
     Mod+B          { spawn "chromium"; }
     XF86Calculator { spawn "qalculate-gtk"; }
     Mod+Shift+A    { spawn "foot" "-a" "foot-floating" "-e" "bluetuith"; }
