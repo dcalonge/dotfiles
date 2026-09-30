@@ -1,0 +1,12 @@
+#!/bin/sh
+
+dir="$HOME/Pictures/Screenshots"
+file="$dir/Screenshot_$(date '+%Y-%m-%d_%H-%M-%S').png"
+
+mkdir -p "$dir"
+
+grim -g "$(slurp)" "$file" || exit 1
+
+wl-copy --type image/png <"$file"
+
+notify-send -i "$file" "Screenshot saved" "Copied to clipboard"

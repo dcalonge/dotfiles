@@ -1,0 +1,181 @@
+set $mod Mod4
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Startup
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway XDG_SESSION_DESKTOP=sway
+
+# Colors
+include ~/.config/sway/colors.conf
+
+exec ~/.config/sway/autostart.sh
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Input
+# ─────────────────────────────────────────────────────────────────────────────
+
+focus_follows_mouse yes
+
+input type:keyboard {
+    xkb_layout es
+    repeat_delay 300
+    repeat_rate 50
+}
+
+input type:touchpad {
+    tap enabled
+    drag enabled
+    drag_lock enabled
+    natural_scroll enabled
+    dwt enabled
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Outputs
+# ─────────────────────────────────────────────────────────────────────────────
+
+output HDMI-A-1 mode 1920x1080@100.000Hz
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Layout / Appearance
+# ─────────────────────────────────────────────────────────────────────────────
+gaps inner 4
+gaps outer 4
+smart_gaps on
+
+default_border pixel 2
+default_floating_border pixel 2
+hide_edge_borders smart
+
+seat * hide_cursor 5000
+
+xwayland disable
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Window rules
+# ─────────────────────────────────────────────────────────────────────────────
+
+for_window [app_id="foot-floating"] floating enable
+
+floating_modifier $mod normal
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Keybindings
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── System ─────────────────────────────────────────────────────────────────
+bindsym $mod+q kill
+bindsym $mod+Shift+m exec swaynag -t warning -m 'Exit sway?' -B 'Yes, exit' 'swaymsg exit'
+bindsym $mod+Shift+c reload
+
+# ── Launchers ──────────────────────────────────────────────────────────────
+bindsym $mod+Return exec foot
+bindsym $mod+d exec sh -c 'pkill fuzzel || fuzzel'
+bindsym $mod+r exec sh -c 'pkill fuzzel || wlr-menu'
+
+# ── Apps ───────────────────────────────────────────────────────────────────
+bindsym $mod+n exec foot -e nvim
+bindsym $mod+h exec foot -e btop
+bindsym $mod+p exec foot -e pulsemixer
+bindsym $mod+e exec foot -e yazi
+bindsym $mod+b exec chromium
+bindsym XF86Calculator exec qalculate-gtk
+bindsym $mod+Shift+a exec foot -a foot-floating -e bluetuith
+
+# ── Scripts ────────────────────────────────────────────────────────────────
+bindsym $mod+w exec sh -c 'pkill fuzzel || iwmenu -l fuzzel'
+bindsym $mod+s exec sh -c 'pkill wlsunset || wlsunset -l 40.4165 -L -3.70256'
+bindsym $mod+a exec sh -c 'pkill fuzzel || bzmenu -l fuzzel'
+bindsym $mod+v exec sh -c 'pkill fuzzel || cliphist list | fuzzel --dmenu | cliphist decode | wl-copy'
+bindsym $mod+l exec sh -c 'pkill fuzzel || dmenu-logout'
+bindsym $mod+u exec sh -c 'pkill fuzzel || updater'
+bindsym $mod+Shift+w exec sh -c 'pkill fuzzel || change-wallpaper'
+bindsym $mod+Shift+e exec sh -c 'pkill fuzzel || bemoji'
+bindsym $mod+Shift+b exec sh -c 'pkill waybar; waybar'
+
+# Screenshot (needs grim + slurp): select a region, saved like niri's screenshot-path
+bindsym $mod+Shift+s exec screenshot
+
+# Caps lock notification
+bindsym Caps_Lock exec caps-lock
+
+# ── Suspend ────────────────────────────────────────────────────────────────
+bindsym $mod+Ctrl+q exec systemctl suspend
+
+# ── Media / Brightness (--locked = allow-when-locked) ─────────────────────
+bindsym --locked XF86AudioRaiseVolume  exec change-volume up
+bindsym --locked XF86AudioLowerVolume  exec change-volume down
+bindsym --locked XF86AudioMute         exec change-volume mute
+bindsym --locked XF86AudioMicMute      exec mute-mic
+bindsym --locked XF86MonBrightnessUp   exec change-brightness up
+bindsym --locked XF86MonBrightnessDown exec change-brightness down
+bindsym --locked XF86AudioPlay         exec playerctl play-pause
+bindsym --locked XF86AudioNext         exec playerctl next
+bindsym --locked XF86AudioPrev         exec playerctl previous
+
+# ── Window focus ───────────────────────────────────────────────────────────
+bindsym $mod+Up    focus up
+bindsym $mod+Down  focus down
+bindsym $mod+Left  focus left
+bindsym $mod+Right focus right
+
+# ── Monitor ────────────────────────────────────────────────────────────────
+# sway has no "next" monitor; adjust direction to match your setup
+bindsym $mod+o exec swaymsg focus output right
+bindsym $mod+Shift+o move container to output right
+
+# ── Fullscreen / floating ──────────────────────────────────────────────────
+bindsym $mod+f fullscreen toggle
+bindsym $mod+Shift+space floating toggle
+
+# ── Size ───────────────────────────────────────────────────────────────────
+bindsym $mod+Ctrl+Left  resize shrink width 5 ppt
+bindsym $mod+Ctrl+Right resize grow width 5 ppt
+bindsym $mod+Ctrl+Down  resize shrink height 10 ppt
+bindsym $mod+Ctrl+Up    resize grow height 10 ppt
+
+# ── Moving / stacking ──────────────────────────────────────────────────────
+# Closest equivalent of consume-or-expel: moving into/out of neighbouring containers
+bindsym $mod+Shift+Up    move up
+bindsym $mod+Shift+Down  move down
+bindsym $mod+Shift+Left  move left
+bindsym $mod+Shift+Right move right
+
+# Choose how the next window splits (sway needs this to get niri-like stacking)
+#bindsym $mod+comma  splith
+#bindsym $mod+period splitv
+
+# ── Workspaces ─────────────────────────────────────────────────────────────
+bindsym $mod+Tab workspace back_and_forth
+
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+
+# ── Mouse bindings (no cooldown-ms in sway) ────────────────────────────────
+bindsym --whole-window $mod+button5       workspace next
+bindsym --whole-window $mod+button4       workspace prev
+bindsym --whole-window $mod+Shift+button5 move container to workspace next
+bindsym --whole-window $mod+Shift+button4 move container to workspace prev
+
+
+bindswitch --reload --locked lid:on  output eDP-1 disable
+bindswitch --reload --locked lid:off output eDP-1 enable

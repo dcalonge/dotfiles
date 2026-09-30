@@ -267,6 +267,6 @@ show_menu() {
 }
 
 # dmenu command to pipe into, can add any options here
-dmenu_command="bemenu $* -p"
+dmenu_command="fuzzel -d $* -p"
 
 show_menu

@@ -1,3 +1,0 @@
-#!/bin/sh
-
-cliphist list | bemenu | cliphist decode | wl-copy

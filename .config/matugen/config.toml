@@ -15,9 +15,6 @@ input_path = "~/.config/matugen/templates/foot-colors.ini"
 output_path = "~/.config/foot/colors.ini"
 post_hook = "pkill -USR1 foot || true"
 
-[templates.niri]
-input_path = "~/.config/matugen/templates/niri-colors.kdl"
-output_path = "~/.config/niri/niri-colors.kdl"
 
 [templates.gtk3]
 input_path = "~/.config/matugen/templates/gtk3.css"
@@ -54,7 +51,8 @@ output_path = "~/.config/zathura/zathurarc"
 input_path = "~/.config/matugen/templates/gtklock.css"
 output_path = "~/.config/gtklock/style.css"
 
-[templates.mango]
-input_path = '~/.config/matugen/templates/mango.conf'
-output_path = '~/.config/mango/colors.conf'
-post_hook = 'mmsg dispatch reload_config'
+[templates.sway]
+input_path = '~/.config/matugen/templates/sway.conf'
+output_path = '~/.config/sway/colors.conf'
+post_hook = 'swaymsg reload'
+

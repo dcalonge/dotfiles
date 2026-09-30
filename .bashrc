@@ -5,5 +5,7 @@
 if [ -z "$WAYLAND_DISPLAY" ] && [ -n "$XDG_VTNR" ] && [ "$XDG_VTNR" -eq 1 ]; then
   # exec river -no-xwayland >~/.river.log 2>&1
   # exec mango >~/.mango.log 2>&1
-  exec niri --session >~/.niri.log 2>&1
+  # exec niri --session >~/.niri.log 2>&1
+  exec sway >~/.sway.log 2>&1
+
 fi
