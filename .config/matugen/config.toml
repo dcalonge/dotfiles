@@ -51,8 +51,8 @@ output_path = "~/.config/zathura/zathurarc"
 input_path = "~/.config/matugen/templates/gtklock.css"
 output_path = "~/.config/gtklock/style.css"
 
-[templates.sway]
-input_path = '~/.config/matugen/templates/sway.conf'
-output_path = '~/.config/sway/colors.conf'
-post_hook = 'swaymsg reload'
+[templates.mango]
+input_path = '~/.config/matugen/templates/mango.conf'
+output_path = '~/.config/mango/colors.conf'
+post_hook = 'mmsg dispatch reload_config'
 
