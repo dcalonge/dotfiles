@@ -127,7 +127,7 @@
     "format": "{}",
     "return-type": "json",
     "tooltip": true,
-    "interval": 1800,
+    "interval": 900,
     "exec": "~/.config/waybar/scripts/weather.sh Soria",
     "signal": 8,
     "on-click": "pkill -SIGRTMIN+8 waybar"

@@ -15,9 +15,6 @@ export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
 export QT_QPA_PLATFORMTHEME=gtk3
 export EDITOR="nvim"
 
-systemctl --user import-environment XDG_CURRENT_DESKTOP WAYLAND_DISPLAY
-dbus-update-activation-environment --systemd XDG_CURRENT_DESKTOP WAYLAND_DISPLAY
-
 waybar &
 wl-paste --watch cliphist store &
 swaybg -i ~/Pictures/wallpaper &

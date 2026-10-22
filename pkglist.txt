@@ -36,11 +36,11 @@ linux
 linux-firmware
 mako
 man-db
+mangowm
 matugen
 mkinitcpio
 mpv
 neovim
-niri
 noto-fonts-emoji
 nwg-look
 pacman-contrib
@@ -57,6 +57,7 @@ rtkit
 sudo
 swaybg
 swayidle
+tllist
 tree-sitter-cli
 ttf-jetbrains-mono-nerd
 tuned
@@ -72,7 +73,7 @@ wireplumber
 wl-clipboard
 wlr-randr
 wlsunset
-xdg-desktop-portal-gnome
+xdg-desktop-portal-wlr
 xdg-utils
 yazi
 zathura
