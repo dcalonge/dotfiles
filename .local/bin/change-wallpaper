@@ -6,12 +6,14 @@ WALLPAPER_LINK="$HOME/Pictures/wallpaper"
 
 set_wallpaper() {
   IMAGE="$1"
-  [ -z "$IMAGE" ] && return
+  [ -z "$IMAGE" ] && return 1
 
   ln -sf "$IMAGE" "$WALLPAPER_LINK"
-  pkill swaybg 2>/dev/null
-  swaybg -i "$WALLPAPER_LINK"
-  matugen image "$WALLPAPER_LINK" \
+
+  pkill -x swaybg 2>/dev/null || true
+  swaybg -i "$WALLPAPER_LINK" >/dev/null 2>&1 &
+
+  matugen image "$IMAGE" \
     -m dark \
     -t scheme-tonal-spot \
     --source-color-index 0

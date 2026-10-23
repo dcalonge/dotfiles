@@ -54,15 +54,15 @@ pulsemixer
 qalculate-gtk
 ripgrep
 rtkit
+stow
 sudo
 swaybg
 swayidle
-tllist
 tree-sitter-cli
 ttf-jetbrains-mono-nerd
 tuned
 udiskie
-ungoogled-chromium-bin
+helium-browser-bin
 unzip
 upower
 vulkan-radeon

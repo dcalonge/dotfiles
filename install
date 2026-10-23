@@ -7,7 +7,8 @@ DOTFILES_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 PKGLIST="$DOTFILES_DIR/pkglist.txt"
 HOOKS_DIR="$DOTFILES_DIR/pacman/hooks"
 PACMAN_HOOKS_DIR="/etc/pacman.d/hooks"
-BACKUP_DIR="$HOME/.local/state/dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
+STOW_DIR="$(dirname "$DOTFILES_DIR")"
+STOW_PACKAGE="$(basename "$DOTFILES_DIR")"
 
 # Logging
 log() {
@@ -28,11 +29,11 @@ die() {
 command -v pacman >/dev/null 2>&1 ||
     die "This installer requires Arch Linux."
 
-# Install prerequisite packages
+# Install prerequisites, including GNU Stow
 log "Installing prerequisite packages..."
-sudo pacman -S --needed git base-devel
+sudo pacman -S --needed git base-devel stow
 
-# Install paru if it is missing
+# Install paru if missing
 if ! command -v paru >/dev/null 2>&1; then
     log "Building paru from the AUR..."
 
@@ -61,77 +62,30 @@ if ((${#PACKAGES[@]} > 0)); then
     paru -S --needed "${PACKAGES[@]}"
 fi
 
-# Back up conflicting files before creating symlinks
-backup_conflict() {
-    local target="$1"
-    local backup="$BACKUP_DIR$target"
+# Deploy home-directory dotfiles using GNU Stow.
+# The repository itself is treated as a Stow package.
+# Exclude files and directories that are not home-directory config.
+log "Deploying dotfiles with GNU Stow..."
 
-    mkdir -p "$(dirname "$backup")"
-    mv -- "$target" "$backup"
+stow \
+    --dir="$STOW_DIR" \
+    --target="$HOME" \
+    --restow \
+    --ignore='^install$' \
+    --ignore='^pkglist\.txt$' \
+    --ignore='^pacman$' \
+    "$STOW_PACKAGE"
 
-    log "Backed up $target to $backup"
-}
-
-# Create a symlink without overwriting unrelated files
-link_file() {
-    local source="$1"
-    local target="$2"
-    local resolved_source
-
-    resolved_source="$(realpath -m "$source")"
-    mkdir -p "$(dirname "$target")"
-
-    if [[ -L "$target" ]] &&
-       [[ "$(realpath -m "$target")" == "$resolved_source" ]]; then
-        log "Already linked: $target"
-        return 0
-    fi
-
-    if [[ -e "$target" || -L "$target" ]]; then
-        backup_conflict "$target"
-    fi
-
-    ln -s "$source" "$target"
-    log "Linked $target"
-}
-
-# Link shell configuration files
-log "Deploying shell configuration..."
-
-for name in .bashrc .bash_profile; do
-    source="$DOTFILES_DIR/$name"
-
-    if [[ -e "$source" || -L "$source" ]]; then
-        link_file "$source" "$HOME/$name"
-    fi
-done
-
-# Link entries in .config and .local/bin
-for dir in .config .local/bin; do
-    source_dir="$DOTFILES_DIR/$dir"
-
-    [[ -d "$source_dir" ]] || continue
-
-    while IFS= read -r -d '' source; do
-        relative="${source#"$DOTFILES_DIR/"}"
-        target="$HOME/$relative"
-
-        link_file "$source" "$target"
-    done < <(
-        find "$source_dir" -mindepth 1 -maxdepth 1 -print0
-    )
-done
-
-# Install pacman hooks
+# Manage system-wide pacman hooks separately from Stow
 log "Managing pacman hooks..."
 
 if [[ -d "$HOOKS_DIR" ]]; then
     sudo install -d "$PACMAN_HOOKS_DIR"
 
     shopt -s nullglob
-    hooks=("$HOOKS_DIR"/*.hook)
 
-    for hook in "${hooks[@]}"; do
+    # Install hooks tracked in the repository
+    for hook in "$HOOKS_DIR"/*.hook; do
         name="$(basename "$hook")"
         target="$PACMAN_HOOKS_DIR/$name"
         source="$(realpath "$hook")"
@@ -151,7 +105,8 @@ if [[ -d "$HOOKS_DIR" ]]; then
         log "Installed hook: $name"
     done
 
-    # Remove stale symlinks pointing into this repository's hooks directory
+    # Remove stale symlinks managed by this repository.
+    # Do not remove regular files or unrelated symlinks.
     for target in "$PACMAN_HOOKS_DIR"/*.hook; do
         [[ -L "$target" ]] || continue
 
@@ -161,7 +116,7 @@ if [[ -d "$HOOKS_DIR" ]]; then
             "$HOOKS_DIR"/*.hook)
                 if [[ ! -f "$source" ]]; then
                     sudo rm -- "$target"
-                    log "Removed stale hook link: $target"
+                    log "Removed stale hook: $target"
                 fi
                 ;;
         esac
@@ -171,3 +126,4 @@ else
 fi
 
 log "Dotfiles installation complete."
+
