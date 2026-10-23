@@ -1,0 +1,173 @@
+
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+# Paths
+DOTFILES_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+PKGLIST="$DOTFILES_DIR/pkglist.txt"
+HOOKS_DIR="$DOTFILES_DIR/pacman/hooks"
+PACMAN_HOOKS_DIR="/etc/pacman.d/hooks"
+BACKUP_DIR="$HOME/.local/state/dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
+
+# Logging
+log() {
+    printf '\033[1;32m==>\033[0m %s\n' "$*"
+}
+
+warn() {
+    printf '\033[1;33mWARN:\033[0m %s\n' "$*" >&2
+}
+
+die() {
+    printf '\033[1;31mERROR:\033[0m %s\n' "$*" >&2
+    exit 1
+}
+
+# Validate environment
+[[ -f "$PKGLIST" ]] || die "Missing package list: $PKGLIST"
+command -v pacman >/dev/null 2>&1 ||
+    die "This installer requires Arch Linux."
+
+# Install prerequisite packages
+log "Installing prerequisite packages..."
+sudo pacman -S --needed git base-devel
+
+# Install paru if it is missing
+if ! command -v paru >/dev/null 2>&1; then
+    log "Building paru from the AUR..."
+
+    BUILD_DIR="$(mktemp -d)"
+    trap 'rm -rf -- "${BUILD_DIR:-}"' EXIT
+
+    git clone https://aur.archlinux.org/paru.git "$BUILD_DIR/paru"
+
+    (
+        cd "$BUILD_DIR/paru"
+        makepkg -si
+    )
+
+    rm -rf -- "$BUILD_DIR"
+    trap - EXIT
+fi
+
+# Install packages from pkglist.txt
+log "Installing packages from pkglist.txt..."
+
+mapfile -t PACKAGES < <(
+    grep -Ev '^[[:space:]]*(#|$)' "$PKGLIST"
+)
+
+if ((${#PACKAGES[@]} > 0)); then
+    paru -S --needed "${PACKAGES[@]}"
+fi
+
+# Back up conflicting files before creating symlinks
+backup_conflict() {
+    local target="$1"
+    local backup="$BACKUP_DIR$target"
+
+    mkdir -p "$(dirname "$backup")"
+    mv -- "$target" "$backup"
+
+    log "Backed up $target to $backup"
+}
+
+# Create a symlink without overwriting unrelated files
+link_file() {
+    local source="$1"
+    local target="$2"
+    local resolved_source
+
+    resolved_source="$(realpath -m "$source")"
+    mkdir -p "$(dirname "$target")"
+
+    if [[ -L "$target" ]] &&
+       [[ "$(realpath -m "$target")" == "$resolved_source" ]]; then
+        log "Already linked: $target"
+        return 0
+    fi
+
+    if [[ -e "$target" || -L "$target" ]]; then
+        backup_conflict "$target"
+    fi
+
+    ln -s "$source" "$target"
+    log "Linked $target"
+}
+
+# Link shell configuration files
+log "Deploying shell configuration..."
+
+for name in .bashrc .bash_profile; do
+    source="$DOTFILES_DIR/$name"
+
+    if [[ -e "$source" || -L "$source" ]]; then
+        link_file "$source" "$HOME/$name"
+    fi
+done
+
+# Link entries in .config and .local/bin
+for dir in .config .local/bin; do
+    source_dir="$DOTFILES_DIR/$dir"
+
+    [[ -d "$source_dir" ]] || continue
+
+    while IFS= read -r -d '' source; do
+        relative="${source#"$DOTFILES_DIR/"}"
+        target="$HOME/$relative"
+
+        link_file "$source" "$target"
+    done < <(
+        find "$source_dir" -mindepth 1 -maxdepth 1 -print0
+    )
+done
+
+# Install pacman hooks
+log "Managing pacman hooks..."
+
+if [[ -d "$HOOKS_DIR" ]]; then
+    sudo install -d "$PACMAN_HOOKS_DIR"
+
+    shopt -s nullglob
+    hooks=("$HOOKS_DIR"/*.hook)
+
+    for hook in "${hooks[@]}"; do
+        name="$(basename "$hook")"
+        target="$PACMAN_HOOKS_DIR/$name"
+        source="$(realpath "$hook")"
+
+        if [[ -L "$target" ]] &&
+           [[ "$(readlink -f "$target" || true)" == "$source" ]]; then
+            log "Already installed: $name"
+            continue
+        fi
+
+        if [[ -e "$target" || -L "$target" ]]; then
+            warn "Preserving existing hook: $target"
+            continue
+        fi
+
+        sudo ln -s "$source" "$target"
+        log "Installed hook: $name"
+    done
+
+    # Remove stale symlinks pointing into this repository's hooks directory
+    for target in "$PACMAN_HOOKS_DIR"/*.hook; do
+        [[ -L "$target" ]] || continue
+
+        source="$(readlink "$target")"
+
+        case "$source" in
+            "$HOOKS_DIR"/*.hook)
+                if [[ ! -f "$source" ]]; then
+                    sudo rm -- "$target"
+                    log "Removed stale hook link: $target"
+                fi
+                ;;
+        esac
+    done
+else
+    log "No pacman/hooks directory found; skipping hooks."
+fi
+
+log "Dotfiles installation complete."
