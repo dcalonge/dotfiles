@@ -67,6 +67,8 @@ fi
 # Exclude files and directories that are not home-directory config.
 log "Deploying dotfiles with GNU Stow..."
 
+mkdir -p "$HOME/.config" "$HOME/.local/bin"
+
 stow \
     --dir="$STOW_DIR" \
     --target="$HOME" \
