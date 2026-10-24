@@ -11,6 +11,10 @@ log() {
     printf '\033[1;32m==>\033[0m %s\n' "$*"
 }
 
+warn() {
+    printf '\033[1;33mWARN:\033[0m %s\n' "$*" >&2
+}
+
 die() {
     printf '\033[1;31mERROR:\033[0m %s\n' "$*" >&2
     exit 1
@@ -74,11 +78,56 @@ if [[ -d "$DOTFILES_DIR/$STOW_PACKAGE/.local/bin" ]]; then
         ! -perm -u+x -exec chmod +x -- {} +
 fi
 
+# The repository wins on conflicts. Stow itself refuses to touch existing files,
+# so move anything that is in the way into a timestamped backup directory first
+# (nothing is deleted), then let Stow create the links.
+BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
+STOW_ROOT="$DOTFILES_DIR/$STOW_PACKAGE"
+backed_up=0
+
+while IFS= read -r -d '' src; do
+    rel="${src#"$STOW_ROOT"/}"
+    dest="$HOME/$rel"
+
+    # Drop stale symlinked parents that point into this repo outside home/
+    # (e.g. a folded ~/.config/fish from an older layout).
+    parent="$(dirname -- "$rel")"
+    while [[ "$parent" != "." ]]; do
+        if [[ -L "$HOME/$parent" ]]; then
+            link_target="$(readlink -m -- "$HOME/$parent")"
+            if [[ "$link_target" == "$DOTFILES_DIR"/* && "$link_target" != "$STOW_ROOT"/* ]]; then
+                rm -- "$HOME/$parent"
+            fi
+        fi
+        parent="$(dirname -- "$parent")"
+    done
+
+    [[ -e "$dest" || -L "$dest" ]] || continue
+
+    # Already points at the repo file (directly or through a linked parent).
+    [[ "$(readlink -m -- "$dest")" == "$(readlink -m -- "$src")" ]] && continue
+
+    # Stale symlink into this repo (e.g. from an older layout): just drop it.
+    if [[ -L "$dest" && "$(readlink -m -- "$dest")" == "$DOTFILES_DIR"/* ]]; then
+        rm -- "$dest"
+        continue
+    fi
+
+    mkdir -p -- "$BACKUP_DIR/$(dirname -- "$rel")"
+    mv -- "$dest" "$BACKUP_DIR/$rel"
+    warn "Replaced existing $dest (backup: $BACKUP_DIR/$rel)"
+    backed_up=1
+done < <(find "$STOW_ROOT" \( -type f -o -type l \) -print0)
+
+if ((backed_up)); then
+    log "Replaced files were moved to $BACKUP_DIR"
+fi
+
 stow \
     --dir="$DOTFILES_DIR" \
     --target="$HOME" \
     --restow \
     "$STOW_PACKAGE" ||
-    die "Stow failed (likely conflicts). Move the conflicting files aside and rerun."
+    die "Stow failed even after moving conflicting files aside."
 
 log "Dotfiles installation complete."

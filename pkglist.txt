@@ -52,7 +52,6 @@ pipewire-pulse
 polkit-gnome
 pulsemixer
 qalculate-gtk
-ripgrep
 rtkit
 stow
 sudo

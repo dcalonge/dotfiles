@@ -11,12 +11,7 @@ chmod +x install
 
 The installer is designed for Arch Linux and automates the setup of your environment.
 
-On a fresh install, move aside any default files that would conflict with the repository (Stow reports conflicts instead of overwriting):
-
-```bash
-mv ~/.bashrc ~/.bashrc.orig
-mv ~/.bash_profile ~/.bash_profile.orig
-```
+If a file in your home directory already exists where the repository has one (for example a default `~/.bashrc`), the repository version wins. The installer moves the existing file to `~/.dotfiles-backup/<timestamp>/`, keeping its relative path, and then creates the symlink. Nothing is deleted; remove the backup directory once you are happy with the result.
 
 ## What the installer does
 
@@ -98,7 +93,7 @@ Notes:
 
 - Scripts in `home/.local/bin` must be executable. The installer runs `chmod +x` on them before stowing, but commit the mode too (`git add --chmod=+x home/.local/bin/<script>`, or `chmod +x` before `git add`) so it is stored in the repository.
 - Moving a whole app directory also moves anything the app stored there (cache, state, credentials). If that is a problem, add only the specific files you want, as in the third example above.
-- Stow only creates links for files that exist in the repository. If a real file already exists at the destination, Stow reports a conflict and does nothing for that path. Move or delete the existing file and run Stow again.
+- Stow only creates links for files that exist in the repository. If you run `stow` directly and a real file already exists at the destination, Stow reports a conflict and does nothing. Rerunning `./install` instead backs up the existing file and replaces it with the link.
 
 ### Removing dotfiles
 
@@ -169,6 +164,6 @@ You can also edit `pkglist.txt` by hand. Run the installer again to install newl
 ## Notes
 
 - The installer may request your password for privileged operations.
-- GNU Stow reports conflicts rather than automatically overwriting existing files. Resolve conflicts before rerunning the installer.
+- On conflicts the installer backs up the existing file to `~/.dotfiles-backup/<timestamp>/` and the repository version replaces it. Only files that the repository also contains are affected; other files in the same directories are left alone.
 - Review package installation prompts before confirming changes.
 - Back up important configuration files before making major changes.
