@@ -7,8 +7,6 @@ DOTFILES_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 PKGLIST="$DOTFILES_DIR/pkglist.txt"
 HOOKS_DIR="$DOTFILES_DIR/pacman/hooks"
 PACMAN_HOOKS_DIR="/etc/pacman.d/hooks"
-STOW_DIR="$(dirname "$DOTFILES_DIR")"
-STOW_PACKAGE="$(basename "$DOTFILES_DIR")"
 
 # Logging
 log() {
@@ -70,14 +68,10 @@ log "Deploying dotfiles with GNU Stow..."
 mkdir -p "$HOME/.config" "$HOME/.local/bin"
 
 stow \
-    --dir="$STOW_DIR" \
-    --target="$HOME" \
-    --restow \
-    --ignore='^install$' \
-    --ignore='^pkglist\.txt$' \
-    --ignore='^pacman$' \
-    --ignore='^assets$' \
-    "$STOW_PACKAGE"
+  --dir="$DOTFILES_DIR" \
+  --target="$HOME" \
+  --restow \
+  home
 
 # Manage system-wide pacman hooks separately from Stow
 log "Managing pacman hooks..."

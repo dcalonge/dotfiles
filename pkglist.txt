@@ -79,3 +79,5 @@ yazi
 zathura
 zathura-pdf-mupdf
 zip
+github-cli
+lazygit

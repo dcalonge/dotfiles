@@ -2,8 +2,7 @@
 
 Clone the repository and run the installer:
 
-bash
-```
+```bash
 git clone https://github.com/dcalonge/dotfiles.git
 cd dotfiles
 chmod +x install
@@ -12,42 +11,140 @@ chmod +x install
 
 The installer is designed for Arch Linux and automates the setup of your environment.
 
+On a fresh install, move aside any default files that would conflict with the repository (Stow reports conflicts instead of overwriting):
+
+```bash
+mv ~/.bashrc ~/.bashrc.orig
+mv ~/.bash_profile ~/.bash_profile.orig
+```
+
 ## What the installer does
 
-- Dependencies: Installs prerequisites, including Git, `base-devel`, and GNU Stow.
-- AUR helper: Installs [`paru`](<https://github.com/Morganamilo/paru?utm_source=chatgpt.com>) if it is not already installed.
-- Packages: Installs packages listed in `pkglist.txt`, supporting both official repositories and the AUR.
-- Dotfiles: Uses GNU Stow to create symlinks for your configuration files.
-- Pacman hooks: Installs hooks from `pacman/hooks/` into `/etc/pacman.d/hooks/` and removes stale symlinks managed by the repository.
+- **Dependencies:** Installs prerequisites, including Git, `base-devel`, and GNU Stow.
+- **AUR helper:** Installs [`paru`](https://github.com/Morganamilo/paru) if it is not already installed.
+- **Packages:** Installs packages listed in `pkglist.txt`, supporting both official repositories and the AUR.
+- **Dotfiles:** Uses GNU Stow to symlink everything in `home/` into your home directory.
+- **Pacman hooks:** Installs hooks from `pacman/hooks/` into `/etc/pacman.d/hooks/` and removes stale symlinks managed by the repository.
 
 ## Repository structure
 
-text
-```
+```text
 dotfiles/
 ├── install
-├── .bashrc
-├── .bash_profile
-├── .config/
-├── .local/
-│   └── bin/
+├── pkglist.txt
+├── README.md
+├── assets/
 ├── pacman/
 │   └── hooks/
-└── pkglist.txt
+└── home/                 # Stow package: mirrors $HOME
+    ├── .bashrc
+    ├── .bash_profile
+    ├── .config/
+    └── .local/
+        └── bin/
 ```
+
+Everything inside `home/` is a mirror of your home directory. Everything outside it is repository tooling and is never linked into `$HOME`.
 
 ## Managing dotfiles
 
-Configuration files are managed with GNU Stow. The repository is the source of truth, while symlinks expose files at their expected locations in your home directory.
+Configuration files are managed with [GNU Stow](https://www.gnu.org/software/stow/). The repository is the source of truth, while symlinks expose files at their expected locations in your home directory.
 
 For example:
 
-- Repository: `~/dotfiles/.config/mango/config.conf`
+- Repository: `~/dotfiles/home/.config/mango/config.conf`
 - Actual configuration: `~/.config/mango/config.conf`
 
 Both paths refer to the same file, so changes made through either path are immediately reflected in the other. You do not need to rerun Stow when editing an existing configuration.
 
-When adding new files or changing the repository structure, rerun the installer to create or reconcile the symlinks.
+The installer creates `~/.config` and `~/.local/bin` as real directories before running Stow. This means Stow links the individual app directories inside them (for example `~/.config/niri`) rather than replacing `~/.config` itself with a symlink.
+
+### Adding dotfiles
+
+1. Move the file or directory into `home/`, keeping the same path it has relative to `$HOME`:
+
+   ```bash
+   # a single file in $HOME
+   mv ~/.zshrc ~/dotfiles/home/.zshrc
+
+   # an app directory in ~/.config
+   mv ~/.config/foo ~/dotfiles/home/.config/foo
+
+   # a single file inside ~/.config/foo (leave the rest of the directory alone)
+   mkdir -p ~/dotfiles/home/.config/foo
+   mv ~/.config/foo/config.toml ~/dotfiles/home/.config/foo/config.toml
+   ```
+
+2. Preview what Stow will do (optional, but a good habit):
+
+   ```bash
+   stow -n -v --dir="$HOME/dotfiles" --target="$HOME" --restow home
+   ```
+
+3. Create the symlinks. Either rerun `./install`, or run Stow directly:
+
+   ```bash
+   stow --dir="$HOME/dotfiles" --target="$HOME" --restow home
+   ```
+
+4. Check the result and commit:
+
+   ```bash
+   ls -l ~/.config/foo
+   cd ~/dotfiles && git add -A && git commit -m "Add foo config"
+   ```
+
+Before committing, check that you are not adding caches, history files, tokens, or other secrets. Add anything that should stay out of the repository to `.gitignore`.
+
+Notes:
+
+- Moving a whole app directory also moves anything the app stored there (cache, state, credentials). If that is a problem, add only the specific files you want, as in the third example above.
+- Stow only creates links for files that exist in the repository. If a real file already exists at the destination, Stow reports a conflict and does nothing for that path. Move or delete the existing file and run Stow again.
+
+### Removing dotfiles
+
+Remove the symlink **before** deleting the file from the repository. Stow works from the repository contents, so once a file is gone from `home/` it can no longer tell which link belonged to it and leaves a dangling symlink behind.
+
+1. Remove the symlinks for the whole package:
+
+   ```bash
+   stow -D --dir="$HOME/dotfiles" --target="$HOME" home
+   ```
+
+   Or, to remove just one, delete the link by hand (check it is a symlink first):
+
+   ```bash
+   ls -ld ~/.config/foo
+   rm ~/.config/foo
+   ```
+
+2. Optionally keep a local, unmanaged copy of the config:
+
+   ```bash
+   cp -a ~/dotfiles/home/.config/foo ~/.config/foo
+   ```
+
+3. Delete it from the repository and commit:
+
+   ```bash
+   cd ~/dotfiles
+   git rm -r home/.config/foo
+   git commit -m "Remove foo config"
+   ```
+
+4. If you removed the whole package's links in step 1, restore the rest by rerunning `./install` or:
+
+   ```bash
+   stow --dir="$HOME/dotfiles" --target="$HOME" --restow home
+   ```
+
+To find leftover dangling links after the fact:
+
+```bash
+find ~ -maxdepth 4 -xtype l -lname '*dotfiles/*'
+```
+
+Review the output, then add `-delete` to remove them.
 
 ## Managing packages
 
