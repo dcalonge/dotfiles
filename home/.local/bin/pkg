@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+# pkg - install/remove packages and keep pkglist.txt in sync.
+#
+#   pkg add <pkg...>   install with paru, then add to pkglist.txt
+#   pkg rm  <pkg...>   remove with paru (-Rns), then drop from pkglist.txt
+#   pkg diff           compare pkglist.txt with explicitly installed packages
+set -Eeuo pipefail
+
+# Resolve the repo through the Stow symlink, so no path is hard-coded.
+# <repo>/home/.local/bin/pkg -> <repo>/pkglist.txt is three levels up.
+SELF="$(readlink -f -- "${BASH_SOURCE[0]}")"
+PKGLIST="$(realpath -- "$(dirname -- "$SELF")/../../../pkglist.txt")"
+
+log()  { printf '\033[1;32m==>\033[0m %s\n' "$*"; }
+warn() { printf '\033[1;33mWARN:\033[0m %s\n' "$*" >&2; }
+die()  { printf '\033[1;31mERROR:\033[0m %s\n' "$*" >&2; exit 1; }
+
+[[ -f "$PKGLIST" ]] || die "Missing package list: $PKGLIST"
+
+usage() {
+  cat <<USAGE
+Usage:
+  pkg add <package...>   Install packages and add them to pkglist.txt
+  pkg rm  <package...>   Remove packages and drop them from pkglist.txt
+  pkg diff               Show differences between pkglist.txt and the system
+USAGE
+}
+
+# Package names in pkglist.txt (comments and blank lines ignored), sorted.
+listed() {
+  grep -Ev '^[[:space:]]*(#|$)' "$PKGLIST" |
+    sed 's/^[[:space:]]*//; s/[[:space:]]*$//' |
+    LC_ALL=C sort -u
+}
+
+installed_explicit() { pacman -Qqe | LC_ALL=C sort -u; }
+
+is_installed() { pacman -Qq -- "$1" >/dev/null 2>&1; }
+
+in_list() { listed | grep -qxF -- "$1"; }
+
+add_to_list() {
+  local pkg=$1
+  in_list "$pkg" && return 0
+  # Make sure the file ends with a newline before appending.
+  if [[ -s "$PKGLIST" && -n "$(tail -c1 "$PKGLIST")" ]]; then
+    printf '\n' >>"$PKGLIST"
+  fi
+  printf '%s\n' "$pkg" >>"$PKGLIST"
+  log "Added $pkg to pkglist.txt"
+}
+
+remove_from_list() {
+  local pkg=$1 tmp
+  in_list "$pkg" || return 0
+  tmp="$(mktemp)"
+  # Drop only lines that are exactly the package name; comments are kept.
+  awk -v p="$pkg" '{ l = $0; gsub(/^[ \t]+|[ \t]+$/, "", l); if (l != p) print }' \
+    "$PKGLIST" >"$tmp"
+  cat -- "$tmp" >"$PKGLIST"
+  rm -f -- "$tmp"
+  log "Removed $pkg from pkglist.txt"
+}
+
+cmd="${1:-}"
+[[ -n "$cmd" ]] || { usage; exit 1; }
+shift
+
+case "$cmd" in
+  add)
+    (($# > 0)) || die "No packages given."
+    paru -S --needed "$@"
+    for pkg in "$@"; do
+      if is_installed "$pkg"; then
+        add_to_list "$pkg"
+      else
+        warn "$pkg is not installed (group or virtual name?); not added to pkglist.txt"
+      fi
+    done
+    ;;
+  rm | remove)
+    (($# > 0)) || die "No packages given."
+    paru -Rns "$@"
+    for pkg in "$@"; do
+      if is_installed "$pkg"; then
+        warn "$pkg is still installed; leaving it in pkglist.txt"
+      else
+        remove_from_list "$pkg"
+      fi
+    done
+    ;;
+  diff)
+    only_list="$(LC_ALL=C comm -23 <(listed) <(installed_explicit))"
+    only_sys="$(LC_ALL=C comm -13 <(listed) <(installed_explicit))"
+    if [[ -z "$only_list$only_sys" ]]; then
+      log "pkglist.txt matches the explicitly installed packages."
+    fi
+    if [[ -n "$only_list" ]]; then
+      log "In pkglist.txt but not explicitly installed:"
+      sed 's/^/  /' <<<"$only_list"
+    fi
+    if [[ -n "$only_sys" ]]; then
+      log "Explicitly installed but not in pkglist.txt:"
+      sed 's/^/  /' <<<"$only_sys"
+    fi
+    ;;
+  -h | --help | help)
+    usage
+    ;;
+  *)
+    usage
+    exit 1
+    ;;
+esac

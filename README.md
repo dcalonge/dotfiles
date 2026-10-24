@@ -24,7 +24,6 @@ mv ~/.bash_profile ~/.bash_profile.orig
 - **AUR helper:** Installs [`paru`](https://github.com/Morganamilo/paru) if it is not already installed.
 - **Packages:** Installs packages listed in `pkglist.txt`, supporting both official repositories and the AUR.
 - **Dotfiles:** Uses GNU Stow to symlink everything in `home/` into your home directory.
-- **Pacman hooks:** Installs hooks from `pacman/hooks/` into `/etc/pacman.d/hooks/` and removes stale symlinks managed by the repository.
 
 ## Repository structure
 
@@ -34,8 +33,6 @@ dotfiles/
 ├── pkglist.txt
 ├── README.md
 ├── assets/
-├── pacman/
-│   └── hooks/
 └── home/                 # Stow package: mirrors $HOME
     ├── .bashrc
     ├── .bash_profile
@@ -68,6 +65,7 @@ The installer creates `~/.config` and `~/.local/bin` as real directories before 
    mv ~/.zshrc ~/dotfiles/home/.zshrc
 
    # an app directory in ~/.config
+   mkdir -p ~/dotfiles/home/.config
    mv ~/.config/foo ~/dotfiles/home/.config/foo
 
    # a single file inside ~/.config/foo (leave the rest of the directory alone)
@@ -98,6 +96,7 @@ Before committing, check that you are not adding caches, history files, tokens, 
 
 Notes:
 
+- Scripts in `home/.local/bin` must be executable. The installer runs `chmod +x` on them before stowing, but commit the mode too (`git add --chmod=+x home/.local/bin/<script>`, or `chmod +x` before `git add`) so it is stored in the repository.
 - Moving a whole app directory also moves anything the app stored there (cache, state, credentials). If that is a problem, add only the specific files you want, as in the third example above.
 - Stow only creates links for files that exist in the repository. If a real file already exists at the destination, Stow reports a conflict and does nothing for that path. Move or delete the existing file and run Stow again.
 
@@ -148,19 +147,28 @@ Review the output, then add `-delete` to remove them.
 
 ## Managing packages
 
-Add or remove package names in `pkglist.txt`. Run the installer again to install newly listed packages.
+Packages are listed in `pkglist.txt`, one name per line. Lines starting with `#` and blank lines are ignored, so you can use them to group packages.
 
-Removing a package from the list does not automatically uninstall it. Remove packages explicitly with `paru` or `pacman` when appropriate.
+The `pkg` helper (`home/.local/bin/pkg`, linked to `~/.local/bin/pkg`) installs or removes packages and updates `pkglist.txt` for you:
 
-## Managing pacman hooks
+```bash
+pkg add htop ripgrep      # paru -S --needed, then add to pkglist.txt
+pkg rm htop               # paru -Rns, then remove from pkglist.txt
+pkg diff                  # compare pkglist.txt with what is installed
+```
 
-Place custom `.hook` files in `pacman/hooks/`. The installer creates symlinks in `/etc/pacman.d/hooks/`, keeping hook definitions version-controlled alongside the rest of your dotfiles.
+- A package is only added to the list once it is actually installed, and only removed once it is actually gone. If you cancel at the prompt, `pkglist.txt` is left alone.
+- Comments and grouping in `pkglist.txt` are preserved.
+- `pkg add` also works for packages that are already installed, which is a quick way to start tracking one.
+- Packages installed or removed with plain `pacman` or `paru` are not recorded. Run `pkg diff` to see what has drifted: it lists packages that are in the file but not explicitly installed, and explicitly installed packages that are not in the file. The second list includes base system packages such as `base` and `linux`, which you can add or ignore.
+- Commit `pkglist.txt` after changing it.
+- Fish completions for `pkg` live in `home/.config/fish/completions/pkg.fish`: subcommands, repo package names after `add`, and installed package names after `rm`. AUR package names are not completed.
 
-Pacman hooks may execute commands with root privileges. Ensure that hook definitions and any scripts they invoke are trusted and appropriately protected.
+You can also edit `pkglist.txt` by hand. Run the installer again to install newly listed packages. Removing a name from the file does not uninstall the package; use `pkg rm` for that.
 
 ## Notes
 
 - The installer may request your password for privileged operations.
 - GNU Stow reports conflicts rather than automatically overwriting existing files. Resolve conflicts before rerunning the installer.
-- Review package installation prompts and hook behavior before confirming changes.
+- Review package installation prompts before confirming changes.
 - Back up important configuration files before making major changes.

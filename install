@@ -1,20 +1,14 @@
-
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
 # Paths
-DOTFILES_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+DOTFILES_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 PKGLIST="$DOTFILES_DIR/pkglist.txt"
-HOOKS_DIR="$DOTFILES_DIR/pacman/hooks"
-PACMAN_HOOKS_DIR="/etc/pacman.d/hooks"
+STOW_PACKAGE="home"
 
 # Logging
 log() {
     printf '\033[1;32m==>\033[0m %s\n' "$*"
-}
-
-warn() {
-    printf '\033[1;33mWARN:\033[0m %s\n' "$*" >&2
 }
 
 die() {
@@ -23,13 +17,17 @@ die() {
 }
 
 # Validate environment
+((EUID != 0)) || die "Do not run this script as root; it uses sudo where needed."
+command -v pacman >/dev/null 2>&1 || die "This installer requires Arch Linux."
+command -v sudo >/dev/null 2>&1 || die "sudo is required."
 [[ -f "$PKGLIST" ]] || die "Missing package list: $PKGLIST"
-command -v pacman >/dev/null 2>&1 ||
-    die "This installer requires Arch Linux."
+[[ -d "$DOTFILES_DIR/$STOW_PACKAGE" ]] ||
+    die "Missing Stow package directory: $DOTFILES_DIR/$STOW_PACKAGE"
 
-# Install prerequisites, including GNU Stow
+# Install prerequisites, including GNU Stow.
+# -Syu avoids partial upgrades and stale-database 404s on fresh installs.
 log "Installing prerequisite packages..."
-sudo pacman -S --needed git base-devel stow
+sudo pacman -Syu --needed git base-devel stow
 
 # Install paru if missing
 if ! command -v paru >/dev/null 2>&1; then
@@ -53,7 +51,8 @@ fi
 log "Installing packages from pkglist.txt..."
 
 mapfile -t PACKAGES < <(
-    grep -Ev '^[[:space:]]*(#|$)' "$PKGLIST"
+    grep -Ev '^[[:space:]]*(#|$)' "$PKGLIST" |
+        sed 's/^[[:space:]]*//; s/[[:space:]]*$//'
 )
 
 if ((${#PACKAGES[@]} > 0)); then
@@ -61,66 +60,25 @@ if ((${#PACKAGES[@]} > 0)); then
 fi
 
 # Deploy home-directory dotfiles using GNU Stow.
-# The repository itself is treated as a Stow package.
-# Exclude files and directories that are not home-directory config.
+# Everything under home/ mirrors $HOME; the rest of the repo is tooling.
+# Create these as real directories first so Stow links the individual app
+# directories inside them instead of replacing the directories themselves.
 log "Deploying dotfiles with GNU Stow..."
 
 mkdir -p "$HOME/.config" "$HOME/.local/bin"
 
-stow \
-  --dir="$DOTFILES_DIR" \
-  --target="$HOME" \
-  --restow \
-  home
-
-# Manage system-wide pacman hooks separately from Stow
-log "Managing pacman hooks..."
-
-if [[ -d "$HOOKS_DIR" ]]; then
-    sudo install -d "$PACMAN_HOOKS_DIR"
-
-    shopt -s nullglob
-
-    # Install hooks tracked in the repository
-    for hook in "$HOOKS_DIR"/*.hook; do
-        name="$(basename "$hook")"
-        target="$PACMAN_HOOKS_DIR/$name"
-        source="$(realpath "$hook")"
-
-        if [[ -L "$target" ]] &&
-           [[ "$(readlink -f "$target" || true)" == "$source" ]]; then
-            log "Already installed: $name"
-            continue
-        fi
-
-        if [[ -e "$target" || -L "$target" ]]; then
-            warn "Preserving existing hook: $target"
-            continue
-        fi
-
-        sudo ln -s "$source" "$target"
-        log "Installed hook: $name"
-    done
-
-    # Remove stale symlinks managed by this repository.
-    # Do not remove regular files or unrelated symlinks.
-    for target in "$PACMAN_HOOKS_DIR"/*.hook; do
-        [[ -L "$target" ]] || continue
-
-        source="$(readlink "$target")"
-
-        case "$source" in
-            "$HOOKS_DIR"/*.hook)
-                if [[ ! -f "$source" ]]; then
-                    sudo rm -- "$target"
-                    log "Removed stale hook: $target"
-                fi
-                ;;
-        esac
-    done
-else
-    log "No pacman/hooks directory found; skipping hooks."
+# Scripts linked into ~/.local/bin must be executable. The symlinks always look
+# the same; what matters is the mode of the file in the repo.
+if [[ -d "$DOTFILES_DIR/$STOW_PACKAGE/.local/bin" ]]; then
+    find "$DOTFILES_DIR/$STOW_PACKAGE/.local/bin" -maxdepth 1 -type f \
+        ! -perm -u+x -exec chmod +x -- {} +
 fi
 
-log "Dotfiles installation complete."
+stow \
+    --dir="$DOTFILES_DIR" \
+    --target="$HOME" \
+    --restow \
+    "$STOW_PACKAGE" ||
+    die "Stow failed (likely conflicts). Move the conflicting files aside and rerun."
 
+log "Dotfiles installation complete."
