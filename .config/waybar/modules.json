@@ -76,7 +76,7 @@
     "format-muted": "󰖁",
     "format-source": "󰍬 ",
     "format-source-muted": "",
-    "on-click-right": "foot -e pulsemixer",
+    "on-click-right": "foot -a foot-floating -e pulsemixer",
     "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
     "reverse-scrolling": true,
     "tooltip": true,
