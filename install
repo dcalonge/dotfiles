@@ -130,4 +130,24 @@ stow \
     "$STOW_PACKAGE" ||
     die "Stow failed even after moving conflicting files aside."
 
+# Matugen regenerates these color files on every theme change. Keep the
+# committed versions as base examples, but ignore local modifications so
+# users are not prompted to commit regenerated colors.
+for f in \
+    home/.config/btop/themes/matugen.theme \
+    home/.config/foot/colors.ini \
+    home/.config/fuzzel/colors.ini \
+    home/.config/gtk-3.0/matugen-colors.css \
+    home/.config/gtk-4.0/matugen-colors.css \
+    home/.config/gtklock/style.css \
+    home/.config/mako/config \
+    home/.config/mango/colors.conf \
+    home/.config/nvim/lua/config/matugen-theme.yaml \
+    home/.config/waybar/colors.css \
+    home/.config/yazi/theme.toml \
+    home/.config/zathura/zathurarc
+do
+    git -C "$DOTFILES_DIR" update-index --skip-worktree "$f" 2>/dev/null || true
+done
+
 log "Dotfiles installation complete."
