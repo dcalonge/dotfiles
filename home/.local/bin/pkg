@@ -33,6 +33,7 @@ listed() {
     LC_ALL=C sort -u
 }
 
+installed() { pacman -Qq | LC_ALL=C sort -u; }
 installed_explicit() { pacman -Qqe | LC_ALL=C sort -u; }
 
 is_installed() { pacman -Qq -- "$1" >/dev/null 2>&1; }
@@ -92,13 +93,13 @@ case "$cmd" in
     log "Reminder: run 'pkg diff' to check for stale or missing entries."
     ;;
   diff)
-    only_list="$(LC_ALL=C comm -23 <(listed) <(installed_explicit))"
+    only_list="$(LC_ALL=C comm -23 <(listed) <(installed))"
     only_sys="$(LC_ALL=C comm -13 <(listed) <(installed_explicit))"
     if [[ -z "$only_list$only_sys" ]]; then
       log "pkglist.txt matches the explicitly installed packages."
     fi
     if [[ -n "$only_list" ]]; then
-      log "In pkglist.txt but not explicitly installed (may be a dependency):"
+      log "In pkglist.txt but not installed:"
       sed 's/^/  /' <<<"$only_list"
     fi
     if [[ -n "$only_sys" ]]; then
