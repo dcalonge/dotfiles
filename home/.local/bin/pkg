@@ -98,7 +98,7 @@ case "$cmd" in
       log "pkglist.txt matches the explicitly installed packages."
     fi
     if [[ -n "$only_list" ]]; then
-      log "In pkglist.txt but not explicitly installed:"
+      log "In pkglist.txt but not explicitly installed (may be a dependency):"
       sed 's/^/  /' <<<"$only_list"
     fi
     if [[ -n "$only_sys" ]]; then
