@@ -80,3 +80,4 @@ zathura-pdf-mupdf
 zip
 github-cli
 lazygit
+opencode
