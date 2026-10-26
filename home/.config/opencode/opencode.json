@@ -1,0 +1,11 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "servers": {
+      "youcom": {
+        "type": "remote",
+        "url": "https://api.you.com/mcp?profile=free"
+      }
+    }
+  }
+}
