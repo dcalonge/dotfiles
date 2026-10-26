@@ -5,6 +5,12 @@ set -Eeuo pipefail
 DOTFILES_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 PKGLIST="$DOTFILES_DIR/pkglist.txt"
 STOW_PACKAGE="home"
+SYSTEM_PACKAGE="$DOTFILES_DIR/system"
+
+# Shared helpers for the system/ tree. ~/.local/bin/sys sources the same file,
+# so "installed" means exactly the same thing to the installer and to sys diff.
+# shellcheck source=lib/system.sh
+source "$DOTFILES_DIR/lib/system.sh"
 
 # Logging
 log() {
@@ -20,47 +26,153 @@ die() {
     exit 1
 }
 
+usage() {
+    cat <<'USAGE'
+Usage: ./install [--system-only]
+
+  (no option)    Full install: prerequisites, packages, system config, dotfiles.
+  --system-only  Only redeploy system/ into / and refresh networking services.
+USAGE
+}
+
+system_only=0
+for arg in "$@"; do
+    case "$arg" in
+        --system-only) system_only=1 ;;
+        -h | --help) usage; exit 0 ;;
+        *) usage >&2; die "Unknown option: $arg" ;;
+    esac
+done
+
 # Validate environment
 ((EUID != 0)) || die "Do not run this script as root; it uses sudo where needed."
-command -v pacman >/dev/null 2>&1 || die "This installer requires Arch Linux."
 command -v sudo >/dev/null 2>&1 || die "sudo is required."
-[[ -f "$PKGLIST" ]] || die "Missing package list: $PKGLIST"
-[[ -d "$DOTFILES_DIR/$STOW_PACKAGE" ]] ||
-    die "Missing Stow package directory: $DOTFILES_DIR/$STOW_PACKAGE"
 
-# Install prerequisites, including GNU Stow.
-# -Syu avoids partial upgrades and stale-database 404s on fresh installs.
-log "Installing prerequisite packages..."
-sudo pacman -Syu --needed git base-devel stow
-
-# Install paru if missing
-if ! command -v paru >/dev/null 2>&1; then
-    log "Building paru from the AUR..."
-
-    BUILD_DIR="$(mktemp -d)"
-    trap 'rm -rf -- "${BUILD_DIR:-}"' EXIT
-
-    git clone https://aur.archlinux.org/paru.git "$BUILD_DIR/paru"
-
-    (
-        cd "$BUILD_DIR/paru"
-        makepkg -si
-    )
-
-    rm -rf -- "$BUILD_DIR"
-    trap - EXIT
+if ((system_only)); then
+    [[ -d "$SYSTEM_PACKAGE" ]] || die "Missing system directory: $SYSTEM_PACKAGE"
+else
+    command -v pacman >/dev/null 2>&1 || die "This installer requires Arch Linux."
+    [[ -f "$PKGLIST" ]] || die "Missing package list: $PKGLIST"
+    [[ -d "$DOTFILES_DIR/$STOW_PACKAGE" ]] ||
+        die "Missing Stow package directory: $DOTFILES_DIR/$STOW_PACKAGE"
 fi
 
-# Install packages from pkglist.txt
-log "Installing packages from pkglist.txt..."
+if ((!system_only)); then
+    # Install prerequisites, including GNU Stow.
+    # -Syu avoids partial upgrades and stale-database 404s on fresh installs.
+    log "Installing prerequisite packages..."
+    sudo pacman -Syu --needed git base-devel stow
 
-mapfile -t PACKAGES < <(
-    grep -Ev '^[[:space:]]*(#|$)' "$PKGLIST" |
-        sed 's/^[[:space:]]*//; s/[[:space:]]*$//'
-)
+    # Install paru if missing
+    if ! command -v paru >/dev/null 2>&1; then
+        log "Building paru from the AUR..."
 
-if ((${#PACKAGES[@]} > 0)); then
-    paru -S --needed "${PACKAGES[@]}"
+        BUILD_DIR="$(mktemp -d)"
+        trap 'rm -rf -- "${BUILD_DIR:-}"' EXIT
+
+        git clone https://aur.archlinux.org/paru.git "$BUILD_DIR/paru"
+
+        (
+            cd "$BUILD_DIR/paru"
+            makepkg -si
+        )
+
+        rm -rf -- "$BUILD_DIR"
+        trap - EXIT
+    fi
+
+    # Install packages from pkglist.txt
+    log "Installing packages from pkglist.txt..."
+
+    mapfile -t PACKAGES < <(
+        grep -Ev '^[[:space:]]*(#|$)' "$PKGLIST" |
+            sed 's/^[[:space:]]*//; s/[[:space:]]*$//'
+    )
+
+    if ((${#PACKAGES[@]} > 0)); then
+        paru -S --needed "${PACKAGES[@]}"
+    fi
+fi
+
+# Deploy system-level configuration.
+# Everything under system/ mirrors the filesystem root, so these files land in
+# /etc rather than $HOME. They are copied instead of symlinked on purpose: iwd
+# and systemd-networkd read them at early boot, possibly before $HOME is
+# mounted, where a symlink into the repository would dangle and leave the
+# machine without networking.
+BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
+system_changed=0
+backed_up=0
+
+if [[ -d "$SYSTEM_PACKAGE" ]]; then
+    log "Installing system configuration from system/..."
+
+    while IFS= read -r -d '' src; do
+        rel="${src#"$SYSTEM_PACKAGE"/}"
+        dest="/$rel"
+        mode="$(system_mode "$rel")"
+
+        # Already installed with the right contents, mode and owner.
+        [[ "$(system_state "$src" "$dest" "$rel")" == "ok" ]] && continue
+
+        # Keep a copy of whatever we are about to replace.
+        if [[ -e "$dest" || -L "$dest" ]]; then
+            mkdir -p -- "$BACKUP_DIR/$(dirname -- "$rel")"
+            sudo cp -a -- "$dest" "$BACKUP_DIR/$rel"
+            sudo chown -h -- "$(id -u):$(id -g)" "$BACKUP_DIR/$rel"
+            warn "Replaced existing $dest (backup: $BACKUP_DIR/$rel)"
+            backed_up=1
+        fi
+
+        sudo install -Dm"$mode" -o root -g root -- "$src" "$dest"
+        system_changed=1
+    done < <(system_files "$SYSTEM_PACKAGE")
+fi
+
+# Networking is split between three services:
+#   iwd                associates with Wi-Fi (EnableNetworkConfiguration=false,
+#                      so it leaves addressing to networkd)
+#   systemd-networkd   applies system/etc/systemd/network/*.network and runs DHCP
+#   systemd-resolved   receives DNS from networkd and serves the /etc/resolv.conf stub
+# Other network managers must not be running alongside them.
+if [[ -d "$SYSTEM_PACKAGE/etc/iwd" || -d "$SYSTEM_PACKAGE/etc/systemd/network" ]]; then
+    log "Configuring networking services..."
+
+    sudo systemctl enable --now systemd-resolved.service
+
+    # Point DNS at resolved's stub. Keep this matching the usual Arch setup so
+    # tools that rewrite /etc/resolv.conf keep working.
+    if [[ "$(readlink -- /etc/resolv.conf 2>/dev/null)" != \
+        "../run/systemd/resolve/stub-resolv.conf" ]]; then
+        sudo ln -sfn -- ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+    fi
+
+    sudo systemctl enable --now iwd.service
+
+    # Only restart iwd when its configuration actually changed; a restart drops
+    # any Wi-Fi association, which matters when installing over the network.
+    if ((system_changed)); then
+        sudo systemctl restart iwd.service
+    fi
+
+    sudo systemctl enable --now systemd-networkd.service
+
+    for unit in NetworkManager.service wpa_supplicant.service dhcpcd.service; do
+        systemctl list-unit-files "$unit" --no-legend --no-pager 2>/dev/null |
+            grep -q . || continue
+
+        if systemctl is-enabled --quiet "$unit" 2>/dev/null ||
+            systemctl is-active --quiet "$unit" 2>/dev/null; then
+            warn "Disabling $unit; iwd and systemd-networkd manage networking now."
+            sudo systemctl disable --now "$unit" || warn "Could not stop $unit."
+        fi
+    done
+fi
+
+# Everything past this point is user-level; --system-only stops here.
+if ((system_only)); then
+    log "System configuration applied."
+    exit 0
 fi
 
 # Deploy home-directory dotfiles using GNU Stow.
@@ -81,9 +193,7 @@ fi
 # The repository wins on conflicts. Stow itself refuses to touch existing files,
 # so move anything that is in the way into a timestamped backup directory first
 # (nothing is deleted), then let Stow create the links.
-BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 STOW_ROOT="$DOTFILES_DIR/$STOW_PACKAGE"
-backed_up=0
 
 while IFS= read -r -d '' src; do
     rel="${src#"$STOW_ROOT"/}"

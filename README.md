@@ -19,6 +19,8 @@ If a file in your home directory already exists where the repository has one (fo
 - **AUR helper:** Installs [`paru`](https://github.com/Morganamilo/paru) if it is not already installed.
 - **Packages:** Installs packages listed in `pkglist.txt`, supporting both official repositories and the AUR.
 - **Dotfiles:** Uses GNU Stow to symlink everything in `home/` into your home directory.
+- **System configuration:** Copies everything in `system/` into `/etc`, backing up any file it replaces, and installs private paths `0600`.
+- **Networking:** Enables `iwd`, `systemd-networkd`, and `systemd-resolved`, points `/etc/resolv.conf` at the systemd stub, and disables `NetworkManager`, `wpa_supplicant`, and `dhcpcd` if they are present.
 
 ## Repository structure
 
@@ -28,15 +30,25 @@ dotfiles/
 ├── pkglist.txt
 ├── README.md
 ├── assets/
-└── home/                 # Stow package: mirrors $HOME
-    ├── .bashrc
-    ├── .bash_profile
-    ├── .config/
-    └── .local/
-        └── bin/
+├── home/                 # Stow package: mirrors $HOME
+│   ├── .bashrc
+│   ├── .bash_profile
+│   ├── .config/
+│   └── .local/
+│       └── bin/
+├── lib/
+│   └── system.sh         # helpers shared by install and sys
+└── system/               # mirrors the filesystem root; copied into /etc
+    └── etc/
+        ├── iwd/
+        │   └── main.conf
+        └── systemd/
+            └── network/
+                ├── 10-wired.network
+                └── 20-wifi.network
 ```
 
-Everything inside `home/` is a mirror of your home directory. Everything outside it is repository tooling and is never linked into `$HOME`.
+Everything inside `home/` is a mirror of your home directory and is symlinked into `$HOME`. Everything inside `system/` is a mirror of the filesystem root and is copied into `/etc`. Everything inside `lib/` is shared code, sourced by both the installer and `sys`.
 
 ## Managing dotfiles
 
@@ -140,6 +152,69 @@ find ~ -maxdepth 4 -xtype l -lname '*dotfiles/*'
 
 Review the output, then add `-delete` to remove them.
 
+## System configuration
+
+Files under `system/` mirror the filesystem root and are installed to `/etc` by the installer. Networking on this setup is:
+
+| Service | Role |
+| --- | --- |
+| `iwd` | Associates with Wi-Fi. `EnableNetworkConfiguration=false` in `main.conf`, so it leaves addressing to `systemd-networkd`. |
+| `systemd-networkd` | Applies `10-wired.network` and `20-wifi.network` and runs DHCP. |
+| `systemd-resolved` | Receives DNS from `networkd` and serves the `/etc/resolv.conf` stub. |
+
+Both `.network` files use `DHCP=yes` plus `IPv6AcceptRA=yes`. The wired link has a lower route metric (`100`) than Wi-Fi (`600`), so a plugged-in cable is preferred and Wi-Fi keeps working as a backup.
+
+Unlike `home/`, these files are **copied**, not symlinked. `iwd` and `systemd-networkd` read them at early boot, possibly before `$HOME` is mounted; a symlink into the repository would dangle there and leave the machine without networking. The catch is that editing a file in `system/` only takes effect after rerunning `./install`.
+
+Deployment is idempotent: files that already match are skipped, anything being replaced is copied to `~/.dotfiles-backup/<timestamp>/etc/...` first, and the files are installed `root:root` mode `644`.
+
+Removing a file from `system/` does **not** delete the copy in `/etc`; delete it by hand if that is what you want. This is the opposite of `home/`, where deleting the repository file leaves a dangling symlink behind.
+
+Modes are not always `644`. Files listed in `SYSTEM_PRIVATE_PATHS` in `lib/system.sh` are installed `0600` instead, because git cannot record permission bits beyond the executable flag: a config holding a key or password would otherwise land world-readable in `/etc`. `etc/wireguard` is already listed; add the path of anything else private before you commit it.
+
+### Applying system changes
+
+Unlike `home/`, editing a file in `system/` does nothing until it is applied:
+
+```bash
+sys diff      # what differs from /
+sys apply     # install it (same as ./install --system-only)
+sys list      # files managed by this repository
+```
+
+`sys diff` exits non-zero when something has drifted, so it works as a check you can run on a whim. It compares contents, mode and owner, so a file that is right but `644` where it should be `600` is reported too.
+
+`./install --system-only` skips prerequisites, packages and Stow: it only redeploys `system/` and refreshes the networking services. It still uses `sudo`.
+
+### Adding system configuration
+
+1. Put the file in `system/` at the same path it has under `/`:
+
+   ```bash
+   mkdir -p ~/dotfiles/system/etc/foo
+   sudo cp /etc/foo/bar.conf ~/dotfiles/system/etc/foo/bar.conf
+   sudo chown "$USER:$USER" ~/dotfiles/system/etc/foo/bar.conf
+   ```
+
+2. Apply it with `sys apply` (or rerun `./install`).
+3. Verify with `diff /etc/foo/bar.conf ~/dotfiles/system/etc/foo/bar.conf`.
+
+Commit these files as your user. If you copied them out of `/etc` with `sudo`, they are owned by root and cannot be edited without sudo, so pass them through `chown` as in step 1.
+
+### Connecting to Wi-Fi
+
+`iwd` provides its own client, so no NetworkManager applet is needed:
+
+```bash
+iwctl station wlan0 scan              # optional
+iwctl station wlan0 connect "SSID"    # prompts for the passphrase
+iwctl station wlan0 show              # confirm it is connected
+networkctl status                     # confirm networkd leased an address
+resolvectl status                     # confirm DNS
+```
+
+Credentials are stored by `iwd` as system connection profiles, not in this repository.
+
 ## Managing packages
 
 Packages are listed in `pkglist.txt`, one name per line. Lines starting with `#` and blank lines are ignored, so you can use them to group packages.
@@ -164,6 +239,7 @@ You can also edit `pkglist.txt` by hand. Run the installer again to install newl
 ## Notes
 
 - The installer may request your password for privileged operations.
-- On conflicts the installer backs up the existing file to `~/.dotfiles-backup/<timestamp>/` and the repository version replaces it. Only files that the repository also contains are affected; other files in the same directories are left alone.
+- **Networking setup can interrupt your connection.** Enabling `iwd` and `systemd-networkd` and disabling `NetworkManager`/`wpa_supplicant` will drop whatever is currently handling the network. Everything after that point in the installer is local work, but do not run it over a remote session you cannot reconnect to. If a Wi-Fi config file changed, `iwd` is restarted, which drops the association; reconnect with `iwctl`.
+- On conflicts the installer backs up the existing file to `~/.dotfiles-backup/<timestamp>/` and the repository version replaces it. Only files that the repository also contains are affected; this applies to both `$HOME` and `/etc`.
 - Review package installation prompts before confirming changes.
 - Back up important configuration files before making major changes.

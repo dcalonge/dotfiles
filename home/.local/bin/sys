@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+# sys - work with the files under system/, which are copied into / by ./install.
+#
+#   sys diff    report managed files that differ from what is installed
+#   sys apply   copy system/ into / (runs ./install --system-only)
+#   sys list    list the files managed by this repository
+set -Eeuo pipefail
+
+# Resolve the repository through the Stow symlink, so no path is hard-coded.
+# <repo>/home/.local/bin/sys -> <repo>/ is three levels up.
+SELF="$(readlink -f -- "${BASH_SOURCE[0]}")"
+REPO="$(realpath -- "$(dirname -- "$SELF")/../../..")"
+SYSTEM="$REPO/system"
+
+# shellcheck source=../../lib/system.sh
+source "$REPO/lib/system.sh"
+
+log() { printf '\033[1;32m==>\033[0m %s\n' "$*"; }
+die() {
+    printf '\033[1;31mERROR:\033[0m %s\n' "$*" >&2
+    exit 1
+}
+
+usage() {
+    cat <<'USAGE'
+Usage:
+  sys diff    Show managed files that differ from what is installed
+  sys apply   Copy system/ into / (same as ./install --system-only)
+  sys list    List the files managed by this repository
+USAGE
+}
+
+[[ -d "$SYSTEM" ]] || die "Missing system directory: $SYSTEM"
+
+cmd="${1:-}"
+
+case "$cmd" in
+list)
+    while IFS= read -r -d '' src; do
+        printf '/%s\n' "${src#"$SYSTEM"/}"
+    done < <(system_files "$SYSTEM")
+    ;;
+
+diff)
+    drift=0
+    unreadable=0
+
+    while IFS= read -r -d '' src; do
+        rel="${src#"$SYSTEM"/}"
+
+        case "$(system_state "$src" "/$rel" "$rel")" in
+        ok) ;;
+        missing)
+            printf '%-9s /%s\n' "missing" "$rel"
+            drift=1
+            ;;
+        differs)
+            printf '%-9s /%s\n' "differs" "$rel"
+            drift=1
+            ;;
+        unreadable)
+            printf '%-9s /%s\n' "unreadable" "$rel"
+            unreadable=1
+            ;;
+        esac
+    done < <(system_files "$SYSTEM")
+
+    if ((unreadable)); then
+        printf '\nNote: files only root can read cannot be compared here; run `sys apply` with sudo.\n' >&2
+    fi
+
+    if ((drift)); then
+        printf '\nRun `sys apply` (or ./install --system-only) to install these.\n' >&2
+        exit 1
+    fi
+
+    log "system/ matches /"
+    ;;
+
+apply)
+    [[ -x "$REPO/install" ]] || die "Missing executable: $REPO/install"
+    exec "$REPO/install" --system-only
+    ;;
+
+-h | --help | help)
+    usage
+    ;;
+
+*)
+    if [[ -n "$cmd" ]]; then
+        printf 'Unknown command: %s\n\n' "$cmd" >&2
+    fi
+    usage >&2
+    exit 1
+    ;;
+esac
