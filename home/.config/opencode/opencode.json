@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "opencode/beam-free",
+  "model": "opencode/deepseek-v4.1-flash-free",
   "small_model": "openrouter/google/gemma-4-26b-a4b-it:free",
   "websearch": false,
   "agents": {
