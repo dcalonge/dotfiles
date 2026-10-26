@@ -1,5 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "websearch": false,
   "permissions": [
     {
       "action": "websearch",
