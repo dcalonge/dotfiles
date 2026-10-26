@@ -21,6 +21,7 @@ If a file in your home directory already exists where the repository has one (fo
 - **Dotfiles:** Uses GNU Stow to symlink everything in `home/` into your home directory.
 - **System configuration:** Copies everything in `system/` into `/etc`, backing up any file it replaces, and installs private paths `0600`.
 - **Networking:** Enables `iwd`, `systemd-networkd`, and `systemd-resolved`, points `/etc/resolv.conf` at the systemd stub, and disables `NetworkManager`, `wpa_supplicant`, and `dhcpcd` if they are present.
+- **Login and shell:** Reloads systemd, enables `getty@tty1` for the password-only drop-in, and re-points `/usr/bin/sh` at `dash` in addition to installing the hook that keeps it there.
 
 ## Repository structure
 
@@ -42,10 +43,16 @@ dotfiles/
     └── etc/
         ├── iwd/
         │   └── main.conf
+        ├── pacman.d/
+        │   └── hooks/
+        │       └── dash-symlink.hook
         └── systemd/
-            └── network/
-                ├── 10-wired.network
-                └── 20-wifi.network
+            ├── network/
+            │   ├── 10-wired.network
+            │   └── 20-wifi.network
+            └── system/
+                └── getty@tty1.service.d/
+                    └── skip-username.conf
 ```
 
 Everything inside `home/` is a mirror of your home directory and is symlinked into `$HOME`. Everything inside `system/` is a mirror of the filesystem root and is copied into `/etc`. Everything inside `lib/` is shared code, sourced by both the installer and `sys`.
@@ -214,6 +221,36 @@ resolvectl status                     # confirm DNS
 ```
 
 Credentials are stored by `iwd` as system connection profiles, not in this repository.
+
+### Login on tty1
+
+`system/etc/systemd/system/getty@tty1.service.d/skip-username.conf` replaces agetty's command line with `--skip-login`, so tty1 asks for a password only and never for a username:
+
+```ini
+ExecStart=-/usr/bin/agetty -o '-- daniel' --skip-login --noreset --noclear - ${TERM}
+```
+
+The username is hard-coded, so change it if you are not `daniel`. Because the drop-in modifies an instance, the installer also enables `getty@tty1.service` — otherwise the drop-in would exist on a fresh system with nothing to apply it to. It never restarts that unit: restarting agetty on tty1 would kill the session you are installing from, so the change takes effect the next time agetty starts (normally a reboot). The installer only reloads systemd.
+
+### `/bin/sh` points at dash
+
+`system/etc/pacman.d/hooks/dash-symlink.hook` re-points `/usr/bin/sh` to dash whenever bash is installed or upgraded:
+
+```ini
+[Trigger]
+Type = Package
+Operation = Install
+Operation = Upgrade
+Target = bash
+
+[Action]
+Description = Re-pointing /bin/sh symlink to dash...
+When = PostTransaction
+Exec = /usr/bin/ln -sfT dash /usr/bin/sh
+Depends = dash
+```
+
+The trigger is `bash`, not `dash`, because bash owns `/usr/bin/sh`; a bash upgrade is what silently puts the symlink back. A hook only fires on those package transactions, so the installer also runs the same `ln -sfT dash /usr/bin/sh` (when dash is installed) to make a fresh install match immediately. Scripts that assume bash-only syntax under `sh` will fail here — that is the point of the hook, not a bug.
 
 ## Managing packages
 

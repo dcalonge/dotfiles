@@ -129,6 +129,27 @@ if [[ -d "$SYSTEM_PACKAGE" ]]; then
     done < <(system_files "$SYSTEM_PACKAGE")
 fi
 
+# The dash hook only fires when bash is installed or upgraded, which on a
+# settled system may not happen for months. Apply its action now so a fresh
+# install matches, rather than leaving /usr/bin/sh pointing at bash.
+if [[ -f "$SYSTEM_PACKAGE/etc/pacman.d/hooks/dash-symlink.hook" ]] &&
+    pacman -Q dash >/dev/null 2>&1; then
+    sudo ln -sfT dash /usr/bin/sh
+fi
+
+# Unit files and drop-ins need a reload before systemd sees them. Never restart
+# a unit here: restarting getty@tty1 would kill the session this script may well
+# be running in, and the drop-in applies the next time agetty starts anyway.
+if [[ -d "$SYSTEM_PACKAGE/etc/systemd/system" ]]; then
+    sudo systemctl daemon-reload
+
+    # The tty1 drop-in skips the username prompt, so the instance it modifies has
+    # to be enabled or a fresh install would get no login prompt on tty1 at all.
+    if [[ -d "$SYSTEM_PACKAGE/etc/systemd/system/getty@tty1.service.d" ]]; then
+        sudo systemctl enable getty@tty1.service
+    fi
+fi
+
 # Networking is split between three services:
 #   iwd                associates with Wi-Fi (EnableNetworkConfiguration=false,
 #                      so it leaves addressing to networkd)
